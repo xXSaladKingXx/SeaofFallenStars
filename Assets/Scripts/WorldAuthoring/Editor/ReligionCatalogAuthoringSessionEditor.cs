@@ -55,9 +55,9 @@ namespace Zana.WorldAuthoring
                 rel.name = EditorGUILayout.TextField("Display Name", rel.name);
                 rel.description = EditorGUILayout.TextField("Description", rel.description);
                 // Religious leader dropdown
+                // Prepend a none option
                 if (charNames.Length > 0)
                 {
-                    // Prepend a none option
                     string[] options = new string[charNames.Length + 1];
                     options[0] = "(None)";
                     for (int j = 0; j < charNames.Length; j++) options[j + 1] = charNames[j];
@@ -75,7 +75,10 @@ namespace Zana.WorldAuthoring
                 }
                 else
                 {
-                    rel.religiousLeaderCharacterId = EditorGUILayout.TextField("Religious Leader ID", rel.religiousLeaderCharacterId);
+                    using (new EditorGUI.DisabledScope(true))
+                    {
+                        EditorGUILayout.Popup("Religious Leader", 0, new[] { "(no characters available)" });
+                    }
                 }
                 // Trait assignments
                 rel.traits ??= new System.Collections.Generic.List<string>();
@@ -84,11 +87,11 @@ namespace Zana.WorldAuthoring
                 {
                     string currentId = rel.traits[j];
                     int currentIndex = -1;
+                    EditorGUILayout.BeginHorizontal();
                     if (traitIds.Length > 0)
                     {
                         currentIndex = System.Array.IndexOf(traitIds, currentId);
                         if (currentIndex < 0) currentIndex = 0;
-                        EditorGUILayout.BeginHorizontal();
                         int newIndex = EditorGUILayout.Popup(string.Empty, currentIndex, traitNames);
                         if (newIndex >= 0 && newIndex < traitIds.Length)
                         {
@@ -99,26 +102,21 @@ namespace Zana.WorldAuthoring
                                 EditorUtility.SetDirty(session);
                             }
                         }
-                        if (GUILayout.Button("Remove", GUILayout.Width(60)))
-                        {
-                            rel.traits.RemoveAt(j);
-                            EditorUtility.SetDirty(session);
-                            j--;
-                        }
-                        EditorGUILayout.EndHorizontal();
                     }
                     else
                     {
-                        // Fallback to manual entry if no traits available
-                        string newVal = EditorGUILayout.TextField(currentId);
-                        if (newVal != currentId) rel.traits[j] = newVal;
-                        if (GUILayout.Button("Remove", GUILayout.Width(60)))
+                        using (new EditorGUI.DisabledScope(true))
                         {
-                            rel.traits.RemoveAt(j);
-                            EditorUtility.SetDirty(session);
-                            j--;
+                            EditorGUILayout.Popup(string.Empty, 0, new[] { "(no traits available)" });
                         }
                     }
+                    if (GUILayout.Button("Remove", GUILayout.Width(60)))
+                    {
+                        rel.traits.RemoveAt(j);
+                        EditorUtility.SetDirty(session);
+                        j--;
+                    }
+                    EditorGUILayout.EndHorizontal();
                 }
                 // Add trait dropdown if there are traits defined. Only adds when the button is clicked.
                 if (traitIds.Length > 0)

@@ -73,8 +73,10 @@ namespace Zana.WorldAuthoring
                 }
                 else
                 {
-                    // If no cultures exist, fallback to simple text field
-                    lang.primaryCultureId = EditorGUILayout.TextField("Primary Culture ID", lang.primaryCultureId);
+                    using (new EditorGUI.DisabledScope(true))
+                    {
+                        EditorGUILayout.Popup("Primary Culture", 0, new[] { "(no cultures available)" });
+                    }
                 }
                 EditorGUI.indentLevel--;
                 if (GUILayout.Button("Remove", GUILayout.Width(70)))
