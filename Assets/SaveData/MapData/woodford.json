@@ -1,0 +1,52 @@
+{
+  "displayName": "Woodford",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_woodford",
+  "characterIds": [
+    "char_woodford"
+  ],
+  "main": {
+    "description": "Farm town taxed by Seawatch.",
+    "population": 1800,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 1120,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 1800,
+    "totalTreasury": 21600,
+    "courtExpenses": 90,
+    "armyExpenses": 180,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "woodford",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "woodford",
+    "liegeSettlementId": "seawatch",
+    "vassalContracts": []
+  }
+}

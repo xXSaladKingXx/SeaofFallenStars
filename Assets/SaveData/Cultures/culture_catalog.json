@@ -1,0 +1,82 @@
+{
+  "catalogId": "main",
+  "displayName": "Cultures",
+  "cultures": [
+    {
+      "id": "cormyrean",
+      "displayName": "Cormyrean",
+      "description": "Cormyreans have a stubborness and refusal to admit defeat that even the most determined invaders find spiritually taxing.",
+      "traits": [
+        "defendersofthepass"
+      ],
+      "languages": [
+        "cormyr_common"
+      ],
+      "religions": [
+        "cormyr_lathanderism"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "tai",
+      "displayName": "Tai",
+      "description": "Xenophobic and mysterious, with advanced knowledge of the arcane.",
+      "traits": [
+        "defendersofthepass"
+      ],
+      "languages": [
+        "tai",
+        "cormyr_common"
+      ],
+      "religions": [
+        "cormyr_lathanderism"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "sembian",
+      "displayName": "Sembian",
+      "description": "Hailing from the Scarlands, this is the main cultural heart of Sembia.",
+      "traits": [
+        "defendersofthepass"
+      ],
+      "languages": [
+        "cormyr_common"
+      ],
+      "religions": [
+        "cormyr_lathanderism"
+      ],
+      "notes": ""
+    }
+  ],
+  "traits": [
+    {
+      "id": "defendersofthepass",
+      "name": "Defenders of the Pass",
+      "description": null,
+      "bonus": 0,
+      "stat": null,
+      "effect": "+2 to defence against foreigners"
+    }
+  ],
+  "languages": [
+    {
+      "id": "cormyreancommon",
+      "name": "Common (Cormyrean)",
+      "primaryCultureId": null,
+      "nativeRegionId": "cormyr",
+      "description": "The same language the western areas speak, as does sembia - however, all have specific dialects, that are important for nuanced conversation. Cormyrean Common is like an amalgamation of different languages from slaves that lived in cormyr under the House of the Dragon some thousand years ago."
+    }
+  ],
+  "religions": [
+    {
+      "id": "cormyrean_lathanderism",
+      "name": "",
+      "description": "",
+      "traditions": [],
+      "religiousLeaderCharacterId": "royalalmoner",
+      "traits": []
+    }
+  ],
+  "notes": ""
+}

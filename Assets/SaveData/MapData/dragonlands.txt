@@ -1,0 +1,63 @@
+{
+  "regionId": "dragonlands",
+  "displayName": "The Dragonlands",
+  "mapUrlOrPath": "",
+  "layer": "Regional",
+
+  "main": {
+    "description": "The contested heartlands of the Inner Sea, defined by feudal power, merchant oligarchy, and centuries of war. Cormyr and Sembia are bound together by rivalry, trade, and bloodshed.",
+    "tagline": "Where crowns and coin decide history.",
+    "notableFacts": [
+      "Site of multiple Sembian–Cormyrean wars",
+      "Blend of feudal monarchy and merchant rule",
+      "Still destabilized by debt and civil war legacies"
+    ]
+  },
+
+  "geography": {
+    "overview": "Fertile plains, dense forests, and vital river systems form the economic backbone of the region.",
+    "areaSqMiOverride": null,
+    "unityUnitsToMilesOverride": null,
+    "dominantBiomes": ["Temperate Forest", "Farmland", "Wetlands"],
+    "dominantTerrain": ["River Valleys", "Trade Roads", "Border Fortresses"],
+    "climateNotes": "Temperate with harsh winters and humid summers.",
+    "travelNotes": "Well-developed roads but threatened by monsters and banditry."
+  },
+
+  "culture": {
+    "entries": [
+      {
+        "name": "Feudal vs Mercantile",
+        "description": "Cormyr’s noble hierarchy clashes ideologically and militarily with Sembia’s merchant-controlled oligarchy."
+      }
+    ]
+  },
+
+  "vassals": {
+    "notes": "These realms dominate the region but do not fully control its wilds.",
+    "countries": [
+      {
+        "countryId": "cormyr",
+        "displayName": "Kingdom of Cormyr",
+        "relationship": "Dominant Power",
+        "summary": "A feudal monarchy ruled by House Matarys, recovering from civil war and foreign conflict.",
+        "estimatedPopulation": null,
+        "estimatedIncome": null,
+        "estimatedLevies": null,
+        "ext": {}
+      },
+      {
+        "countryId": "sembia",
+        "displayName": "Kingdom of Sembia",
+        "relationship": "Rival Power",
+        "summary": "A merchant-dominated oligarchy masquerading as a kingdom, perpetually at odds with Cormyr.",
+        "estimatedPopulation": null,
+        "estimatedIncome": null,
+        "estimatedLevies": null,
+        "ext": {}
+      }
+    ]
+  },
+
+  "ext": {}
+}

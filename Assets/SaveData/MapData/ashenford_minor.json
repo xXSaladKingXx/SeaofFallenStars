@@ -1,0 +1,52 @@
+{
+  "displayName": "Ashenford",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_ashenford_minor",
+  "characterIds": [
+    "char_ashenford_minor"
+  ],
+  "main": {
+    "description": "Small settlement near Ashenford.",
+    "population": 2000,
+    "rulerDisplayName": "Unknown",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 480,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 800,
+    "totalTreasury": 9600,
+    "courtExpenses": 40,
+    "armyExpenses": 80,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_sembia",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "ashenford_minor",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "ashenford_minor",
+    "liegeSettlementId": "scarsdale",
+    "vassalContracts": []
+  }
+}

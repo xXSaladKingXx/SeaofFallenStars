@@ -1,0 +1,52 @@
+{
+  "displayName": "Clawtip Lighthouse",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_clawtip_lighthouse",
+  "characterIds": [
+    "char_clawtip_lighthouse"
+  ],
+  "main": {
+    "description": "Lighthouse and signal post on the coast.",
+    "population": 150,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 160,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 100,
+    "totalTreasury": 1200,
+    "courtExpenses": 5,
+    "armyExpenses": 10,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "clawtip_lighthouse",
+    "layer": 3,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "clawtip_lighthouse",
+    "liegeSettlementId": "seawatch",
+    "vassalContracts": []
+  }
+}

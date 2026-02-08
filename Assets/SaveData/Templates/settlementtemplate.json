@@ -1,0 +1,45 @@
+{
+  "settlementId": "",
+  "displayName": "",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "",
+  "characterIds": [],
+  "main": {
+    "description": "",
+    "population": 0,
+    "rulerDisplayName": "",
+    "rulerName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 0,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 0.0,
+    "totalTreasury": 0.0,
+    "courtExpenses": "",
+    "armyExpenses": "",
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "",
+    "populationDistribution": "",
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "feudal": false,
+    "capitalSettlementId": "",
+    "liegeSettlementId": "",
+    "vassalContracts": [],
+    "notes": ""
+  }
+}

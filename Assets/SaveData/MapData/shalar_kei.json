@@ -1,0 +1,52 @@
+{
+  "displayName": "City of Shalar-Kei",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_shalar_kei",
+  "characterIds": [
+    "char_shalar_kei"
+  ],
+  "main": {
+    "description": "Major city of Tai.",
+    "population": 7500,
+    "rulerDisplayName": "Unknown",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 2400,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 3600,
+    "totalTreasury": 43200,
+    "courtExpenses": 180,
+    "armyExpenses": 360,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "shalar_kei",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "shalar_kei",
+    "liegeSettlementId": "tai",
+    "vassalContracts": []
+  }
+}

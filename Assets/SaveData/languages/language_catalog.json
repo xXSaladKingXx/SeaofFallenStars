@@ -1,0 +1,28 @@
+{
+  "catalogId": "language_catalog",
+  "displayName": "Languages",
+  "languages": [
+    {
+      "id": "cormyr_common",
+      "name": "Cormyrean Common",
+      "primaryCultureId": "cormyrean",
+      "nativeRegionId": null,
+      "description": "The Corymr Dialect of the Common Sword Coast Language"
+    },
+    {
+      "id": "tai",
+      "name": "Tai",
+      "primaryCultureId": "tai",
+      "nativeRegionId": null,
+      "description": "The language spoken by the people of Tai. It's smooth and elegant."
+    },
+    {
+      "id": "sembia_common",
+      "name": "Sembian Common",
+      "primaryCultureId": "sembian",
+      "nativeRegionId": null,
+      "description": "Sembian dialect of the common tongue."
+    }
+  ],
+  "notes": null
+}

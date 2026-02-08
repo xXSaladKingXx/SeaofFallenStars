@@ -1,0 +1,15 @@
+{
+  "catalogId": "trait_catalog",
+  "displayName": "Traits",
+  "traits": [
+    {
+      "id": "defendersofthepass",
+      "name": "Defenders of the Pass",
+      "description": "Cormyr has historically defended the land pass to Cormyr well",
+      "bonus": 1,
+      "stat": "defense",
+      "effect": null
+    }
+  ],
+  "notes": null
+}

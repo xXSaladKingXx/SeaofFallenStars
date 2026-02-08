@@ -1,0 +1,50 @@
+{
+  "armyId": "cormyrarmy",
+  "displayName": "Loyalist Army",
+  "primaryCommanderCharacterId": "char_azoun_matarys_iv",
+  "primaryCommanderDisplayName": "King Azoun Matarys IV",
+  "description": "Contains all of the King's remaining Vassals.",
+  "notes": "",
+  "totalArmy": 22,
+  "attack": 32,
+  "defense": 40,
+  "speed": 20,
+  "menAtArms": [
+    {
+      "menAtArmsId": "purple_dragons",
+      "count": 10
+    },
+    {
+      "menAtArmsId": "heavy_infantry",
+      "count": 5
+    },
+    {
+      "menAtArmsId": "light_infantry",
+      "count": 6
+    },
+    {
+      "menAtArmsId": "light_cavalry",
+      "count": 4
+    }
+  ],
+  "commanderCharacterIds": [
+    "lordtomasmellsen",
+    "lordperseussungardner",
+    "dukearickongardner"
+  ],
+  "knightCharacterIds": [
+    "baronetraymondgardner",
+    "baronetclanceevermillion",
+    "dukearickongardner",
+    "lordaegorbittersteel",
+    "lordalaricselgaunt",
+    "lordtomasmellsen",
+    "lordperseussungardner",
+    "lordmerricksicklestone",
+    "mastergeraltredstar"
+  ],
+  "mapPosition": {
+    "x": 0.0,
+    "y": 0.0
+  }
+}

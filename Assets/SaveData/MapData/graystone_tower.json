@@ -1,0 +1,61 @@
+{
+  "displayName": "Graystone Tower",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_graystone_tower",
+  "characterIds": [
+    "char_graystone_tower"
+  ],
+  "main": {
+    "description": "Struggling tower and village.",
+    "population": 120,
+    "rulerDisplayName": "",
+    "vassals": [
+      "graycroft"
+    ]
+  },
+  "army": {
+    "totalArmy": 320,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 400,
+    "totalTreasury": 4800,
+    "courtExpenses": 20,
+    "armyExpenses": 40,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "graystone_tower",
+    "layer": 3,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "graystone_tower",
+    "liegeSettlementId": "seawatch",
+    "vassalContracts": [
+      {
+        "vassalSettlementId": "graycroft",
+        "incomeTaxRate": 0.25,
+        "troopTaxRate": 0.25,
+        "terms": "Standard feudal contract"
+      }
+    ]
+  }
+}

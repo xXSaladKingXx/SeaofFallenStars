@@ -1,0 +1,87 @@
+{
+  "catalogId": "main",
+  "displayName": "Men-At-Arms",
+  "entries": [
+    {
+      "id": "light_infantry",
+      "displayName": "Light Infantry",
+      "notes": "Normal light soldiers, equipped with basic pikes, shields, and ranging qualities of armor.",
+      "attack": 1,
+      "defense": 0,
+      "size": 80,
+      "role": "",
+      "qualityTier": "1",
+      "geographyBonuses": [
+        {
+          "subtypeId": "plains",
+          "bonus": 1
+        }
+      ]
+    },
+    {
+      "id": "purple_dragons",
+      "displayName": "Purple Dragons",
+      "notes": "Elite warriors sworn to the King of Cormyr. Their Order outdates even the ruling dynasty, as they switched sides to join the Dynansty Matarys in rebellion, as it was best for the people of Cormyr. There are only ever 2,000 or so at any given time.",
+      "attack": 2,
+      "defense": 1,
+      "size": 80,
+      "role": "",
+      "qualityTier": "3",
+      "geographyBonuses": [
+        {
+          "subtypeId": "forest",
+          "bonus": 1
+        },
+        {
+          "subtypeId": "plains",
+          "bonus": 2
+        }
+      ]
+    },
+    {
+      "id": "heavy_infantry",
+      "displayName": "Heavy Infantry",
+      "notes": "Men with more steel armor than not, wielding longswords, shortswords, and sometimes pikes or halberds. Their training is no better, but their equipment gives them a better chance of surviving.",
+      "attack": 2,
+      "defense": 1,
+      "size": 60,
+      "role": "",
+      "qualityTier": "1",
+      "geographyBonuses": [
+        {
+          "subtypeId": "forest",
+          "bonus": 1
+        },
+        {
+          "subtypeId": "plains",
+          "bonus": 2
+        }
+      ]
+    },
+    {
+      "id": "light_cavalry",
+      "displayName": "Light Cavalry",
+      "notes": "",
+      "attack": 2,
+      "defense": 1,
+      "size": 30,
+      "role": "",
+      "qualityTier": "1",
+      "geographyBonuses": [
+        {
+          "subtypeId": "forest",
+          "bonus": -1
+        },
+        {
+          "subtypeId": "plains",
+          "bonus": 3
+        },
+        {
+          "subtypeId": "mountains",
+          "bonus": -3
+        }
+      ]
+    }
+  ],
+  "notes": ""
+}

@@ -1,0 +1,79 @@
+{
+  "catalogId": "races_catalog",
+  "displayName": "Races",
+  "races": [
+    {
+      "id": "human",
+      "displayName": "Human",
+      "description": "",
+      "traits": [
+        "defendersofthepass"
+      ]
+    },
+    {
+      "id": "elf",
+      "displayName": "Elf",
+      "description": "",
+      "traits": [
+        "defendersofthepass"
+      ]
+    },
+    {
+      "id": "dwarf",
+      "displayName": "Dwarf",
+      "description": "",
+      "traits": [
+        "defendersofthepass"
+      ]
+    },
+    {
+      "id": "halfling",
+      "displayName": "Halfling",
+      "description": "",
+      "traits": [
+        "defendersofthepass"
+      ]
+    },
+    {
+      "id": "gnome",
+      "displayName": "Gnome",
+      "description": "",
+      "traits": [
+        "defendersofthepass"
+      ]
+    },
+    {
+      "id": "tiefling",
+      "displayName": "Tiefling",
+      "description": "",
+      "traits": [
+        "defendersofthepass"
+      ]
+    },
+    {
+      "id": "dragonborn",
+      "displayName": "Dragonborn",
+      "description": "",
+      "traits": [
+        "defendersofthepass"
+      ]
+    },
+    {
+      "id": "halfelf",
+      "displayName": "Half-Elf",
+      "description": "",
+      "traits": [
+        "defendersofthepass"
+      ]
+    },
+    {
+      "id": "halforc",
+      "displayName": "Half-Orc",
+      "description": "",
+      "traits": [
+        "defendersofthepass"
+      ]
+    }
+  ],
+  "notes": null
+}

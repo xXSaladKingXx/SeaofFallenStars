@@ -1,0 +1,52 @@
+{
+  "displayName": "Mirabelle",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_mirabelle",
+  "characterIds": [
+    "char_mirabelle"
+  ],
+  "main": {
+    "description": "Fishing village in Vael\u2019Shara.",
+    "population": 800,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 320,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 300,
+    "totalTreasury": 3600,
+    "courtExpenses": 15,
+    "armyExpenses": 30,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "mirabelle",
+    "layer": 3,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "mirabelle",
+    "liegeSettlementId": "vaelshara",
+    "vassalContracts": []
+  }
+}

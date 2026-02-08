@@ -1,0 +1,17 @@
+{
+  "catalogId": "religon_catalog",
+  "displayName": "Religions",
+  "religions": [
+    {
+      "id": "cormyr_lathanderism",
+      "name": "Cormyrean Lathanderism",
+      "description": "Cormyrean Denomination of Lathanderism",
+      "traditions": [],
+      "religiousLeaderCharacterId": null,
+      "traits": [
+        "defendersofthepass"
+      ]
+    }
+  ],
+  "notes": null
+}

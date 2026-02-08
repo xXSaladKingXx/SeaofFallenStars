@@ -1,0 +1,52 @@
+{
+  "displayName": "Bogtown",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_bogtown",
+  "characterIds": [
+    "char_bogtown"
+  ],
+  "main": {
+    "description": "Town in the bogs.",
+    "population": 1500,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 320,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 600,
+    "totalTreasury": 7200,
+    "courtExpenses": 30,
+    "armyExpenses": 60,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "bogtown",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "bogtown",
+    "liegeSettlementId": "ordulin",
+    "vassalContracts": []
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "displayName": "Clawtip Keep",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_clawtip_keep",
+  "characterIds": [
+    "char_clawtip_keep"
+  ],
+  "main": {
+    "description": "Keep in Sembia.",
+    "population": 500,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 320,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 500,
+    "totalTreasury": 6000,
+    "courtExpenses": 25,
+    "armyExpenses": 50,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "clawtip_keep",
+    "layer": 3,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "clawtip_keep",
+    "liegeSettlementId": "ordulin",
+    "vassalContracts": []
+  }
+}

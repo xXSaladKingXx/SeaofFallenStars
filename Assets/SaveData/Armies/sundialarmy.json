@@ -1,0 +1,25 @@
+{
+  "armyId": "sundialarmy",
+  "displayName": "",
+  "primaryCommanderCharacterId": "dukearickongardner",
+  "primaryCommanderDisplayName": "dukearickongardner",
+  "description": "",
+  "notes": "",
+  "totalArmy": 2890,
+  "attack": 20,
+  "defense": 18,
+  "speed": 20,
+  "menAtArms": [
+    {
+      "menAtArmsId": "light_infantry",
+      "count": 5
+    }
+  ],
+  "knightCharacterIds": [
+    "baronetraymondgardner"
+  ],
+  "mapPosition": {
+    "x": 0.0,
+    "y": 0.0
+  }
+}

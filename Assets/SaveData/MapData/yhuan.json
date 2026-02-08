@@ -1,0 +1,52 @@
+{
+  "displayName": "City of Yhuan",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_yhuan",
+  "characterIds": [
+    "char_yhuan"
+  ],
+  "main": {
+    "description": "City in Sembia.",
+    "population": 9500,
+    "rulerDisplayName": "Unknown",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 3040,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 4700,
+    "totalTreasury": 56400,
+    "courtExpenses": 235,
+    "armyExpenses": 470,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "yhuan",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "yhuan",
+    "liegeSettlementId": "ordulin",
+    "vassalContracts": []
+  }
+}

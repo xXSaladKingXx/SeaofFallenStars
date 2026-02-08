@@ -1,0 +1,21 @@
+{
+  "catalogId": "flora_catalog",
+  "displayName": "Global Flora Catalogue",
+  "entries": [
+    {
+      "id": "oak",
+      "displayName": "Oak",
+      "description": "A sturdy broadleaf tree found in forests and settlements."
+    },
+    {
+      "id": "pine",
+      "displayName": "Pine",
+      "description": "A coniferous tree common in mountainous regions."
+    },
+    {
+      "id": "grass",
+      "displayName": "Grass",
+      "description": "Various grasses covering plains and meadows."
+    }
+  ]
+}

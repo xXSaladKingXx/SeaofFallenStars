@@ -1,0 +1,82 @@
+{
+  "displayName": "Sundial",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_sundial",
+  "characterIds": [
+    "char_sundial"
+  ],
+  "main": {
+    "description": "Mid-sized port city with gray stone castle, seat of House Gardner.",
+    "population": 20000,
+    "rulerDisplayName": "",
+    "vassals": [
+      "sunfield",
+      "torrhenstower",
+      "eastend",
+      "marsember"
+    ]
+  },
+  "army": {
+    "totalArmy": 7200,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 9500,
+    "totalTreasury": 114000,
+    "courtExpenses": 475,
+    "armyExpenses": 950,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "sundial",
+    "layer": 3,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "sundial",
+    "liegeSettlementId": "arabel",
+    "vassalContracts": [
+      {
+        "vassalSettlementId": "sunfield",
+        "incomeTaxRate": 0.25,
+        "troopTaxRate": 0.25,
+        "terms": "Standard feudal contract"
+      },
+      {
+        "vassalSettlementId": "torrhenstower",
+        "incomeTaxRate": 0.25,
+        "troopTaxRate": 0.25,
+        "terms": "Standard feudal contract"
+      },
+      {
+        "vassalSettlementId": "eastend",
+        "incomeTaxRate": 0.25,
+        "troopTaxRate": 0.25,
+        "terms": "Standard feudal contract"
+      },
+      {
+        "vassalSettlementId": "marsember",
+        "incomeTaxRate": 0.25,
+        "troopTaxRate": 0.25,
+        "terms": "Standard feudal contract"
+      }
+    ]
+  }
+}

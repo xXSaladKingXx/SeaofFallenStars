@@ -1,0 +1,52 @@
+{
+  "displayName": "Villegard",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_villegard",
+  "characterIds": [
+    "char_villegard"
+  ],
+  "main": {
+    "description": "Frontier town on the edge of Vael\u2019Shara.",
+    "population": 750,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 320,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 400,
+    "totalTreasury": 4800,
+    "courtExpenses": 20,
+    "armyExpenses": 40,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "villegard",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "villegard",
+    "liegeSettlementId": "vaelshara",
+    "vassalContracts": []
+  }
+}

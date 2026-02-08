@@ -1,0 +1,36 @@
+{
+  "catalogId": "fauna_catalog",
+  "displayName": "Global Fauna Catalogue",
+  "entries": [
+    {
+      "id": "deer",
+      "displayName": "Deer",
+      "description": "A common herbivore found in forests and plains.",
+      "habitat": [
+        "forest",
+        "plains"
+      ],
+      "dangerRating": 1
+    },
+    {
+      "id": "wolf",
+      "displayName": "Wolf",
+      "description": "A carnivorous predator that roams forests and mountains.",
+      "habitat": [
+        "forest",
+        "mountain"
+      ],
+      "dangerRating": 3
+    },
+    {
+      "id": "boar",
+      "displayName": "Boar",
+      "description": "A wild pig found in forests and swamps.",
+      "habitat": [
+        "forest",
+        "swamp"
+      ],
+      "dangerRating": 2
+    }
+  ]
+}

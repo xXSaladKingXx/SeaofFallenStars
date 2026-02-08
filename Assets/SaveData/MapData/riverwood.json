@@ -1,0 +1,52 @@
+{
+  "displayName": "Riverwood",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_riverwood",
+  "characterIds": [
+    "char_riverwood"
+  ],
+  "main": {
+    "description": "Town forming part of the Trihold.",
+    "population": 2500,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 1280,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 5000,
+    "totalTreasury": 60000,
+    "courtExpenses": 250,
+    "armyExpenses": 500,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "riverwood",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "riverwood",
+    "liegeSettlementId": "sunguard",
+    "vassalContracts": []
+  }
+}

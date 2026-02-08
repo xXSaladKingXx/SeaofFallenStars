@@ -1,0 +1,102 @@
+{
+  "characterId": "torrhenstorm",
+  "displayName": "Duke Torrhen Storm",
+  "playerName": "",
+  "className": "fighter",
+  "subclassName": "battlemaster",
+  "background": "noble",
+  "race": "human",
+  "subrace": "",
+  "level": 3,
+  "alignment": "",
+  "experiencePoints": 0,
+  "life": {
+    "birthDate": "1346",
+    "isAlive": true,
+    "deathDate": ""
+  },
+  "appearance": {
+    "age": "42",
+    "height": "",
+    "weight": "",
+    "eyes": "",
+    "skin": "",
+    "hair": "",
+    "portraitSprite": ""
+  },
+  "abilities": {
+    "str": 16,
+    "dex": 12,
+    "con": 18,
+    "intel": 10,
+    "wis": 8,
+    "cha": 8
+  },
+  "savingThrows": [
+    {
+      "ability": "con",
+      "proficient": true,
+      "miscBonus": 0
+    },
+    {
+      "ability": "str",
+      "proficient": true,
+      "miscBonus": 0
+    }
+  ],
+  "skills": [],
+  "combat": {
+    "armorClass": 16,
+    "initiativeMisc": 0,
+    "speedFeet": 30,
+    "hitDice": "5d10",
+    "hitDiceUsed": 0,
+    "maxHp": 32,
+    "currentHp": 32,
+    "tempHp": 0
+  },
+  "proficiencies": {
+    "armor": [
+      "medium_armor"
+    ],
+    "weapons": [
+      "longsword"
+    ],
+    "tools": [],
+    "languages": [
+      "cormyrean"
+    ]
+  },
+  "attacks": [],
+  "equipment": [],
+  "featuresAndTraits": [],
+  "personality": {
+    "traits": "",
+    "ideals": "",
+    "bonds": "",
+    "flaws": ""
+  },
+  "backstory": "",
+  "relationships": {
+    "parents": [],
+    "siblings": [],
+    "children": [],
+    "spouse": "",
+    "other": []
+  },
+  "feudal": {
+    "isFeudal": false,
+    "rank": "",
+    "rulesSettlementId": "",
+    "vassalSettlementIds": []
+  },
+  "spellcasting": {
+    "isCaster": false,
+    "spellcastingClass": "",
+    "spellcastingAbility": "",
+    "spellSaveDc": 0,
+    "spellAttackBonus": 0,
+    "spellLevels": []
+  },
+  "notes": ""
+}

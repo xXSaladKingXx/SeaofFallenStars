@@ -1,0 +1,34 @@
+{
+  "displayName": "Clawtip Lighthouse",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "",
+  "characterIds": [],
+  "main": {
+    "description": "Baronet lighthouse hamlet (vassal of Seawatch).",
+    "population": 150,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 92,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 100.0,
+    "totalTreasury": 0,
+    "courtExpenses": "",
+    "armyExpenses": "",
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "",
+    "populationDistribution": "",
+    "primaryTraits": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "displayName": "Dawnstar",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_dawnstar",
+  "characterIds": [
+    "char_dawnstar"
+  ],
+  "main": {
+    "description": "Town forming part of the Trihold.",
+    "population": 2500,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 1440,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 4000,
+    "totalTreasury": 48000,
+    "courtExpenses": 200,
+    "armyExpenses": 400,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "dawnstar",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "dawnstar",
+    "liegeSettlementId": "sunguard",
+    "vassalContracts": []
+  }
+}

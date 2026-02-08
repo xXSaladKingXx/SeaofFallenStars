@@ -1,0 +1,203 @@
+{
+  "displayName": "Kingdom of Sembia",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_kinglovandayron",
+  "characterIds": [
+    "char_kinglovandayron"
+  ],
+  "main": {
+    "description": "",
+    "population": 0,
+    "rulerDisplayName": "King Lovan Dayron",
+    "vassals": [
+      "ashenford_minor",
+      "bogtown",
+      "scarsdale",
+      "yhuan",
+      "harrowdale",
+      "shieldpoint",
+      "brightdale",
+      "yhuan_minor",
+      "northclaw_minor",
+      "nine_gods_ministry",
+      "shuan",
+      "fort_riverbend",
+      "highmoon",
+      "velarswood"
+    ]
+  },
+  "army": {
+    "totalArmy": 33050,
+    "menAtArms": [
+      "heavy_infantry",
+      "light_cavalry",
+      "light_infantry"
+    ],
+    "primaryCommanderDisplayName": "King Lovan Dayron",
+    "primaryCommanderCharacterId": "char_kinglovandayron",
+    "menAtArmsStacks": [
+      {
+        "menAtArmsId": "heavy_infantry",
+        "units": 16
+      },
+      {
+        "menAtArmsId": "light_cavalry",
+        "units": 5
+      },
+      {
+        "menAtArmsId": "light_infantry",
+        "units": 22
+      }
+    ]
+  },
+  "economy": {
+    "totalIncomePerMonth": 21700.0,
+    "totalTreasury": 2433537.0,
+    "courtExpenses": "2900",
+    "armyExpenses": "12000",
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "",
+    "populationDistribution": "",
+    "primaryTraits": [],
+    "raceDistribution": [
+      {
+        "key": "sembian",
+        "percent": 0.9
+      },
+      {
+        "key": "cormyrean",
+        "percent": 0.05
+      },
+      {
+        "key": "elvish",
+        "percent": 0.05
+      }
+    ],
+    "cultureDistribution": [
+      {
+        "key": "sembian",
+        "percent": 0.9
+      },
+      {
+        "key": "elvish",
+        "percent": 0.05
+      },
+      {
+        "key": "cormyrean",
+        "percent": 0.05
+      }
+    ]
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": [
+      "char_kinglovandayron"
+    ]
+  },
+  "feudal": {
+    "settlementId": "sembia",
+    "layer": 2,
+    "laws": "",
+    "isPopulated": true,
+    "capitalSettlementId": "scarsdale",
+    "liegeSettlementId": "",
+    "vassalContracts": [
+      {
+        "vassalSettlementId": "ashenford_minor",
+        "incomeTaxRate": 1.0,
+        "troopTaxRate": 1.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "bogtown",
+        "incomeTaxRate": 1.0,
+        "troopTaxRate": 1.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "scarsdale",
+        "incomeTaxRate": 1.0,
+        "troopTaxRate": 1.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "harrowdale",
+        "incomeTaxRate": 1.0,
+        "troopTaxRate": 1.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "shieldpoint",
+        "incomeTaxRate": 1.0,
+        "troopTaxRate": 1.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "brightdale",
+        "incomeTaxRate": 1.0,
+        "troopTaxRate": 1.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "yhuan_minor",
+        "incomeTaxRate": 0.5,
+        "troopTaxRate": 0.35,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "northclaw_minor",
+        "incomeTaxRate": 1.0,
+        "troopTaxRate": 1.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "nine_gods_ministry",
+        "incomeTaxRate": 0.05,
+        "troopTaxRate": 1.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "shuan",
+        "incomeTaxRate": 0.12,
+        "troopTaxRate": 0.35,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "fort_riverbend",
+        "incomeTaxRate": 0.0,
+        "troopTaxRate": 0.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "highmoon",
+        "incomeTaxRate": 0.0,
+        "troopTaxRate": 0.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "velarswood",
+        "incomeTaxRate": 0.0,
+        "troopTaxRate": 0.0,
+        "terms": ""
+      }
+    ]
+  },
+  "culturalComposition": [
+    {
+      "cultureId": "sembian",
+      "percentage": 1.0
+    }
+  ],
+  "raceDistribution": [
+    {
+      "raceId": "human",
+      "percentage": 0.94
+    },
+    {
+      "raceId": "elf",
+      "percentage": 0.05
+    }
+  ]
+}

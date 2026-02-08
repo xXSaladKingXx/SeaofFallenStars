@@ -1,0 +1,34 @@
+{
+  "displayName": "",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "",
+  "characterIds": [],
+  "main": {
+    "description": "",
+    "population": 0,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 0,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 0,
+    "totalTreasury": 0,
+    "courtExpenses": "",
+    "armyExpenses": "",
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "",
+    "populationDistribution": "",
+    "primaryTraits": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  }
+}

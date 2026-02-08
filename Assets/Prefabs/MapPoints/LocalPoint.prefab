@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5340547687868856131
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8503565047064196923}
+  - component: {fileID: 7202077454582335131}
+  - component: {fileID: -7772355183713304284}
+  m_Layer: 6
+  m_Name: LocalPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8503565047064196923
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5340547687868856131}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -251.59895, y: -70.44641}
+  m_SizeDelta: {x: 50.0727, y: 38.2457}
+  m_Pivot: {x: 0.41550434, y: 0.15829153}
+--- !u!60 &7202077454582335131
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5340547687868856131}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -10.350739, y: 15.391708}
+      - {x: -13.2961645, y: -0.97693276}
+      - {x: -0.5877852, y: -0.80901706}
+      - {x: 22.3203, y: 3.0488245}
+      - {x: 9.422889, y: 17.593624}
+  m_UseDelaunayMesh: 0
+--- !u!114 &-7772355183713304284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5340547687868856131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51ee97f708755fe4f81783a381f9b311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MapPoint
+  pointId: LocalPoint
+  displayName: 
+  layer: 5
+  infoKind: 1
+  isPopulated: 1
+  unpopulatedSubtype: 0
+  regionBoundaryCollider: {fileID: 7202077454582335131}
+  mainDescription: 
+  focusTransform: {fileID: 8503565047064196923}
+  defaultZoom: 75
+  selectionRadius: 100
+  themeMusic: {fileID: 0}
+  useColliderOutlineHighlight: 1
+  outlineWidth: 0.015
+  childMapPoints: []
+  visualRoot: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  uiGraphic: {fileID: 0}
+  autoDisableExtraColliders: 1
+  characterIds: []
+  armyIds: []

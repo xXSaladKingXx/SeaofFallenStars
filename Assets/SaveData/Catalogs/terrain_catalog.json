@@ -1,0 +1,38 @@
+{
+  "catalogId": "terrain_catalog",
+  "displayName": "Global Terrain Catalogue",
+  "entries": [
+    {
+      "id": "forest",
+      "displayName": "Forest",
+      "description": "Dense woodland with tall trees.",
+      "subtype": "Wilderness",
+      "movementModifier": 0.8,
+      "dangerRating": 2
+    },
+    {
+      "id": "mountain",
+      "displayName": "Mountain",
+      "description": "Rocky highlands and peaks.",
+      "subtype": "Wilderness",
+      "movementModifier": 0.5,
+      "dangerRating": 3
+    },
+    {
+      "id": "swamp",
+      "displayName": "Swamp",
+      "description": "Wetlands with boggy ground.",
+      "subtype": "Wilderness",
+      "movementModifier": 0.6,
+      "dangerRating": 3
+    },
+    {
+      "id": "plains",
+      "displayName": "Plains",
+      "description": "Open grasslands.",
+      "subtype": "Wilderness",
+      "movementModifier": 1.0,
+      "dangerRating": 1
+    }
+  ]
+}

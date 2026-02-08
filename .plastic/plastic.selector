@@ -1,0 +1,4 @@
+repository "SeaofFallenStars/SeaofFallenStars@2473923741508@cloud"
+  path "/"
+    br "/main"
+    co "/main"

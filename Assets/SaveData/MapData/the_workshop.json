@@ -1,0 +1,52 @@
+{
+  "displayName": "The Workshop",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_the_workshop",
+  "characterIds": [
+    "char_the_workshop"
+  ],
+  "main": {
+    "description": "Special holding known as the Workshop.",
+    "population": 600,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 960,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 200,
+    "totalTreasury": 2400,
+    "courtExpenses": 10,
+    "armyExpenses": 20,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "the_workshop",
+    "layer": 3,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "the_workshop",
+    "liegeSettlementId": "dragontooth_keep",
+    "vassalContracts": []
+  }
+}

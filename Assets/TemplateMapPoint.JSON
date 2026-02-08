@@ -1,0 +1,48 @@
+{
+  "displayName": "Seawatch",
+  "mapUrlOrPath": "C:/Maps/Seawatch_Map.png",
+
+  "rulerCharacterId": "amos_vaelsharra_young",
+  "characterIds": ["amos_vaelsharra_young", "high_commander_mark"],
+
+  "main": {
+    "description": "A fortified coastal city guarding the Sea of Fallen Stars.",
+    "population": 52000,
+    "rulerDisplayName": "Duke Amos Vael'Sharra the Younger",
+    "vassals": ["Town of Brightdale", "Fort Riverbend"]
+  },
+
+  "army": {
+    "totalArmy": 12000,
+    "menAtArms": ["Seawatch Heavy Infantry", "Vael'Sharra Household Guard"],
+    "primaryCommanderDisplayName": "High Commander Mark",
+    "primaryCommanderCharacterId": "high_commander_mark"
+  },
+
+  "economy": {
+    "totalIncomePerMonth": 1850,
+    "totalTreasury": 24000,
+    "courtExpenses": "700 pts/mo",
+    "armyExpenses": "800 pts/mo",
+    "currentlyConstructing": ["Harbor Expansion", "Outer Wall Reinforcement"]
+  },
+
+  "cultural": {
+    "culture": "Cormyrean (Coastal Variant)",
+    "populationDistribution": "55% human, 20% half-elf, 15% dwarf, 10% other",
+    "primaryTraits": ["Martial Tradition", "Naval Focus", "Deep Loyalty to the Crown"]
+  },
+
+  "history": {
+    "timelineEntries": [
+      "1345 DR: Seawatch founded as a royal naval naval outpost.",
+      "1368 DR: Repelled major pirate raid from the Dragon Coast.",
+      "1384 DR: Harbor deepened to accept heavy warships."
+    ],
+    "rulingFamilyMembers": [
+      "Duke Amos Vael'Sharra the Younger",
+      "Lady Selandra Vael'Sharra",
+      "Lord Tomas Mellsen (Marshal of the Marches)"
+    ]
+  }
+}

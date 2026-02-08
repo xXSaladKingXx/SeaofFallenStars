@@ -1,0 +1,52 @@
+{
+  "displayName": "Mining Town Bordering the Blood Mountains",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_blood_mountains_mine",
+  "characterIds": [
+    "char_blood_mountains_mine"
+  ],
+  "main": {
+    "description": "Mining town near the Blood Mountains.",
+    "population": 2000,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 960,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 1500,
+    "totalTreasury": 18000,
+    "courtExpenses": 75,
+    "armyExpenses": 150,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "blood_mountains_mine",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "blood_mountains_mine",
+    "liegeSettlementId": "tai",
+    "vassalContracts": []
+  }
+}

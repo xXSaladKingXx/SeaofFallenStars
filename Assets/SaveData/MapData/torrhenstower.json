@@ -1,0 +1,52 @@
+{
+  "displayName": "Torrhen\u2019s Tower",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_torrhenstower",
+  "characterIds": [
+    "char_torrhenstower"
+  ],
+  "main": {
+    "description": "Hamlet centered around Torrhen\u2019s Tower.",
+    "population": 350,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 320,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 800,
+    "totalTreasury": 9600,
+    "courtExpenses": 40,
+    "armyExpenses": 80,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "torrhenstower",
+    "layer": 3,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "torrhenstower",
+    "liegeSettlementId": "sundial",
+    "vassalContracts": []
+  }
+}

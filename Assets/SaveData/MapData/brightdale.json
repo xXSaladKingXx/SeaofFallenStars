@@ -1,0 +1,52 @@
+{
+  "displayName": "Town of Brightdale",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_brightdale",
+  "characterIds": [
+    "char_brightdale"
+  ],
+  "main": {
+    "description": "Town in Sembia.",
+    "population": 2000,
+    "rulerDisplayName": "Unknown",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 480,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 900,
+    "totalTreasury": 10800,
+    "courtExpenses": 45,
+    "armyExpenses": 90,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "brightdale",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "brightdale",
+    "liegeSettlementId": "ordulin",
+    "vassalContracts": []
+  }
+}

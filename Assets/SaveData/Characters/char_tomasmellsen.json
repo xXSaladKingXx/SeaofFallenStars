@@ -1,0 +1,142 @@
+{
+  "characterId": "char_tomasmellsen",
+  "displayName": "Lord Tomas Mellsen",
+  "playerName": "",
+  "className": "Noble",
+  "subclassName": "",
+  "background": "Noble",
+  "race": "Human",
+  "subrace": "",
+  "level": 1,
+  "alignment": "True Neutral",
+  "experiencePoints": 150,
+  "life": {
+    "birthDate": "1388",
+    "isAlive": true,
+    "deathDate": ""
+  },
+  "appearance": {
+    "age": "38",
+    "height": "5'6",
+    "weight": "205",
+    "eyes": "Brown",
+    "skin": "White",
+    "hair": "Brown",
+    "portraitSprite": ""
+  },
+  "abilities": {
+    "str": 15,
+    "dex": 8,
+    "con": 11,
+    "intel": 13,
+    "wis": 9,
+    "cha": 10
+  },
+  "savingThrows": [
+    {
+      "ability": "str",
+      "proficient": true,
+      "miscBonus": 0
+    }
+  ],
+  "skills": [
+    {
+      "skillId": "Warfare",
+      "proficiency": 1,
+      "miscBonus": 0
+    }
+  ],
+  "combat": {
+    "armorClass": 18,
+    "initiativeMisc": 0,
+    "speedFeet": 30,
+    "hitDice": "2d8",
+    "hitDiceUsed": 0,
+    "maxHp": 11,
+    "currentHp": 11,
+    "tempHp": 0
+  },
+  "proficiencies": {
+    "armor": [
+      "",
+      ""
+    ],
+    "weapons": [
+      ""
+    ],
+    "tools": [],
+    "languages": []
+  },
+  "attacks": [
+    {
+      "name": "Longsword",
+      "attackBonus": 4,
+      "damage": "1d8+2",
+      "damageType": "slashing",
+      "notes": ""
+    },
+    {
+      "name": "Shortbow",
+      "attackBonus": 1,
+      "damage": "1d6-1",
+      "damageType": "piercing",
+      "notes": ""
+    }
+  ],
+  "equipment": [],
+  "featuresAndTraits": [],
+  "personality": {
+    "traits": "",
+    "ideals": "",
+    "bonds": "",
+    "flaws": ""
+  },
+  "backstory": "",
+  "relationships": {
+    "parents": [],
+    "siblings": [],
+    "children": [],
+    "spouse": "",
+    "other": [
+      {
+        "relation": "Liege",
+        "characterId": "char_azoun_matarys_iv"
+      },
+      {
+        "relation": "Ally",
+        "characterId": "char_azoun_matarys_iv"
+      },
+      {
+        "relation": "Enemy",
+        "characterId": "torrhenstorm"
+      },
+      {
+        "relation": "Enemy",
+        "characterId": "char_kinglovandayron"
+      }
+    ]
+  },
+  "feudal": {
+    "isFeudal": true,
+    "rank": "lord",
+    "rulesSettlementId": "tails_end",
+    "vassalSettlementIds": [
+      "scales",
+      "the_scales"
+    ]
+  },
+  "spellcasting": {
+    "isCaster": false,
+    "spellcastingClass": "",
+    "spellcastingAbility": "",
+    "spellSaveDc": 0,
+    "spellAttackBonus": 0,
+    "spellLevels": []
+  },
+  "notes": "",
+  "homeSettlementId": "tailsend",
+  "mapPosition": {
+    "x": 0.0,
+    "y": 0.0
+  }
+}

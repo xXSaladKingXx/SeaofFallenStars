@@ -1,0 +1,34 @@
+{
+  "displayName": "Salt Docks",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "",
+  "characterIds": [],
+  "main": {
+    "description": "Town (mayor) (vassal of Seawatch).",
+    "population": 1500,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 275,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 800.0,
+    "totalTreasury": 0,
+    "courtExpenses": "",
+    "armyExpenses": "",
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "",
+    "populationDistribution": "",
+    "primaryTraits": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  }
+}

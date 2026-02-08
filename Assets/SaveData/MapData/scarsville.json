@@ -1,0 +1,52 @@
+{
+  "displayName": "City of Scarsville",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_scarsville",
+  "characterIds": [
+    "char_scarsville"
+  ],
+  "main": {
+    "description": "City in Sembia.",
+    "population": 12000,
+    "rulerDisplayName": "Unknown",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 3520,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 5500,
+    "totalTreasury": 66000,
+    "courtExpenses": 275,
+    "armyExpenses": 550,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "scarsville",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "scarsville",
+    "liegeSettlementId": "ordulin",
+    "vassalContracts": []
+  }
+}

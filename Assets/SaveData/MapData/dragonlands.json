@@ -1,0 +1,69 @@
+{
+  "regionId": "dragonlands",
+  "displayName": "The Dragonlands",
+  "mapUrlOrPath": "",
+  "layer": 1,
+  "main": {
+    "description": "The Region of the Dragonlands has long been known to include Cormyr (The Dragon Kingdom), Sembia, The Old Growth, and the Dalelands.",
+    "tagline": "",
+    "notableFacts": []
+  },
+  "geography": {
+    "overview": "",
+    "areaSqMiOverride": null,
+    "unityUnitsToMilesOverride": null,
+    "dominantBiomes": [],
+    "dominantTerrain": [],
+    "climateNotes": "",
+    "travelNotes": ""
+  },
+  "culture": {
+    "entries": []
+  },
+  "vassals": {
+    "countries": [
+      {
+        "countryId": "cormyr",
+        "displayName": "Kingdom of Cormyr",
+        "relationship": "",
+        "summary": "",
+        "estimatedPopulation": null,
+        "estimatedIncome": null,
+        "estimatedLevies": null,
+        "ext": {}
+      },
+      {
+        "countryId": "sembia",
+        "displayName": "Kingdom of Sembia",
+        "relationship": "",
+        "summary": "",
+        "estimatedPopulation": null,
+        "estimatedIncome": null,
+        "estimatedLevies": null,
+        "ext": {}
+      },
+      {
+        "countryId": "dalelands",
+        "displayName": "The Dalelands",
+        "relationship": "",
+        "summary": "",
+        "estimatedPopulation": null,
+        "estimatedIncome": null,
+        "estimatedLevies": null,
+        "ext": {}
+      },
+      {
+        "countryId": "oldgrowth",
+        "displayName": "The Old Growth",
+        "relationship": "",
+        "summary": "",
+        "estimatedPopulation": null,
+        "estimatedIncome": null,
+        "estimatedLevies": null,
+        "ext": {}
+      }
+    ],
+    "notes": ""
+  },
+  "ext": {}
+}

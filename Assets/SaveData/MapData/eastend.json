@@ -1,0 +1,52 @@
+{
+  "displayName": "Eastend",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_eastend",
+  "characterIds": [
+    "char_eastend"
+  ],
+  "main": {
+    "description": "Farm town supplying food to Sundial.",
+    "population": 3500,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 1120,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 2200,
+    "totalTreasury": 26400,
+    "courtExpenses": 110,
+    "armyExpenses": 220,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "eastend",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "eastend",
+    "liegeSettlementId": "sundial",
+    "vassalContracts": []
+  }
+}

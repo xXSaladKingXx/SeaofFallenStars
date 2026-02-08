@@ -1,0 +1,52 @@
+{
+  "displayName": "Town of Highmoon",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_highmoon",
+  "characterIds": [
+    "char_highmoon"
+  ],
+  "main": {
+    "description": "Town on Ash Lake, home of the Fine Arts Guild.",
+    "population": 3000,
+    "rulerDisplayName": "Unknown",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 800,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 1200,
+    "totalTreasury": 14400,
+    "courtExpenses": 60,
+    "armyExpenses": 120,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "highmoon",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "highmoon",
+    "liegeSettlementId": "ordulin",
+    "vassalContracts": []
+  }
+}

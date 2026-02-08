@@ -1,0 +1,89 @@
+{
+  "displayName": "Seawatch",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "torrhenstorm",
+  "characterIds": [],
+  "main": {
+    "description": "Seawatch is a settlement in the Sea of Fallen Stars region. Historical and geographical information will be added from the Cormyr Info document.",
+    "population": 0,
+    "rulerDisplayName": "Duke Torrhen Storm",
+    "vassals": [
+      "clawbottomparish",
+      "clawtip_keep",
+      "clawtip_lighthouse",
+      "cracklaw",
+      "saltdocks",
+      "tomarionestate"
+    ]
+  },
+  "army": {
+    "totalArmy": 0,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "Duke Torrhen Storm",
+    "primaryCommanderCharacterId": "torrhenstorm"
+  },
+  "economy": {
+    "totalIncomePerMonth": 3200.0,
+    "totalTreasury": 25000.0,
+    "courtExpenses": "400",
+    "armyExpenses": "2100",
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "",
+    "populationDistribution": "",
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "seawatch",
+    "layer": 3,
+    "laws": "",
+    "isPopulated": true,
+    "capitalSettlementId": "",
+    "liegeSettlementId": "",
+    "vassalContracts": [
+      {
+        "vassalSettlementId": "clawbottomparish",
+        "incomeTaxRate": 0.0,
+        "troopTaxRate": 0.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "clawtip_keep",
+        "incomeTaxRate": 0.0,
+        "troopTaxRate": 0.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "clawtip_lighthouse",
+        "incomeTaxRate": 0.0,
+        "troopTaxRate": 0.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "cracklaw",
+        "incomeTaxRate": 0.0,
+        "troopTaxRate": 0.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "saltdocks",
+        "incomeTaxRate": 0.0,
+        "troopTaxRate": 0.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "tomarionestate",
+        "incomeTaxRate": 0.0,
+        "troopTaxRate": 0.0,
+        "terms": ""
+      }
+    ]
+  }
+}

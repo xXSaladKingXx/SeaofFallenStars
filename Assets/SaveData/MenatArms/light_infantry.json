@@ -1,0 +1,20 @@
+{
+  "units": [
+    {
+      "unitTypeId": "light_infantry",
+      "displayName": "Light Infantry",
+      "troopsPerUnit": 80,
+      "sizeLimit": 10,
+      "attackBonus": 1,
+      "defenseBonus": 0,
+      "speedBonus": 0,
+      "terrainModifiers": [
+        { "terrain": "OpenPlains", "attackBonus": 1 }
+      ],
+      "raisedMaintenanceGp": 100,
+      "passiveMaintenanceGp": 50,
+      "recruitmentCostGp": 150,
+      "notes": "Cheap, flexible; benefits from Guerrilla Warfare."
+    }
+  ]
+}

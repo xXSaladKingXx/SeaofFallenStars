@@ -1,0 +1,52 @@
+{
+  "displayName": "City of Ashenford",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_ashenford",
+  "characterIds": [
+    "char_ashenford"
+  ],
+  "main": {
+    "description": "City in Sembia.",
+    "population": 9000,
+    "rulerDisplayName": "Unknown",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 2880,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 4500,
+    "totalTreasury": 54000,
+    "courtExpenses": 225,
+    "armyExpenses": 450,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "ashenford",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "ashenford",
+    "liegeSettlementId": "ordulin",
+    "vassalContracts": []
+  }
+}

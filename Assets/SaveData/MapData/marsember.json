@@ -1,0 +1,61 @@
+{
+  "displayName": "Marsember",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_marsember",
+  "characterIds": [
+    "char_marsember"
+  ],
+  "main": {
+    "description": "Bustling riverside city rivaling Sundial.",
+    "population": 17000,
+    "rulerDisplayName": "",
+    "vassals": [
+      "hunters_point"
+    ]
+  },
+  "army": {
+    "totalArmy": 5120,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 7800,
+    "totalTreasury": 93600,
+    "courtExpenses": 390,
+    "armyExpenses": 780,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "marsember",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "marsember",
+    "liegeSettlementId": "sundial",
+    "vassalContracts": [
+      {
+        "vassalSettlementId": "hunters_point",
+        "incomeTaxRate": 0.25,
+        "troopTaxRate": 0.25,
+        "terms": "Standard feudal contract"
+      }
+    ]
+  }
+}

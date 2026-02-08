@@ -1,0 +1,52 @@
+{
+  "displayName": "Galvera",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_galvera",
+  "characterIds": [
+    "char_galvera"
+  ],
+  "main": {
+    "description": "Smithing town producing arms and tools.",
+    "population": 450,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 1280,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 2200,
+    "totalTreasury": 26400,
+    "courtExpenses": 110,
+    "armyExpenses": 220,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "galvera",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "galvera",
+    "liegeSettlementId": "seawatch",
+    "vassalContracts": []
+  }
+}

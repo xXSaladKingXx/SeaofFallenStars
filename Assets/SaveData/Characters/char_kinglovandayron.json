@@ -1,0 +1,132 @@
+{
+  "characterId": "char_kinglovandayron",
+  "displayName": "King Lovan Dayron",
+  "playerName": "",
+  "className": "fighter",
+  "subclassName": "champion",
+  "background": "noble",
+  "race": "human",
+  "subrace": "",
+  "level": 7,
+  "alignment": "trueneutral",
+  "experiencePoints": 0,
+  "life": {
+    "birthDate": "1366",
+    "isAlive": true,
+    "deathDate": ""
+  },
+  "appearance": {
+    "age": "20",
+    "height": "5'8",
+    "weight": "145",
+    "eyes": "Brown",
+    "skin": "Fair",
+    "hair": "Black",
+    "portraitSprite": ""
+  },
+  "abilities": {
+    "str": 14,
+    "dex": 18,
+    "con": 12,
+    "intel": 12,
+    "wis": 10,
+    "cha": 10
+  },
+  "savingThrows": [
+    {
+      "ability": "dex",
+      "proficient": true,
+      "miscBonus": 0
+    },
+    {
+      "ability": "con",
+      "proficient": true,
+      "miscBonus": 0
+    }
+  ],
+  "skills": [
+    {
+      "skillId": "stealth",
+      "proficiency": 1,
+      "miscBonus": 0
+    },
+    {
+      "skillId": "sleightofhand",
+      "proficiency": 1,
+      "miscBonus": 0
+    },
+    {
+      "skillId": "history",
+      "proficiency": 1,
+      "miscBonus": 0
+    }
+  ],
+  "combat": {
+    "armorClass": 18,
+    "initiativeMisc": 0,
+    "speedFeet": 30,
+    "hitDice": "8d10",
+    "hitDiceUsed": 0,
+    "maxHp": 59,
+    "currentHp": 59,
+    "tempHp": 0
+  },
+  "proficiencies": {
+    "armor": [],
+    "weapons": [
+      "longsword",
+      "longbow"
+    ],
+    "tools": [],
+    "languages": [
+      "common_sembia",
+      "common"
+    ]
+  },
+  "attacks": [
+    {
+      "name": "Longsword",
+      "attackBonus": 8,
+      "damage": "1d8+7",
+      "damageType": "Piercing",
+      "notes": ""
+    }
+  ],
+  "equipment": [],
+  "featuresAndTraits": [],
+  "personality": {
+    "traits": "",
+    "ideals": "",
+    "bonds": "",
+    "flaws": ""
+  },
+  "backstory": "",
+  "relationships": {
+    "parents": [],
+    "siblings": [],
+    "children": [],
+    "spouse": "",
+    "other": [
+      {
+        "relation": "Enemy",
+        "characterId": "char_azoun_matarys_iv"
+      }
+    ]
+  },
+  "feudal": {
+    "isFeudal": false,
+    "rank": "",
+    "rulesSettlementId": "sembia",
+    "vassalSettlementIds": []
+  },
+  "spellcasting": {
+    "isCaster": false,
+    "spellcastingClass": "",
+    "spellcastingAbility": "",
+    "spellSaveDc": 0,
+    "spellAttackBonus": 0,
+    "spellLevels": []
+  },
+  "notes": "",
+  "homeSettlementId": "scarsdale"
+}

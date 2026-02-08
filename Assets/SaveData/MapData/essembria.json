@@ -1,0 +1,52 @@
+{
+  "displayName": "City of Essembria",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_essembria",
+  "characterIds": [
+    "char_essembria"
+  ],
+  "main": {
+    "description": "City in Sembia.",
+    "population": 10000,
+    "rulerDisplayName": "Unknown",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 2880,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 4800,
+    "totalTreasury": 57600,
+    "courtExpenses": 240,
+    "armyExpenses": 480,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "essembria",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "essembria",
+    "liegeSettlementId": "ordulin",
+    "vassalContracts": []
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "areaId": "dragonmere",
+  "displayName": "The Dragonmere",
+  "mapUrlOrPath": "",
+  "layer": 0,
+  "isPopulated": false,
+  "subtype": "Water",
+  "main": {
+    "description": "",
+    "vassals": []
+  },
+  "geography": {
+    "areaSqMi": 0.0,
+    "terrainType": "Ocean",
+    "notes": "",
+    "terrainBreakdown": [
+      {
+        "terrainType": "saltwater",
+        "percent": 100.0
+      }
+    ]
+  },
+  "nature": {
+    "flora": "",
+    "fauna": "",
+    "resources": ""
+  },
+  "history": {
+    "notes": "",
+    "timelineEntries": []
+  },
+  "culture": {
+    "notes": "",
+    "peoples": [],
+    "factions": [],
+    "languages": [],
+    "customs": "",
+    "rumors": []
+  },
+  "water": {
+    "waterBodyType": "Sea",
+    "waterType": "Saltwater",
+    "depth": "102",
+    "currents": "",
+    "hazards": "",
+    "notableFeatures": [],
+    "notes": ""
+  }
+}

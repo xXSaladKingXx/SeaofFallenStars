@@ -1,0 +1,36 @@
+{
+  "displayName": "The Workshop",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "",
+  "characterIds": [],
+  "main": {
+    "description": "Engineering enclave / arsenal (vassal of Dragontooth).",
+    "population": 600,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 30,
+    "menAtArms": [
+      "3 Siege weapons"
+    ],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 200.0,
+    "totalTreasury": 0,
+    "courtExpenses": "",
+    "armyExpenses": "",
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "",
+    "populationDistribution": "",
+    "primaryTraits": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  }
+}

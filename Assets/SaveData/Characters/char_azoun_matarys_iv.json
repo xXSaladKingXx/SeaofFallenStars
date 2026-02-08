@@ -1,0 +1,284 @@
+{
+  "characterId": "char_azoun_matarys_iv",
+  "displayName": "King Azoun Matarys IV",
+  "playerName": "",
+  "className": "Fighter",
+  "subclassName": "Champion",
+  "background": "Noble",
+  "race": "Human",
+  "subrace": "v Feat",
+  "level": 14,
+  "alignment": "Lawful Neutral",
+  "experiencePoints": 0,
+  "life": {
+    "birthDate": "1330 DR-01-01",
+    "isAlive": true,
+    "deathDate": ""
+  },
+  "appearance": {
+    "age": "58",
+    "height": "6'0\"",
+    "weight": "190 lb",
+    "eyes": "Brown",
+    "skin": "Fair",
+    "hair": "Dark brown, graying at the temples",
+    "portraitSprite": "char_azoun_matarys_iv"
+  },
+  "abilities": {
+    "str": 18,
+    "dex": 12,
+    "con": 16,
+    "intel": 12,
+    "wis": 13,
+    "cha": 16
+  },
+  "savingThrows": [
+    {
+      "ability": "str",
+      "proficient": true,
+      "miscBonus": 2
+    },
+    {
+      "ability": "dex",
+      "proficient": false,
+      "miscBonus": 0
+    },
+    {
+      "ability": "con",
+      "proficient": true,
+      "miscBonus": 0
+    },
+    {
+      "ability": "int",
+      "proficient": false,
+      "miscBonus": 0
+    },
+    {
+      "ability": "wis",
+      "proficient": false,
+      "miscBonus": 0
+    },
+    {
+      "ability": "cha",
+      "proficient": false,
+      "miscBonus": 0
+    }
+  ],
+  "skills": [
+    {
+      "skillId": "athletics",
+      "proficiency": 2,
+      "miscBonus": 0
+    },
+    {
+      "skillId": "intimidation",
+      "proficiency": 1,
+      "miscBonus": 0
+    },
+    {
+      "skillId": "persuasion",
+      "proficiency": 1,
+      "miscBonus": 0
+    },
+    {
+      "skillId": "history",
+      "proficiency": 1,
+      "miscBonus": 0
+    },
+    {
+      "skillId": "insight",
+      "proficiency": 1,
+      "miscBonus": 0
+    },
+    {
+      "skillId": "perception",
+      "proficiency": 1,
+      "miscBonus": 0
+    }
+  ],
+  "combat": {
+    "armorClass": 20,
+    "initiativeMisc": 0,
+    "speedFeet": 30,
+    "hitDice": "12d10",
+    "hitDiceUsed": 0,
+    "maxHp": 112,
+    "currentHp": 112,
+    "tempHp": 0
+  },
+  "proficiencies": {
+    "armor": [
+      "All armor",
+      "Shields"
+    ],
+    "weapons": [
+      "Simple weapons",
+      "Martial weapons"
+    ],
+    "tools": [
+      "Gaming set (dice)"
+    ],
+    "languages": [
+      "cormyr_common"
+    ]
+  },
+  "attacks": [
+    {
+      "name": "Longsword (Royal Blade)",
+      "attackBonus": 8,
+      "damage": "1d8+4",
+      "damageType": "Slashing",
+      "notes": "Versatile (1d10+4)"
+    },
+    {
+      "name": "Heavy Crossbow",
+      "attackBonus": 5,
+      "damage": "1d10+1",
+      "damageType": "Piercing",
+      "notes": "Used rarely; carried by royal guard on campaign."
+    }
+  ],
+  "equipment": [
+    {
+      "itemId": "plate_armor",
+      "displayName": "Plate Armor (Royal Harness)",
+      "quantity": 1,
+      "iconSprite": "armor_plate",
+      "description": "Ceremonial plate fitted for war; worn when banners are called."
+    },
+    {
+      "itemId": "shield",
+      "displayName": "Shield (Crown Guard)",
+      "quantity": 1,
+      "iconSprite": "shield_steel",
+      "description": "Kept close in councils that may turn violent."
+    },
+    {
+      "itemId": "stormsbane",
+      "displayName": "Stormsbane (Legendary Longsword)",
+      "quantity": 1,
+      "iconSprite": "longsword",
+      "description": "A king’s sword—symbol first, weapon second."
+    },
+    {
+      "itemId": "signet_ring",
+      "displayName": "Signet Ring of House Matarys",
+      "quantity": 1,
+      "iconSprite": "ring_signet",
+      "description": "Used to seal decrees, writs, and mobilization orders."
+    },
+    {
+      "itemId": "crown",
+      "displayName": "Crown of Cormyr",
+      "quantity": 1,
+      "iconSprite": "crown_gold",
+      "description": "Worn in court; removed in war councils when steel must speak plainly."
+    },
+    {
+      "itemId": "healing_potion",
+      "displayName": "Potion of Healing",
+      "quantity": 2,
+      "iconSprite": "potion_red",
+      "description": "Reserved for battlefield emergencies and assassination attempts."
+    }
+  ],
+  "featuresAndTraits": [
+    "Fighting Style (Defense)",
+    "Second Wind",
+    "Action Surge",
+    "Improved Critical",
+    "Remarkable Athlete",
+    "Extra Attack (2)",
+    "Indomitable (2 uses)"
+  ],
+  "personality": {
+    "traits": "Measured, deliberate, and disciplined—prefers law, precedent, and clear chains of command.",
+    "ideals": "Stability of the realm; the Crown endures beyond any one life.",
+    "bonds": "Cormyr itself; House Matarys; the Purple Dragons and the oath to protect the people.",
+    "flaws": "Hesitates when the price is civil war—sometimes yielding initiative to harder men."
+  },
+  "backstory": "Born in 1330 DR, Azoun Matarys IV was the fourth child of King Kurzon II. When the Spring Sweats claimed nearly all of his close family between 1342–1346, he became king at sixteen (1346 DR), an unlikely warrior-king shaped by loss. He married Syllistine, a common-born woman of three-quarters elven blood, and forced the court to accept her with a public wedding meant to silence legitimacy doubts. His reign is long and hard-won: he beat back Sembian pressures, survived internal civil war, and afterward commissioned new holds to reward wartime backers. In later years, his sweeping ban on hunting and woodcutting in the Kingsforest preserved the wilds but worsened banditry and monster incursions—pushing him to rely heavily on adventurers for frontier defense. In the looming eastern crisis, he is urged by Whispermaster Geralt Redstar to strike against Vael’Sharan secession, while Crown Prince Alric presses to act before the Crown loses initiative; Azoun ultimately calls the banners and orders loyal hosts to muster at Arabel for war.",
+  "relationships": {
+    "parents": [
+      "char_kurzon_ii",
+      "char_queen_unknown_matarys"
+    ],
+    "siblings": [
+      "char_sister_unknown_matarys"
+    ],
+    "children": [
+      "char_prince_daemon_matarys",
+      "char_crown_prince_alric_matarys",
+      "char_princess_nyceria_matarys",
+      "char_prince_baelor_matarys",
+      "char_princess_sylistine_matarys"
+    ],
+    "spouse": "char_syllistine_matarys",
+    "other": [
+      {
+        "relation": "Heir",
+        "characterId": "char_crown_prince_alric_matarys"
+      },
+      {
+        "relation": "Whispermaster",
+        "characterId": "char_geralt_redstar"
+      },
+      {
+        "relation": "Royal Host (Purple Dragons)",
+        "characterId": "char_high_commander_cartwright"
+      },
+      {
+        "relation": "Ducal Vassal",
+        "characterId": "char_duke_arickon_gardner"
+      },
+      {
+        "relation": "Ducal Vassal",
+        "characterId": "char_duke_amos_vaelshara_the_younger"
+      },
+      {
+        "relation": "Ally",
+        "characterId": "dukearickongardner"
+      },
+      {
+        "relation": "Vassal",
+        "characterId": "dukearickongardner"
+      },
+      {
+        "relation": "Vassal",
+        "characterId": "lordperseussungardner"
+      },
+      {
+        "relation": "Vassal",
+        "characterId": "mayoramosvaelshara"
+      },
+      {
+        "relation": "Vassal",
+        "characterId": "lordalaricselgaunt"
+      }
+    ]
+  },
+  "feudal": {
+    "isFeudal": true,
+    "rank": "King",
+    "rulesSettlementId": "cormyr",
+    "vassalSettlementIds": [
+      "arabel",
+      "sundial",
+      "vael_shara",
+      "seawatch",
+      "dragontooth_marches",
+      "selgaunt",
+      "torrhens_tower"
+    ]
+  },
+  "spellcasting": {
+    "isCaster": false,
+    "spellcastingClass": "",
+    "spellcastingAbility": "",
+    "spellSaveDc": 0,
+    "spellAttackBonus": 0,
+    "spellLevels": []
+  },
+  "notes": "Birthdate uses a placeholder day/month (1330 DR-01-01); only the year is established in source notes. Age may present as 57–58 depending on the exact campaign year used for the war chapter. Seat of rule is Arabel, but rulership/sovereignty is over the settlementId 'cormyr'.",
+  "homeSettlementId": "arabel"
+}

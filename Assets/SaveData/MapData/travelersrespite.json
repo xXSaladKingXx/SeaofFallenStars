@@ -1,0 +1,31 @@
+"travelers_respite": {
+    "displayName": "Traveler's Respite",
+    "mapUrlOrPath": "",
+    "rulerCharacterId": "char_tbd_travelers_respite",
+    "characterIds": [],
+    "main": {
+      "description": "Road inn-town and rest stop on a key artery; a minor mayoralty that becomes strategically important when banners march.",
+      "population": 1400,
+      "rulerDisplayName": "Mayor (TBD)",
+      "vassals": []
+    },
+    "army": {
+      "totalArmy": 400,
+      "menAtArms": ["Road militia: 400"],
+      "primaryCommanderDisplayName": "Mayor (TBD)",
+      "primaryCommanderCharacterId": "char_tbd_travelers_respite"
+    },
+    "economy": {
+      "totalIncomePerMonth": 1000,
+      "totalTreasury": 0,
+      "courtExpenses": "",
+      "armyExpenses": "",
+      "currentlyConstructing": []
+    },
+    "cultural": {
+      "culture": "Cormyrean (roadside)",
+      "populationDistribution": "Innkeepers, teamsters, guards, itinerant traders.",
+      "primaryTraits": ["wary", "well-informed", "transactional"]
+    },
+    "history": { "timelineEntries": [], "rulingFamilyMembers": [] }
+  }

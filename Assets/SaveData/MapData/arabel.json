@@ -1,0 +1,86 @@
+{
+  "displayName": "Arabel",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_azoun_matarys_iv",
+  "characterIds": [
+    "char_azoun_matarys_iv"
+  ],
+  "main": {
+    "description": "Kingdom capital city.",
+    "population": 24000,
+    "rulerDisplayName": "King Azoun Matarys IV",
+    "vassals": [
+      "eveningstar",
+      "sharacasma",
+      "travelersrespite",
+      "eastwatch",
+      "westgate",
+      "sundial",
+      "dragontooth",
+      "selgaunt",
+      "dragonsmaw",
+      "sunguard",
+      "vaelshara",
+      "seawatch",
+      "tailsend",
+      "scales"
+    ]
+  },
+  "army": {
+    "totalArmy": 12250,
+    "menAtArms": [
+      "purple_dragons"
+    ],
+    "primaryCommanderDisplayName": "King Azoun Matarys IV",
+    "primaryCommanderCharacterId": "char_azoun_matarys_iv",
+    "menAtArmsStacks": [
+      {
+        "menAtArmsId": "purple_dragons",
+        "units": 20
+      }
+    ]
+  },
+  "economy": {
+    "totalIncomePerMonth": 15400.0,
+    "totalTreasury": 354000.0,
+    "courtExpenses": "800",
+    "armyExpenses": "2800",
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "Cormyrean",
+    "populationDistribution": "",
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "arabel",
+    "layer": 5,
+    "laws": "",
+    "isPopulated": true,
+    "capitalSettlementId": "",
+    "liegeSettlementId": "cormyr",
+    "vassalContracts": []
+  },
+  "culturalComposition": [
+    {
+      "cultureId": "cormyrean",
+      "percentage": 1.0
+    }
+  ],
+  "raceDistribution": [
+    {
+      "raceId": "human",
+      "percentage": 0.95
+    },
+    {
+      "raceId": "elf",
+      "percentage": 0.05
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "characterId": "",
+  "displayName": "",
+  "playerName": "",
+  "className": "",
+  "subclassName": "",
+  "background": "",
+  "race": "",
+  "subrace": "",
+  "alignment": "",
+  "level": 1,
+  "experiencePoints": 0,
+
+  "life": {
+    "birthDate": "",
+    "isAlive": true,
+    "deathDate": ""
+  },
+
+  "appearance": {
+    "age": "",
+    "height": "",
+    "weight": "",
+    "eyes": "",
+    "skin": "",
+    "hair": "",
+    "portraitSprite": ""
+  },
+
+  "culture": {
+    "primaryCulture": "",
+    "cultureTags": []
+  },
+
+  "homes": [],
+
+  "feudal": {
+    "isFeudal": false,
+    "rulesSettlementId": "",
+    "title": "",
+    "liegeCharacterId": "",
+    "vassalCharacterIds": []
+  },
+
+  "abilities": {
+    "str": 10,
+    "dex": 10,
+    "con": 10,
+    "int": 10,
+    "wis": 10,
+    "cha": 10
+  },
+
+  "savingThrowProficiencies": {
+    "str": false,
+    "dex": false,
+    "con": false,
+    "int": false,
+    "wis": false,
+    "cha": false
+  },
+
+  "skillProficiencies": {
+    "acrobatics": "None",
+    "animal_handling": "None",
+    "arcana": "None",
+    "athletics": "None",
+    "deception": "None",
+    "history": "None",
+    "insight": "None",
+    "intimidation": "None",
+    "investigation": "None",
+    "medicine": "None",
+    "nature": "None",
+    "perception": "None",
+    "performance": "None",
+    "persuasion": "None",
+    "religion": "None",
+    "sleight_of_hand": "None",
+    "stealth": "None",
+    "survival": "None"
+  },
+
+  "proficiencies": {
+    "armor": [],
+    "weapons": [],
+    "tools": [],
+    "languages": []
+  },
+
+  "combat": {
+    "armorClass": 10,
+    "initiativeBonus": 0,
+    "speed": 30,
+    "maxHP": 1,
+    "currentHP": 1,
+    "tempHP": 0,
+    "hitDice": "1d10",
+    "deathSaves": { "successes": 0, "failures": 0 }
+  },
+
+  "attacks": [],
+  "equipment": [],
+  "currency": { "cp": 0, "sp": 0, "ep": 0, "gp": 0, "pp": 0 },
+
+  "featuresAndTraits": [],
+  "personality": {
+    "personalityTraits": [],
+    "ideals": [],
+    "bonds": [],
+    "flaws": []
+  },
+
+  "spells": {
+    "spellcastingAbility": "",
+    "spellSaveDC": 0,
+    "spellAttackBonus": 0,
+    "levels": []
+  },
+
+  "relationships": {
+    "parents": [],
+    "siblings": [],
+    "children": [],
+    "spouse": [],
+    "allies": [],
+    "enemies": [],
+    "vassals": [],
+    "liege": ""
+  }
+}

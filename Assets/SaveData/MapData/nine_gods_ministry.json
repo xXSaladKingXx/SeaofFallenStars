@@ -1,0 +1,52 @@
+{
+  "displayName": "Nine Gods Ministry",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_nine_gods_ministry",
+  "characterIds": [
+    "char_nine_gods_ministry"
+  ],
+  "main": {
+    "description": "Headquarters of the main religion of Sembia.",
+    "population": 500,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 0,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 500,
+    "totalTreasury": 6000,
+    "courtExpenses": 25,
+    "armyExpenses": 50,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "nine_gods_ministry",
+    "layer": 3,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "nine_gods_ministry",
+    "liegeSettlementId": "ordulin",
+    "vassalContracts": []
+  }
+}

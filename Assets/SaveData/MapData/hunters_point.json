@@ -1,0 +1,52 @@
+{
+  "displayName": "Hunter\u2019s Point",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_hunters_point",
+  "characterIds": [
+    "char_hunters_point"
+  ],
+  "main": {
+    "description": "Small town hit by forest ban.",
+    "population": 1200,
+    "rulerDisplayName": "",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 480,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 1100,
+    "totalTreasury": 13200,
+    "courtExpenses": 55,
+    "armyExpenses": 110,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_cormyr",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "hunters_point",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "hunters_point",
+    "liegeSettlementId": "marsember",
+    "vassalContracts": []
+  }
+}

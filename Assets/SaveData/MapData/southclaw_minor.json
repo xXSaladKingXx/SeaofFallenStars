@@ -1,0 +1,52 @@
+{
+  "displayName": "Southclaw",
+  "mapUrlOrPath": "",
+  "rulerCharacterId": "char_southclaw_minor",
+  "characterIds": [
+    "char_southclaw_minor"
+  ],
+  "main": {
+    "description": "Smaller settlement near Southclaw.",
+    "population": 2500,
+    "rulerDisplayName": "Unknown",
+    "vassals": []
+  },
+  "army": {
+    "totalArmy": 640,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": "",
+    "primaryCommanderCharacterId": ""
+  },
+  "economy": {
+    "totalIncomePerMonth": 1000,
+    "totalTreasury": 12000,
+    "courtExpenses": 50,
+    "armyExpenses": 100,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": "culture_sembia",
+    "populationDistribution": [],
+    "primaryTraits": [],
+    "raceDistribution": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "settlementId": "southclaw_minor",
+    "layer": 2,
+    "laws": [
+      1,
+      4,
+      7,
+      9
+    ],
+    "isPopulated": true,
+    "capitalSettlementId": "southclaw_minor",
+    "liegeSettlementId": "scarsdale",
+    "vassalContracts": []
+  }
+}
