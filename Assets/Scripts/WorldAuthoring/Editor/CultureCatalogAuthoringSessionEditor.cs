@@ -107,18 +107,28 @@ namespace Zana.WorldAuthoring
                     for (int j = 0; j < culture.traits.Count; j++)
                     {
                         string currentId = culture.traits[j];
-                        int currentIndex = Array.IndexOf(traitIds, currentId);
-                        if (currentIndex < 0) currentIndex = 0;
                         EditorGUILayout.BeginHorizontal();
                         // Popup to select existing trait
-                        int chosen = EditorGUILayout.Popup(currentIndex, traitNames);
-                        if (chosen >= 0 && chosen < traitIds.Length)
+                        if (traitIds.Length > 0)
                         {
-                            string newId = traitIds[chosen];
-                            if (!string.Equals(newId, currentId, StringComparison.Ordinal))
+                            int currentIndex = Array.IndexOf(traitIds, currentId);
+                            if (currentIndex < 0) currentIndex = 0;
+                            int chosen = EditorGUILayout.Popup(currentIndex, traitNames);
+                            if (chosen >= 0 && chosen < traitIds.Length)
                             {
-                                culture.traits[j] = newId;
-                                EditorUtility.SetDirty(session);
+                                string newId = traitIds[chosen];
+                                if (!string.Equals(newId, currentId, StringComparison.Ordinal))
+                                {
+                                    culture.traits[j] = newId;
+                                    EditorUtility.SetDirty(session);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            using (new EditorGUI.DisabledScope(true))
+                            {
+                                EditorGUILayout.Popup(0, new[] { "(no traits available)" });
                             }
                         }
                         if (GUILayout.Button("Remove", GUILayout.Width(60)))
@@ -154,17 +164,27 @@ namespace Zana.WorldAuthoring
                     for (int j = 0; j < culture.languages.Count; j++)
                     {
                         string currentId = culture.languages[j];
-                        int currentIndex = Array.IndexOf(languageIds, currentId);
-                        if (currentIndex < 0) currentIndex = 0;
                         EditorGUILayout.BeginHorizontal();
-                        int chosen = EditorGUILayout.Popup(currentIndex, languageNames);
-                        if (chosen >= 0 && chosen < languageIds.Length)
+                        if (languageIds.Length > 0)
                         {
-                            string newId = languageIds[chosen];
-                            if (!string.Equals(newId, currentId, StringComparison.Ordinal))
+                            int currentIndex = Array.IndexOf(languageIds, currentId);
+                            if (currentIndex < 0) currentIndex = 0;
+                            int chosen = EditorGUILayout.Popup(currentIndex, languageNames);
+                            if (chosen >= 0 && chosen < languageIds.Length)
                             {
-                                culture.languages[j] = newId;
-                                EditorUtility.SetDirty(session);
+                                string newId = languageIds[chosen];
+                                if (!string.Equals(newId, currentId, StringComparison.Ordinal))
+                                {
+                                    culture.languages[j] = newId;
+                                    EditorUtility.SetDirty(session);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            using (new EditorGUI.DisabledScope(true))
+                            {
+                                EditorGUILayout.Popup(0, new[] { "(no languages available)" });
                             }
                         }
                         if (GUILayout.Button("Remove", GUILayout.Width(60)))
@@ -200,17 +220,27 @@ namespace Zana.WorldAuthoring
                     for (int j = 0; j < culture.religions.Count; j++)
                     {
                         string currentId = culture.religions[j];
-                        int currentIndex = Array.IndexOf(religionIds, currentId);
-                        if (currentIndex < 0) currentIndex = 0;
                         EditorGUILayout.BeginHorizontal();
-                        int chosen = EditorGUILayout.Popup(currentIndex, religionNames);
-                        if (chosen >= 0 && chosen < religionIds.Length)
+                        if (religionIds.Length > 0)
                         {
-                            string newId = religionIds[chosen];
-                            if (!string.Equals(newId, currentId, StringComparison.Ordinal))
+                            int currentIndex = Array.IndexOf(religionIds, currentId);
+                            if (currentIndex < 0) currentIndex = 0;
+                            int chosen = EditorGUILayout.Popup(currentIndex, religionNames);
+                            if (chosen >= 0 && chosen < religionIds.Length)
                             {
-                                culture.religions[j] = newId;
-                                EditorUtility.SetDirty(session);
+                                string newId = religionIds[chosen];
+                                if (!string.Equals(newId, currentId, StringComparison.Ordinal))
+                                {
+                                    culture.religions[j] = newId;
+                                    EditorUtility.SetDirty(session);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            using (new EditorGUI.DisabledScope(true))
+                            {
+                                EditorGUILayout.Popup(0, new[] { "(no religions available)" });
                             }
                         }
                         if (GUILayout.Button("Remove", GUILayout.Width(60)))

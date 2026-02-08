@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using SeaOfFallenStars.WorldData;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]

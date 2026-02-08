@@ -59,11 +59,11 @@ namespace Zana.WorldAuthoring
                 for (int j = 0; j < race.traits.Count; j++)
                 {
                     string currentId = race.traits[j];
+                    EditorGUILayout.BeginHorizontal();
                     if (traitIds.Length > 0)
                     {
                         int currentIndex = System.Array.IndexOf(traitIds, currentId);
                         if (currentIndex < 0) currentIndex = 0;
-                        EditorGUILayout.BeginHorizontal();
                         int newIndex = EditorGUILayout.Popup(string.Empty, currentIndex, traitNames);
                         if (newIndex >= 0 && newIndex < traitIds.Length)
                         {
@@ -74,25 +74,21 @@ namespace Zana.WorldAuthoring
                                 EditorUtility.SetDirty(session);
                             }
                         }
-                        if (GUILayout.Button("Remove", GUILayout.Width(60)))
-                        {
-                            race.traits.RemoveAt(j);
-                            EditorUtility.SetDirty(session);
-                            j--;
-                        }
-                        EditorGUILayout.EndHorizontal();
                     }
                     else
                     {
-                        string newVal = EditorGUILayout.TextField(currentId);
-                        if (newVal != currentId) race.traits[j] = newVal;
-                        if (GUILayout.Button("Remove", GUILayout.Width(60)))
+                        using (new EditorGUI.DisabledScope(true))
                         {
-                            race.traits.RemoveAt(j);
-                            EditorUtility.SetDirty(session);
-                            j--;
+                            EditorGUILayout.Popup(string.Empty, 0, new[] { "(no traits available)" });
                         }
                     }
+                    if (GUILayout.Button("Remove", GUILayout.Width(60)))
+                    {
+                        race.traits.RemoveAt(j);
+                        EditorUtility.SetDirty(session);
+                        j--;
+                    }
+                    EditorGUILayout.EndHorizontal();
                 }
                 // Add trait dropdown. Only adds when the button is clicked.
                 if (traitIds.Length > 0)

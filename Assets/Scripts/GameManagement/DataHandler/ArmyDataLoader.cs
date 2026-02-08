@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-
+using SeaOfFallenStars.WorldData;
 public static class ArmyDataLoader
 {
     private static readonly Dictionary<string, ArmyInfoData> _cache = new Dictionary<string, ArmyInfoData>();

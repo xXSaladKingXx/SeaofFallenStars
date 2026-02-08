@@ -1,45 +1,66 @@
-using UnityEngine;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
-/// <summary>
-/// Runtime representation of a catalog of men‑at‑arms units. This mirrors the
-/// authoring-time catalog but is placed under the Info namespace to avoid
-/// dependencies on the authoring assembly. Each entry defines the unit’s
-/// stats, descriptive fields and terrain bonuses.
-/// </summary>
-public class MenAtArmsCatalogData
+// Men-at-Arms unit definition aligned with world_templates/menatarms_template.json.
+namespace SeaOfFallenStars.WorldData
 {
-    public string catalogId = "men_at_arms_catalog";
-    public string displayName = "Men-at-Arms Catalog";
-    public System.Collections.Generic.List<MenAtArmsEntry> entries = new System.Collections.Generic.List<MenAtArmsEntry>();
-}
+    [System.Serializable]
+    public class UpkeepCost
+    {
+        [JsonProperty("gold")]
+        public int gold;
 
-/// <summary>
-/// Runtime representation of a single men‑at‑arms unit. See the authoring
-/// namespace for additional metadata used in the editor.
-/// </summary>
-[System.Serializable]
-public class MenAtArmsEntry
-{
-    public string id;
-    public string displayName;
-    public string notes;
-    public int attack;
-    public int defense;
-    public int size;
-    public string role;
-    public string qualityTier;
-    public System.Collections.Generic.List<GeographyBonus> geographyBonuses = new System.Collections.Generic.List<GeographyBonus>();
-}
+        [JsonProperty("food")]
+        public int food;
+    }
 
-/// <summary>
-/// Defines a bonus applied to a men‑at‑arms unit when fighting in a specific
-/// terrain or water subtype. Used to provide situational modifiers based on
-/// geography. The subtypeId should match an identifier from your geography
-/// catalog (e.g. "forest", "desert", "coastal").
-/// </summary>
-[System.Serializable]
-public class GeographyBonus
-{
-    public string subtypeId;
-    public int bonus;
+    [System.Serializable]
+    public class MenAtArmsUnit
+    {
+        [JsonProperty("unitTypeId")]
+        public string unitTypeId;
+
+        [JsonProperty("displayName")]
+        public string displayName;
+
+        [JsonProperty("category")]
+        public string category;
+
+        [JsonProperty("description")]
+        public string description;
+
+        [JsonProperty("menCount")]
+        public int menCount;
+
+        [JsonProperty("equipment")]
+        public List<string> equipment = new List<string>();
+
+        [JsonProperty("upkeepCost")]
+        public UpkeepCost upkeepCost = new UpkeepCost();
+
+        [JsonProperty("speed")]
+        public int speed;
+
+        [JsonProperty("strengths")]
+        public List<string> strengths = new List<string>();
+
+        [JsonProperty("weaknesses")]
+        public List<string> weaknesses = new List<string>();
+
+        [JsonProperty("ext")]
+        public Dictionary<string, object> ext = new Dictionary<string, object>();
+    }
+
+    [System.Serializable]
+    public class MenAtArmsCatalogData
+    {
+        [JsonProperty("catalogId")]
+        public string catalogId = "men_at_arms_catalog";
+
+        [JsonProperty("displayName")]
+        public string displayName = "Men-at-Arms Catalog";
+
+        [JsonProperty("entries")]
+        public List<MenAtArmsUnit> entries = new List<MenAtArmsUnit>();
+    }
 }

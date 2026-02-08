@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+using SeaOfFallenStars.WorldData;
 public class VassalInfoPanelManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text titleText;
@@ -50,7 +50,7 @@ public class VassalInfoPanelManager : MonoBehaviour
         if (data != null)
         {
             if (!string.IsNullOrWhiteSpace(data.main?.rulerDisplayName)) ruler = data.main.rulerDisplayName;
-            else if (!string.IsNullOrWhiteSpace(data.main?.rulerName)) ruler = data.main.rulerName;
+            else if (!string.IsNullOrWhiteSpace(data.main?.rulerDisplayName)) ruler = data.main.rulerDisplayName;
             else if (!string.IsNullOrWhiteSpace(data.rulerCharacterId)) ruler = CharacterNameResolver.Resolve(data.rulerCharacterId);
         }
 

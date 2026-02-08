@@ -4,6 +4,7 @@ using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using SeaOfFallenStars.WorldData;
 
 public class UnpopulatedInfoWindowManager : MonoBehaviour
 {

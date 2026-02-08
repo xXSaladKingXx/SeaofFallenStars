@@ -1,5 +1,10 @@
 using UnityEngine;
+using SeaOfFallenStars.WorldData;
 
+// Authoring session for unpopulated map points or ruins. This class mirrors the
+// original UnpopulatedAuthoringSession from the project. It serializes
+// UnpopulatedInfoData and stores cultural composition as a top‑level
+// property if any entries exist.
 namespace Zana.WorldAuthoring
 {
     public sealed class UnpopulatedAuthoringSession : WorldDataAuthoringSessionBase

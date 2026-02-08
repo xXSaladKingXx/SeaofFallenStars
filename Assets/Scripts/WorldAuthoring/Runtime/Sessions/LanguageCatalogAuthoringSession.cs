@@ -1,4 +1,5 @@
 using UnityEngine;
+using SeaOfFallenStars.WorldData;
 
 namespace Zana.WorldAuthoring
 {

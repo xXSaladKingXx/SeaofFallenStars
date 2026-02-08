@@ -4,7 +4,7 @@ using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+using SeaOfFallenStars.WorldData;
 public class RegionInfoWindowManager : MonoBehaviour
 {
     private enum PanelTab { Main, Geography, Culture }

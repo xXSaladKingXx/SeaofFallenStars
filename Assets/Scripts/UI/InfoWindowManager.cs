@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using SeaOfFallenStars.WorldData;
 
 public class InfoWindowManager : MonoBehaviour
 {

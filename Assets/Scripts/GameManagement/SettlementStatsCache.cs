@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using SeaOfFallenStars.WorldData;
 
 /// <summary>
 /// Computes realm totals bottom-up using direct vassal lists + vassal contracts stored on the liege settlement JSON.

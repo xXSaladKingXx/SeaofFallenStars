@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-
+using SeaOfFallenStars.WorldData;
 public class TimelineManager : MonoBehaviour
 {
     public enum TimelineSizingMode

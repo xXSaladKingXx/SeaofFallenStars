@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+using SeaOfFallenStars.WorldData;
 public static class SettlementHierarchyCalculator
 {
     public class ComputedStats

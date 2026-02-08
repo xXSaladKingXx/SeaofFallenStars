@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-
+using SeaOfFallenStars.WorldData;
 public class MapViewerPanelManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text titleText;

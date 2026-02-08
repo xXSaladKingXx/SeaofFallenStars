@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using SeaOfFallenStars.WorldData;
 public class PointOfInterestInfoWindowManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text titleText;

@@ -1,198 +1,191 @@
-using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
-using UnityEngine;
+using System.Collections.Generic;
 
-[Serializable]
-public class UnpopulatedInfoData
+// Unpopulated area data model aligned with world_templates/unpopulated_template.json.
+namespace SeaOfFallenStars.WorldData
 {
-    [JsonProperty("areaId")]
-    public string areaId;
-
-    [JsonProperty("displayName")]
-    public string displayName;
-
-    [JsonProperty("mapUrlOrPath")]
-    public string mapUrlOrPath;
-
-    [JsonProperty("layer")]
-    public MapLayer layer;
-
-    // Always false for these records, but keep it to satisfy callers
-    [JsonProperty("isPopulated")]
-    public bool isPopulated = false;
-
-    // NEW (optional): authoring hint; MapPoint can optionally read this and set its enum.
-    // Expected values: "Wilderness" | "Water" | "Ruins"
-    [JsonProperty("subtype")]
-    public string subtype;
-
-    [JsonProperty("main")]
-    public UnpopulatedMainTab main = new UnpopulatedMainTab();
-
-    [JsonProperty("geography")]
-    public UnpopulatedGeographyTab geography = new UnpopulatedGeographyTab();
-
-    [JsonProperty("nature")]
-    public UnpopulatedNatureTab nature = new UnpopulatedNatureTab();
-
-    [JsonProperty("history")]
-    public UnpopulatedHistoryTab history = new UnpopulatedHistoryTab();
-
-    // NEW: used primarily by Ruins subtype
-    [JsonProperty("culture")]
-    public UnpopulatedCultureTab culture = new UnpopulatedCultureTab();
-
-    // NEW: used primarily by Water subtype
-    [JsonProperty("water")]
-    public UnpopulatedWaterTab water = new UnpopulatedWaterTab();
-
-    // --------------------------------------------------------------------
-    // Back-compat: MapPoint.cs expects UnpopulatedInfoData.vassals
-    // Canonical storage remains main.vassals (JSON: main.vassals).
-    // --------------------------------------------------------------------
-    [JsonIgnore]
-    public string[] vassals
+    [System.Serializable]
+    public class UnpopulatedMain
     {
-        get => main != null && main.vassals != null ? main.vassals : Array.Empty<string>();
-        set
-        {
-            if (main == null) main = new UnpopulatedMainTab();
-            main.vassals = value ?? Array.Empty<string>();
-        }
-    }
-}
+        [JsonProperty("description")]
+        public string description;
 
-[Serializable]
-public class UnpopulatedMainTab
-{
-    [JsonProperty("description")]
-    [TextArea(3, 12)]
-    public string description;
+        [JsonProperty("keyFeature")]
+        public string keyFeature;
 
-    [JsonProperty("vassals")]
-    public string[] vassals = Array.Empty<string>();
-}
-
-[Serializable]
-public class UnpopulatedGeographyTab
-{
-    // Source-of-truth
-    [JsonProperty("areaSqMi")]
-    public float areaSqMi;
-
-    // Back-compat alias (your MapPoint currently expects squareMiles)
-    [JsonIgnore]
-    public float squareMiles
-    {
-        get => areaSqMi;
-        set => areaSqMi = value;
+        [JsonProperty("resourceAbundance")]
+        public string[] resourceAbundance = new string[0];
     }
 
-    // Wilderness: use one of the allowed terrain types.
-    // Water: you can use "Coastal" or leave blank.
-    // Ruins: leave blank or describe surrounding terrain.
-    [JsonProperty("terrainType")]
-    public string terrainType;
+    [System.Serializable]
+    public class UnpopulatedGeography
+    {
+        [JsonProperty("terrain")]
+        public string terrain;
 
-    // Keep notes (lots of systems expect this)
-    [JsonProperty("notes")]
-    [TextArea(2, 10)]
-    public string notes;
+        // Optional: more specific terrain type if your UI expects it
+        [JsonProperty("terrainType")]
+        public string terrainType;
 
-    // Optional breakdown (mostly useful for Wilderness)
-    [JsonProperty("terrainBreakdown")]
-    public List<TerrainBreakdownEntry> terrainBreakdown = new List<TerrainBreakdownEntry>();
-}
+        [JsonProperty("climate")]
+        public string climate;
 
-[Serializable]
-public class TerrainBreakdownEntry
-{
-    [JsonProperty("terrainType")]
-    public string terrainType;
+        [JsonProperty("floraFauna")]
+        public string[] floraFauna = new string[0];
 
-    // Prefer 0..100 in authoring
-    [JsonProperty("percent")]
-    public float percent;
-}
+        // Optional: separate flora and fauna lists for legacy UI support
+        [JsonProperty("flora")]
+        public string[] flora = new string[0];
 
-[Serializable]
-public class UnpopulatedNatureTab
-{
-    [JsonProperty("flora")]
-    [TextArea(2, 12)]
-    public string flora;
+        [JsonProperty("fauna")]
+        public string[] fauna = new string[0];
+    }
 
-    [JsonProperty("fauna")]
-    [TextArea(2, 12)]
-    public string fauna;
+    [System.Serializable]
+    public class UnpopulatedNature
+    {
+        [JsonProperty("dangerLevel")]
+        public string dangerLevel;
 
-    [JsonProperty("resources")]
-    [TextArea(2, 12)]
-    public string resources;
-}
+        [JsonProperty("wildlife")]
+        public string[] wildlife = new string[0];
 
-[Serializable]
-public class UnpopulatedHistoryTab
-{
-    [JsonProperty("notes")]
-    [TextArea(2, 12)]
-    public string notes;
+        // Legacy fields that may be used by certain UI components.  They can
+        // remain empty if not used.
+        [JsonProperty("flora")]
+        public string[] flora = new string[0];
 
-    [JsonProperty("timelineEntries")]
-    public string[] timelineEntries = Array.Empty<string>();
-}
+        [JsonProperty("fauna")]
+        public string[] fauna = new string[0];
+    }
 
-[Serializable]
-public class UnpopulatedCultureTab
-{
-    [JsonProperty("notes")]
-    [TextArea(2, 12)]
-    public string notes;
+    [System.Serializable]
+    public class UnpopulatedHistory
+    {
+        [JsonProperty("historicalEvents")]
+        public string[] historicalEvents = new string[0];
 
-    [JsonProperty("peoples")]
-    public string[] peoples = Array.Empty<string>();
+        // Optional notes field for additional context
+        [JsonProperty("notes")]
+        public string notes;
 
-    [JsonProperty("factions")]
-    public string[] factions = Array.Empty<string>();
+        // Optional timeline entries for legacy UI support
+        [JsonProperty("timelineEntries")]
+        public string[] timelineEntries;
+    }
 
-    [JsonProperty("languages")]
-    public string[] languages = Array.Empty<string>();
+    [System.Serializable]
+    public class CulturalInfluence
+    {
+        [JsonProperty("cultureId")]
+        public string cultureId;
 
-    [JsonProperty("customs")]
-    [TextArea(2, 12)]
-    public string customs;
+        [JsonProperty("percentage")]
+        public float percentage;
+    }
 
-    [JsonProperty("rumors")]
-    public string[] rumors = Array.Empty<string>();
-}
+    [System.Serializable]
+    public class UnpopulatedCulture
+    {
+        [JsonProperty("culturalInfluences")]
+        public List<CulturalInfluence> culturalInfluences = new List<CulturalInfluence>();
 
-[Serializable]
-public class UnpopulatedWaterTab
-{
-    // e.g. "River", "Lake", "Sea", "Ocean", "Reef", "Strait", "Bay", "Fjord"
-    [JsonProperty("waterBodyType")]
-    public string waterBodyType;
+        // Optional fields for extended cultural data.  These fields are not
+        // part of the world template but may be referenced by legacy UI.
+        [JsonProperty("notes")]
+        public string notes;
 
-    // e.g. "Freshwater", "Saltwater", "Brackish"
-    [JsonProperty("waterType")]
-    public string waterType;
+        [JsonProperty("peoples")]
+        public string[] peoples = new string[0];
 
-    [JsonProperty("depth")]
-    public string depth;
+        [JsonProperty("factions")]
+        public string[] factions = new string[0];
 
-    [JsonProperty("currents")]
-    [TextArea(2, 12)]
-    public string currents;
+        [JsonProperty("languages")]
+        public string[] languages = new string[0];
 
-    [JsonProperty("hazards")]
-    [TextArea(2, 12)]
-    public string hazards;
+        [JsonProperty("customs")]
+        public string[] customs = new string[0];
 
-    [JsonProperty("notableFeatures")]
-    public string[] notableFeatures = Array.Empty<string>();
+        [JsonProperty("rumors")]
+        public string[] rumors = new string[0];
+    }
 
-    [JsonProperty("notes")]
-    [TextArea(2, 12)]
-    public string notes;
+    [System.Serializable]
+    public class UnpopulatedWater
+    {
+        [JsonProperty("hasWater")]
+        public bool hasWater;
+
+        [JsonProperty("waterBodies")]
+        public string[] waterBodies = new string[0];
+
+        // Additional water-related details for legacy UI compatibility.
+        [JsonProperty("depth")]
+        public string depth;
+
+        [JsonProperty("waterBodyType")]
+        public string waterBodyType;
+
+        [JsonProperty("waterType")]
+        public string waterType;
+
+        [JsonProperty("currents")]
+        public string[] currents = new string[0];
+
+        [JsonProperty("hazards")]
+        public string[] hazards = new string[0];
+
+        [JsonProperty("notableFeatures")]
+        public string[] notableFeatures = new string[0];
+
+        [JsonProperty("notes")]
+        public string notes;
+    }
+
+    [System.Serializable]
+    public class UnpopulatedInfoData
+    {
+        [JsonProperty("areaId")]
+        public string areaId;
+
+        [JsonProperty("displayName")]
+        public string displayName;
+
+        [JsonProperty("mapUrlOrPath")]
+        public string mapUrlOrPath;
+
+        [JsonProperty("layer")]
+        public string layer;
+
+        [JsonProperty("isPopulated")]
+        public bool isPopulated = false;
+
+        [JsonProperty("subtype")]
+        public string subtype;
+
+        [JsonProperty("main")]
+        public UnpopulatedMain main = new UnpopulatedMain();
+
+        [JsonProperty("geography")]
+        public UnpopulatedGeography geography = new UnpopulatedGeography();
+
+        [JsonProperty("nature")]
+        public UnpopulatedNature nature = new UnpopulatedNature();
+
+        [JsonProperty("history")]
+        public UnpopulatedHistory history = new UnpopulatedHistory();
+
+        [JsonProperty("culture")]
+        public UnpopulatedCulture culture = new UnpopulatedCulture();
+
+        [JsonProperty("water")]
+        public UnpopulatedWater water = new UnpopulatedWater();
+
+        [JsonProperty("comments")]
+        public string comments;
+
+        [JsonProperty("ext")]
+        public Dictionary<string, object> ext = new Dictionary<string, object>();
+    }
 }

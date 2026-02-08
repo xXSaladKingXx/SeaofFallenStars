@@ -1112,6 +1112,7 @@ namespace Zana.WorldAuthoring
 	            var armies = WorldDataChoicesCache.GetArmies();
             var characters = WorldDataChoicesCache.GetCharacters();
             var cultures = WorldDataChoicesCache.GetCultures();
+            var menAtArms = WorldDataChoicesCache.GetMenAtArmsEntries();
 
             // Global catalogs flattened to ID lists.
             var raceDefs = WorldDataChoicesCache.GetRaceDefinitions();
@@ -1142,7 +1143,7 @@ namespace Zana.WorldAuthoring
                 // Reference string fields
                 if (p.propertyType == SerializedPropertyType.String)
                 {
-                    if (TryDrawReferenceString(p, settlements, regions, armies, characters, cultures, raceDefs, religionDefs, traitDefs, languageDefs))
+                    if (TryDrawReferenceString(p, settlements, regions, armies, characters, cultures, menAtArms, raceDefs, religionDefs, traitDefs, languageDefs))
                         continue;
                 }
 
@@ -1152,7 +1153,7 @@ namespace Zana.WorldAuthoring
                     // Handle arrays of strings (Unity exposes string[] as isArray with element type string)
                     if (p.arrayElementType == "string")
                     {
-                        if (TryDrawReferenceStringArray(p, settlements, regions, armies, characters, cultures, raceDefs, religionDefs, traitDefs, languageDefs))
+                        if (TryDrawReferenceStringArray(p, settlements, regions, armies, characters, cultures, menAtArms, raceDefs, religionDefs, traitDefs, languageDefs))
                             continue;
                     }
                 }
@@ -1195,6 +1196,7 @@ namespace Zana.WorldAuthoring
             IReadOnlyList<WorldDataIndexEntry> armies,
             IReadOnlyList<WorldDataIndexEntry> characters,
             IReadOnlyList<WorldDataIndexEntry> cultures,
+            IReadOnlyList<WorldDataIndexEntry> menAtArms,
             IReadOnlyList<WorldDataIndexEntry> raceDefs,
             IReadOnlyList<WorldDataIndexEntry> religionDefs,
             IReadOnlyList<WorldDataIndexEntry> traitDefs,
@@ -1222,6 +1224,10 @@ namespace Zana.WorldAuthoring
             // Army references
             if (name.EndsWith("armyid") || name == "armyid" || (name.EndsWith("id") && name.Contains("army")))
                 return DrawIdPopupForStringProperty(p, p.displayName, armies);
+
+            // Men-at-arms references
+            if (name.EndsWith("menatarmsid") || name == "menatarmsid" || (name.EndsWith("id") && name.Contains("menatarms")))
+                return DrawIdPopupForStringProperty(p, p.displayName, menAtArms);
 
             // Character references (spouse, liege, parent/child, relationship targets, etc.)
             if (name.EndsWith("characterid") || name == "spouse" || name.EndsWith("spouseid") || name.EndsWith("liegeid") ||
@@ -1267,6 +1273,7 @@ namespace Zana.WorldAuthoring
             IReadOnlyList<WorldDataIndexEntry> armies,
             IReadOnlyList<WorldDataIndexEntry> characters,
             IReadOnlyList<WorldDataIndexEntry> cultures,
+            IReadOnlyList<WorldDataIndexEntry> menAtArms,
             IReadOnlyList<WorldDataIndexEntry> raceDefs,
             IReadOnlyList<WorldDataIndexEntry> religionDefs,
             IReadOnlyList<WorldDataIndexEntry> traitDefs,
@@ -1283,11 +1290,10 @@ namespace Zana.WorldAuthoring
             else if (name.Contains("settlement")) choices = settlements;
             else if (name.Contains("region")) choices = regions;
             else if (name.Contains("army")) choices = armies;
+            else if (name.Contains("menatarms")) choices = menAtArms;
             else if (name.Contains("character")) choices = characters;
 
-            if (choices == null || choices.Count == 0) return false;
-
-            DrawStringIdArrayWithDropdowns(p, choices);
+            DrawStringIdArrayWithDropdowns(p, choices ?? Array.Empty<WorldDataIndexEntry>());
             return true;
         }
 
@@ -1318,9 +1324,12 @@ namespace Zana.WorldAuthoring
                 int pick = GetAddPick(arrayProp.propertyPath);
                 pick = Mathf.Clamp(pick, 0, Mathf.Max(0, choices.Count));
                 string[] labels = BuildPopupLabelsWithNone(choices);
-                pick = EditorGUILayout.Popup("Add", pick, labels);
+                using (new EditorGUI.DisabledScope(choices == null || choices.Count == 0))
+                {
+                    pick = EditorGUILayout.Popup("Add", pick, labels);
+                }
                 SetAddPick(arrayProp.propertyPath, pick);
-                using (new EditorGUI.DisabledScope(pick <= 0))
+                using (new EditorGUI.DisabledScope(pick <= 0 || choices == null || choices.Count == 0))
                 {
                     if (GUILayout.Button("Add", GUILayout.Width(70)))
                     {
@@ -1342,7 +1351,13 @@ namespace Zana.WorldAuthoring
         private bool DrawIdPopupForStringProperty(SerializedProperty p, string label, IReadOnlyList<WorldDataIndexEntry> choices)
         {
             if (choices == null || choices.Count == 0)
-                return false;
+            {
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.Popup(label, 0, new[] { "(no entries available)" });
+                }
+                return true;
+            }
 
             string[] labels = BuildPopupLabelsWithNone(choices);
             string[] ids = BuildPopupIdsWithNone(choices);
@@ -1649,7 +1664,11 @@ namespace Zana.WorldAuthoring
             var factionsProp = serializedObject.FindProperty("data.culture.factions");
             if (factionsProp != null) EditorGUILayout.PropertyField(factionsProp, true);
             var languagesProp = serializedObject.FindProperty("data.culture.languages");
-            if (languagesProp != null) EditorGUILayout.PropertyField(languagesProp, true);
+            if (languagesProp != null)
+            {
+                var languageDefs = WorldDataChoicesCache.GetLanguageDefinitions();
+                DrawStringIdArrayWithDropdowns(languagesProp, languageDefs, "Languages");
+            }
             var customsProp = serializedObject.FindProperty("data.culture.customs");
             if (customsProp != null) EditorGUILayout.PropertyField(customsProp, true);
             var rumorsProp = serializedObject.FindProperty("data.culture.rumors");
@@ -1775,6 +1794,133 @@ namespace Zana.WorldAuthoring
                 }
             }
             return Mathf.Clamp(fallback, 0, list.Count - 1);
+        }
+
+        private static void DrawStringIdArrayWithDropdowns(
+            SerializedProperty arrayProp,
+            IReadOnlyList<WorldDataIndexEntry> choices,
+            string labelOverride = null)
+        {
+            string label = string.IsNullOrWhiteSpace(labelOverride) ? arrayProp.displayName : labelOverride;
+            arrayProp.isExpanded = EditorGUILayout.Foldout(arrayProp.isExpanded, label, true);
+            if (!arrayProp.isExpanded) return;
+
+            EditorGUI.indentLevel++;
+
+            for (int i = 0; i < arrayProp.arraySize; i++)
+            {
+                var el = arrayProp.GetArrayElementAtIndex(i);
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    DrawIdPopupForStringProperty(el, $"{i + 1}", choices);
+                    if (GUILayout.Button("Remove", GUILayout.Width(70)))
+                    {
+                        arrayProp.DeleteArrayElementAtIndex(i);
+                        break;
+                    }
+                }
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                int pick = 0;
+                if (choices == null || choices.Count == 0)
+                {
+                    using (new EditorGUI.DisabledScope(true))
+                    {
+                        EditorGUILayout.Popup("Add", 0, new[] { "(no entries available)" });
+                    }
+                }
+                else
+                {
+                    string[] labels = BuildPopupLabelsWithNone(choices);
+                    pick = EditorGUILayout.Popup("Add", 0, labels);
+                }
+
+                using (new EditorGUI.DisabledScope(pick <= 0 || choices == null || choices.Count == 0))
+                {
+                    if (GUILayout.Button("Add", GUILayout.Width(70)))
+                    {
+                        string id = choices[pick - 1].id;
+                        if (!ContainsString(arrayProp, id))
+                        {
+                            int newIndex = arrayProp.arraySize;
+                            arrayProp.InsertArrayElementAtIndex(newIndex);
+                            var el = arrayProp.GetArrayElementAtIndex(newIndex);
+                            el.stringValue = id;
+                        }
+                    }
+                }
+            }
+
+            EditorGUI.indentLevel--;
+        }
+
+        private static bool DrawIdPopupForStringProperty(
+            SerializedProperty p,
+            string label,
+            IReadOnlyList<WorldDataIndexEntry> choices)
+        {
+            if (choices == null || choices.Count == 0)
+            {
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.Popup(label, 0, new[] { "(no entries available)" });
+                }
+                return true;
+            }
+
+            string[] labels = BuildPopupLabelsWithNone(choices);
+            string[] ids = BuildPopupIdsWithNone(choices);
+
+            int current = 0;
+            string curId = p.stringValue ?? string.Empty;
+            for (int i = 0; i < ids.Length; i++)
+            {
+                if (string.Equals(ids[i], curId, StringComparison.OrdinalIgnoreCase))
+                {
+                    current = i;
+                    break;
+                }
+            }
+
+            int next = EditorGUILayout.Popup(label, current, labels);
+            next = Mathf.Clamp(next, 0, ids.Length - 1);
+            if (next != current)
+            {
+                p.stringValue = ids[next];
+            }
+            return true;
+        }
+
+        private static string[] BuildPopupLabelsWithNone(IReadOnlyList<WorldDataIndexEntry> list)
+        {
+            var a = new string[(list?.Count ?? 0) + 1];
+            a[0] = "(none)";
+            for (int i = 0; i < (list?.Count ?? 0); i++)
+                a[i + 1] = list[i]?.ToString() ?? "(null)";
+            return a;
+        }
+
+        private static string[] BuildPopupIdsWithNone(IReadOnlyList<WorldDataIndexEntry> list)
+        {
+            var a = new string[(list?.Count ?? 0) + 1];
+            a[0] = string.Empty;
+            for (int i = 0; i < (list?.Count ?? 0); i++)
+                a[i + 1] = list[i]?.id ?? string.Empty;
+            return a;
+        }
+
+        private static bool ContainsString(SerializedProperty arrayProp, string value)
+        {
+            if (arrayProp == null || !arrayProp.isArray) return false;
+            for (int i = 0; i < arrayProp.arraySize; i++)
+            {
+                var el = arrayProp.GetArrayElementAtIndex(i);
+                if (el != null && string.Equals(el.stringValue, value, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
         }
     }
 

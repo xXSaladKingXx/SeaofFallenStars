@@ -3,6 +3,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using SeaOfFallenStars.WorldData;
 
 public class ArmyInfoWindowManager : MonoBehaviour
 {

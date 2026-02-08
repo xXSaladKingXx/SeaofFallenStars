@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
+using SeaOfFallenStars.WorldData;
 
 namespace Zana.WorldAuthoring
 {
