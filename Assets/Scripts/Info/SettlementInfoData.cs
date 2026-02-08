@@ -168,6 +168,9 @@ public class MainTab
 [Serializable]
 public class ArmyTab
 {
+    [JsonProperty("armyIds")]
+    public string[] armyIds = Array.Empty<string>();
+
     [JsonProperty("totalArmy")]
     public int totalArmy;
 
@@ -268,7 +271,7 @@ public class VassalContractData
     [JsonProperty("vassalSettlementId")]
     public string vassalSettlementId;
 
-    // 0..1 (recommended) or 0..100 (if you later decide) – consumers can normalize
+    // 0..1 (recommended) or 0..100 (if you later decide) â€“ consumers can normalize
     [JsonProperty("incomeTaxRate")]
     public float incomeTaxRate;
 

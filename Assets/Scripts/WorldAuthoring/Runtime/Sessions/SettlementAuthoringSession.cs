@@ -37,16 +37,6 @@ namespace Zana.WorldAuthoring
         [HideInInspector]
         public System.Collections.Generic.List<RaceDistributionEntry> raceDistribution = new System.Collections.Generic.List<RaceDistributionEntry>();
 
-        /// <summary>
-        /// Men-at-arms assignments for the settlement, with an explicit unit quantity.
-        /// This is injected into the settlement JSON under the "army" object as
-        /// "menAtArmsStacks" (array of { menAtArmsId, units }). Editors and runtime
-        /// code can still use the legacy "menAtArms" id list for compatibility.
-        /// </summary>
-        [Header("Men-at-Arms Quantity")]
-        [HideInInspector]
-        public System.Collections.Generic.List<MenAtArmsQuantityEntry> menAtArmsStacks = new System.Collections.Generic.List<MenAtArmsQuantityEntry>();
-
         public override string BuildJson()
         {
             // Serialize the settlement data to a JObject so we can inject additional
@@ -93,36 +83,14 @@ namespace Zana.WorldAuthoring
                     j["raceDistribution"] = arr;
             }
 
-            // Persist men-at-arms stacks with quantities inside the "army" object.
-            // Also keep legacy "menAtArms" id list in sync for compatibility.
-            if (menAtArmsStacks != null)
+            if (j["army"] is Newtonsoft.Json.Linq.JObject armyObj &&
+                data?.army?.armyIds != null &&
+                data.army.armyIds.Length > 0)
             {
-                // Ensure army object exists in json
-                if (j["army"] is Newtonsoft.Json.Linq.JObject armyObj)
-                {
-                    var stacksArr = new Newtonsoft.Json.Linq.JArray();
-                    var legacyIds = new System.Collections.Generic.List<string>();
-
-                    foreach (var entry in menAtArmsStacks)
-                    {
-                        if (entry == null) continue;
-                        if (string.IsNullOrWhiteSpace(entry.menAtArmsId)) continue;
-                        int units = entry.units;
-                        if (units < 0) units = 0;
-                        stacksArr.Add(new Newtonsoft.Json.Linq.JObject
-                        {
-                            ["menAtArmsId"] = entry.menAtArmsId,
-                            ["units"] = units
-                        });
-                        legacyIds.Add(entry.menAtArmsId);
-                    }
-
-                    if (stacksArr.Count > 0)
-                        armyObj["menAtArmsStacks"] = stacksArr;
-                    // Keep legacy list updated in the JSON too (if your core schema uses it)
-                    if (legacyIds.Count > 0)
-                        armyObj["menAtArms"] = new Newtonsoft.Json.Linq.JArray(legacyIds);
-                }
+                armyObj.Remove("totalArmy");
+                armyObj.Remove("menAtArms");
+                armyObj.Remove("primaryCommanderDisplayName");
+                armyObj.Remove("primaryCommanderCharacterId");
             }
 
             return j.ToString(Newtonsoft.Json.Formatting.Indented);
@@ -137,7 +105,6 @@ namespace Zana.WorldAuthoring
             // absent or malformed, clear the current composition list.
             culturalComposition.Clear();
             raceDistribution.Clear();
-            menAtArmsStacks.Clear();
             try
             {
                 var jo = Newtonsoft.Json.Linq.JObject.Parse(json);
@@ -199,59 +166,6 @@ namespace Zana.WorldAuthoring
                 // ignore
             }
 
-            // Parse men-at-arms stacks with quantities (preferred), fallback to legacy id list.
-            try
-            {
-                var jo = Newtonsoft.Json.Linq.JObject.Parse(json);
-                var armyObj = jo["army"] as Newtonsoft.Json.Linq.JObject;
-                if (armyObj != null)
-                {
-                    var stacksArr = armyObj["menAtArmsStacks"] as Newtonsoft.Json.Linq.JArray;
-                    if (stacksArr != null)
-                    {
-                        foreach (var token in stacksArr)
-                        {
-                            if (token is Newtonsoft.Json.Linq.JObject o)
-                            {
-                                string mid = (string)o["menAtArmsId"];
-                                int units = o["units"]?.ToObject<int?>() ?? 0;
-                                if (!string.IsNullOrWhiteSpace(mid))
-                                {
-                                    menAtArmsStacks.Add(new MenAtArmsQuantityEntry
-                                    {
-                                        menAtArmsId = mid,
-                                        units = units
-                                    });
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Legacy fallback
-                        var idsArr = armyObj["menAtArms"] as Newtonsoft.Json.Linq.JArray;
-                        if (idsArr != null)
-                        {
-                            foreach (var token in idsArr)
-                            {
-                                string mid = token?.ToObject<string>();
-                                if (!string.IsNullOrWhiteSpace(mid))
-                                {
-                                    menAtArmsStacks.Add(new MenAtArmsQuantityEntry
-                                    {
-                                        menAtArmsId = mid,
-                                        units = 1
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // ignore
-            }
         }
     }
 }

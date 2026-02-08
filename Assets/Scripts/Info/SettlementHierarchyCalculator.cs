@@ -13,7 +13,7 @@ public static class SettlementHierarchyCalculator
         public int realmTroops;
         public float realmIncomeGross;
 
-        // Ruler ìtakeî (what this settlementís ruler directly controls/collects)
+        // Ruler ‚Äútake‚Äù (what this settlement‚Äôs ruler directly controls/collects)
         public int rulerTroopsNet;
         public float rulerIncomeNet;
 
@@ -121,10 +121,10 @@ public static class SettlementHierarchyCalculator
             // If no capital defined, point-tier settlements can contribute their own base values.
             // For non-point tiers, you typically leave these 0 and rely on vassals.
             int basePop = (data.main != null) ? data.main.population : 0;
-            int baseTroops = (data.army != null) ? data.army.totalArmy : 0;
+            int baseTroops = SettlementArmyResolver.Resolve(data).totalTroops;
             float baseIncome = (data.economy != null) ? data.economy.totalIncomePerMonth : 0f;
 
-            // Treat these as both realm and ruler take for ìsingle holdingî settlements
+            // Treat these as both realm and ruler take for ‚Äúsingle holding‚Äù settlements
             result.realmPopulation += basePop;
             result.realmTroops += baseTroops;
             result.realmIncomeGross += baseIncome;
@@ -162,7 +162,7 @@ public static class SettlementHierarchyCalculator
                 troopRate = Mathf.Clamp01(contract.troopTaxRate);
             }
 
-            // Tax is assessed against the vassal rulerís net (what they control after collecting from THEIR vassals)
+            // Tax is assessed against the vassal ruler‚Äôs net (what they control after collecting from THEIR vassals)
             float taxedIncome = child.rulerIncomeNet * incomeRate;
             float taxedTroopsF = child.rulerTroopsNet * troopRate;
 
@@ -170,7 +170,7 @@ public static class SettlementHierarchyCalculator
             result.rulerTroopsNet += Mathf.RoundToInt(taxedTroopsF);
         }
 
-        // Resolve liege contract for ìafter liege taxî display
+        // Resolve liege contract for ‚Äúafter liege tax‚Äù display
         ResolveLiegeTax(result, data);
 
         _cache[settlementId] = result;

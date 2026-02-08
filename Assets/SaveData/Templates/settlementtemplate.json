@@ -12,10 +12,7 @@
     "vassals": []
   },
   "army": {
-    "totalArmy": 0,
-    "menAtArms": [],
-    "primaryCommanderDisplayName": "",
-    "primaryCommanderCharacterId": ""
+    "armyIds": []
   },
   "economy": {
     "totalIncomePerMonth": 0.0,

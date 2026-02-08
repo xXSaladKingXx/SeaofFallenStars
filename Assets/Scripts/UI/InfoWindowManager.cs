@@ -622,6 +622,19 @@ public class InfoWindowManager : MonoBehaviour
         {
             // fallback: try army commander id
             cid = _data?.army != null ? _data.army.primaryCommanderCharacterId : null;
+            if (string.IsNullOrWhiteSpace(cid) && _data?.army?.armyIds != null)
+            {
+                foreach (var armyId in _data.army.armyIds)
+                {
+                    if (string.IsNullOrWhiteSpace(armyId)) continue;
+                    var army = ArmyDataLoader.TryLoad(armyId);
+                    if (!string.IsNullOrWhiteSpace(army?.primaryCommanderCharacterId))
+                    {
+                        cid = army.primaryCommanderCharacterId;
+                        break;
+                    }
+                }
+            }
         }
 
         if (string.IsNullOrWhiteSpace(cid))
@@ -805,11 +818,12 @@ public class InfoWindowManager : MonoBehaviour
             );
         }
 
-        int total = _data?.army != null ? _data.army.totalArmy : 0;
+        var armySummary = SettlementArmyResolver.Resolve(_data);
+        int total = armySummary.totalTroops;
         if (armyTotalArmyCounterText != null)
             armyTotalArmyCounterText.text = total > 0 ? total.ToString("N0") : "";
 
-        string commander = _data?.army != null ? _data.army.primaryCommanderDisplayName : "";
+        string commander = armySummary.commanderDisplayName ?? "";
         if (string.IsNullOrWhiteSpace(commander))
             commander = _data?.main != null ? _data.main.rulerDisplayName : "";
 
@@ -818,9 +832,10 @@ public class InfoWindowManager : MonoBehaviour
 
         if (armyMenAtArmsListText != null)
         {
-            var list = _data?.army?.menAtArms;
-            armyMenAtArmsListText.text = (list != null && list.Length > 0)
-                ? string.Join("\n", list.Select(x => $"• {x}"))
+            var list = armySummary.menAtArmsCounts;
+            armyMenAtArmsListText.text = (list != null && list.Count > 0)
+                ? string.Join("\n", list.Select(x =>
+                    x.count > 0 ? $"• {x.menAtArmsId} x{x.count}" : $"• {x.menAtArmsId}"))
                 : "";
         }
     }

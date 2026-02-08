@@ -276,12 +276,7 @@ namespace Zana.WorldAuthoring
         private int _liegeIndex;
         private int _addVassalIndex;
 
-        private int _commanderIndex;
-        private int _addCommanderIndex;
-        private int _addKnightIndex;
-
-        private int _addMenAtArmsIndex;
-        private int _addMenAtArmsCount = 1;
+        private int _addArmyIndex;
 
         private int _cultureIndex;
         private int _residentIndex;
@@ -311,7 +306,7 @@ namespace Zana.WorldAuthoring
             var settlements = WorldDataChoicesCache.GetSettlements();
             var cultures = WorldDataChoicesCache.GetCultures();
             var races = WorldDataChoicesCache.GetRaceDefinitions();
-            var maaEntries = WorldDataChoicesCache.GetMenAtArmsEntries();
+            var armies = WorldDataChoicesCache.GetArmies();
 
             // ------------------------------------------------------------------
             // Feudal Hierarchy Section
@@ -423,98 +418,57 @@ namespace Zana.WorldAuthoring
             // Army Section
             // ------------------------------------------------------------------
             EditorGUILayout.LabelField("Army", EditorStyles.boldLabel);
-            // Primary Commander dropdown
-            _commanderIndex = GetIndexById(characters, s.data.army?.primaryCommanderCharacterId, _commanderIndex);
-            var newCommander = WorldAuthoringEditorUI.PopupChoice("Primary Commander", characters, ref _commanderIndex);
-            if (newCommander != null)
-            {
-                if (s.data.army == null) s.data.army = new ArmyTab();
-                if (s.data.army.primaryCommanderCharacterId != newCommander.id)
-                {
-                    s.data.army.primaryCommanderCharacterId = newCommander.id;
-                    s.data.army.primaryCommanderDisplayName = newCommander.displayName;
-                    EditorUtility.SetDirty(s);
-                }
-            }
-            // Men-at-Arms (read-only types from global catalog; quantities stored on the session)
             if (s.data.army == null) s.data.army = new ArmyTab();
-            if (s.menAtArmsStacks == null) s.menAtArmsStacks = new System.Collections.Generic.List<MenAtArmsQuantityEntry>();
+            if (s.data.army.armyIds == null) s.data.army.armyIds = Array.Empty<string>();
 
-            // Display existing stacks
-            if (s.menAtArmsStacks.Count > 0)
+            var armyIds = new List<string>(s.data.army.armyIds);
+            if (armyIds.Count > 0)
             {
-                EditorGUILayout.LabelField("Current Men-at-Arms", EditorStyles.miniBoldLabel);
-                for (int i = 0; i < s.menAtArmsStacks.Count; i++)
+                EditorGUILayout.LabelField("Linked Armies", EditorStyles.miniBoldLabel);
+                for (int i = 0; i < armyIds.Count; i++)
                 {
-                    var stack = s.menAtArmsStacks[i] ?? (s.menAtArmsStacks[i] = new MenAtArmsQuantityEntry());
-
+                    string armyId = armyIds[i];
+                    string display = GetDisplayNameById(armies, armyId);
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        // Type dropdown
-                        int idx = GetIndexById(maaEntries, stack.menAtArmsId, 0);
-                        var chosen = WorldAuthoringEditorUI.PopupChoice($"Type {i + 1}", maaEntries, ref idx);
-                        if (chosen != null && stack.menAtArmsId != chosen.id)
-                        {
-                            stack.menAtArmsId = chosen.id;
-                            EditorUtility.SetDirty(s);
-                        }
-
-                        // Units quantity (no inline label to avoid the field collapsing)
-                        GUILayout.Label("Units", GUILayout.Width(40));
-                        int newUnits = EditorGUILayout.IntField(Mathf.Max(0, stack.units), GUILayout.Width(60));
-                        if (newUnits != stack.units)
-                        {
-                            stack.units = Mathf.Max(0, newUnits);
-                            EditorUtility.SetDirty(s);
-                        }
-
+                        EditorGUILayout.LabelField(display, GUILayout.MaxWidth(220));
                         if (GUILayout.Button("Remove", GUILayout.Width(70)))
                         {
-                            s.menAtArmsStacks.RemoveAt(i);
+                            armyIds.RemoveAt(i);
                             EditorUtility.SetDirty(s);
                             i--;
-                            continue;
                         }
                     }
                 }
             }
 
-            // Add new men-at-arms stack (type + units)
             EditorGUILayout.Space(2);
-            using (new EditorGUILayout.HorizontalScope())
+            _addArmyIndex = GetIndexById(armies, null, _addArmyIndex);
+            var addArmy = WorldAuthoringEditorUI.PopupChoice("Add Army", armies, ref _addArmyIndex);
+            using (new EditorGUI.DisabledScope(addArmy == null))
             {
-                _addMenAtArmsIndex = GetIndexById(maaEntries, null, _addMenAtArmsIndex);
-                var toAdd = WorldAuthoringEditorUI.PopupChoice("Add Type", maaEntries, ref _addMenAtArmsIndex);
-                GUILayout.Label("Units", GUILayout.Width(40));
-                _addMenAtArmsCount = EditorGUILayout.IntField(Mathf.Max(0, _addMenAtArmsCount), GUILayout.Width(60));
-                using (new EditorGUI.DisabledScope(toAdd == null))
+                if (GUILayout.Button("Link Army"))
                 {
-                    if (GUILayout.Button("Add", GUILayout.Width(60)))
+                    if (addArmy != null && !armyIds.Contains(addArmy.id))
                     {
-                        if (toAdd != null)
-                        {
-                            bool exists = s.menAtArmsStacks.Exists(x => x != null && x.menAtArmsId == toAdd.id);
-                            if (!exists)
-                            {
-                                s.menAtArmsStacks.Add(new MenAtArmsQuantityEntry
-                                {
-                                    menAtArmsId = toAdd.id,
-                                    units = Mathf.Max(0, _addMenAtArmsCount)
-                                });
-                                EditorUtility.SetDirty(s);
-                            }
-                        }
+                        armyIds.Add(addArmy.id);
+                        EditorUtility.SetDirty(s);
                     }
                 }
             }
 
-            // Keep legacy id list in sync for older runtime readers
-            if (s.data.army.menAtArms == null) s.data.army.menAtArms = Array.Empty<string>();
-            s.data.army.menAtArms = s.menAtArmsStacks
-                .Where(x => x != null && !string.IsNullOrWhiteSpace(x.menAtArmsId))
-                .Select(x => x.menAtArmsId)
-                .Distinct()
-                .ToArray();
+            s.data.army.armyIds = armyIds.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+
+            var summary = SettlementArmyResolver.Resolve(s.data);
+            EditorGUILayout.Space(2);
+            EditorGUILayout.LabelField("Total Troops", summary.totalTroops.ToString("N0"));
+            if (!string.IsNullOrWhiteSpace(summary.commanderDisplayName))
+                EditorGUILayout.LabelField("Commander(s)", summary.commanderDisplayName);
+            if (summary.menAtArmsCounts.Count > 0)
+            {
+                EditorGUILayout.LabelField("Men-at-Arms", string.Join(", ", summary.menAtArmsCounts.Select(m =>
+                    m.count > 0 ? $"{m.menAtArmsId} x{m.count}" : m.menAtArmsId)));
+            }
 
             EditorGUILayout.Space(8);
 
@@ -727,8 +681,10 @@ namespace Zana.WorldAuthoring
                 "data.main.vassals",
                 "data.main.rulerDisplayName",
                 "data.feudal.vassalContracts",
+                "data.army.armyIds",
                 "data.army.primaryCommanderCharacterId",
                 "data.army.primaryCommanderDisplayName",
+                "data.army.totalArmy",
                 "data.army.menAtArms",
                 "data.cultural.culture"
             };
@@ -742,7 +698,7 @@ namespace Zana.WorldAuthoring
                 // Hide any built-in cultural or men-at-arms fields so the custom sections
                 // above are the single authoritative editor surface.
                 if (path.StartsWith("data.cultural", StringComparison.Ordinal)) continue;
-                if (path.StartsWith("data.army.menAtArms", StringComparison.Ordinal)) continue;
+                if (path.StartsWith("data.army", StringComparison.Ordinal)) continue;
                 EditorGUILayout.PropertyField(iterator, true);
             }
 

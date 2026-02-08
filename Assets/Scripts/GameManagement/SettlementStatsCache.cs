@@ -222,7 +222,7 @@ public static class SettlementStatsCache
 
         stats.localPopulation = Mathf.Max(0, data.main != null ? data.main.population : 0);
         stats.localIncome = data.economy != null ? data.economy.totalIncomePerMonth : 0.0;
-        stats.localTroops = Mathf.Max(0, data.army != null ? data.army.totalArmy : 0);
+        stats.localTroops = SettlementArmyResolver.Resolve(data).totalTroops;
 
         // Start gross as local
         stats.totalPopulation = stats.localPopulation;
@@ -347,7 +347,7 @@ public static class SettlementStatsCache
         stats.settlementId = id;
         stats.localPopulation = Mathf.Max(0, data.main != null ? data.main.population : 0);
         stats.localIncome = data.economy != null ? data.economy.totalIncomePerMonth : 0.0;
-        stats.localTroops = Mathf.Max(0, data.army != null ? data.army.totalArmy : 0);
+        stats.localTroops = SettlementArmyResolver.Resolve(data).totalTroops;
 
         stats.totalPopulation = stats.localPopulation;
         stats.grossIncome = stats.localIncome;
