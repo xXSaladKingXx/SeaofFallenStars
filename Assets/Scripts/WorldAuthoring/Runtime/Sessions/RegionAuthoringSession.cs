@@ -1,88 +1,116 @@
+#if UNITY_EDITOR
+using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Text;
+using UnityEditor;
 using UnityEngine;
+using Zana.WorldAuthoring;
 
-namespace Zana.WorldAuthoring
+/// <summary>
+/// Authoring wrapper for RegionInfoData.
+///
+/// Requested behaviors implemented:
+/// - Regions track vassals as MapPoint IDs only.
+/// - Region derived fields are recomputed from child map points on save.
+/// - Biomes/travel-notes are not part of this model.
+/// </summary>
+[CreateAssetMenu(menuName = "SeaofFallenStars/World Authoring/Region Authoring Session")]
+public class RegionAuthoringSession : ScriptableObject
 {
-    public sealed class RegionAuthoringSession : WorldDataAuthoringSessionBase
+    [SerializeField] public RegionInfoData model = new RegionInfoData();
+
+    [Tooltip("Optional: override the JSON file path used for load/save. If empty, the session uses MapData/<regionId>.json")]
+    public string overrideJsonPath;
+
+    public void EnsureIds()
     {
-        [Header("Data")]
-        public RegionInfoData data = new RegionInfoData();
+        if (model == null) model = new RegionInfoData();
+        if (model.main == null) model.main = new RegionMainTabData();
+        if (model.geography == null) model.geography = new RegionGeographyTabData();
+        if (model.vassals == null) model.vassals = new System.Collections.Generic.List<string>();
+        if (model.derived == null) model.derived = new RegionDerivedInfo();
 
-        public override WorldDataCategory Category => WorldDataCategory.Region;
+        if (string.IsNullOrWhiteSpace(model.regionId))
+            model.regionId = Slugify(model.displayName);
+    }
 
-        public override string GetDefaultFileBaseName()
+    public void RecalculateDerived()
+    {
+        EnsureIds();
+        string mapDataDir = WorldDataDirectoryResolver.GetEditorMapDataDir();
+        RegionDerivedCalculator.Recalculate(model, mapDataDir);
+    }
+
+    public string GetDefaultJsonPath()
+    {
+        EnsureIds();
+        string dir = WorldDataDirectoryResolver.EnsureEditorDirectory(WorldDataCategory.Region); // MapData
+        return Path.Combine(dir, $"{model.regionId}.json");
+    }
+
+    public void SaveJson()
+    {
+        EnsureIds();
+        RecalculateDerived();
+
+        string path = string.IsNullOrWhiteSpace(overrideJsonPath) ? GetDefaultJsonPath() : overrideJsonPath;
+        string json = JsonConvert.SerializeObject(model, Formatting.Indented);
+        File.WriteAllText(path, json);
+        AssetDatabase.Refresh();
+    }
+
+    public void LoadJson(string filePath)
+    {
+        if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+            return;
+
+        try
         {
-            string id = data != null ? data.regionId : null;
-            if (!string.IsNullOrWhiteSpace(id)) return id;
-            string dn = data != null ? data.displayName : null;
-            return string.IsNullOrWhiteSpace(dn) ? "region" : dn;
+            string txt = File.ReadAllText(filePath);
+            var loaded = JsonConvert.DeserializeObject<RegionInfoData>(txt);
+            model = loaded ?? new RegionInfoData();
+            overrideJsonPath = filePath;
+        }
+        catch
+        {
+            // If parsing fails, keep current model.
         }
 
-        /// <summary>
-        /// Breakdown of the region's population by culture. Entries specify a culture
-        /// identifier and the fraction of the population belonging to that culture.
-        /// Serialized into the top‑level JSON property "culturalComposition".
-        /// </summary>
-        [Header("Cultural Composition")]
-        [HideInInspector]
-        public System.Collections.Generic.List<CultureCompositionEntry> culturalComposition = new System.Collections.Generic.List<CultureCompositionEntry>();
+        EnsureIds();
+    }
 
-        public override string BuildJson()
+    private static string Slugify(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return "";
+
+        input = input.Trim().ToLowerInvariant();
+        var sb = new StringBuilder(input.Length);
+        bool prevDash = false;
+
+        for (int i = 0; i < input.Length; i++)
         {
-            var j = Newtonsoft.Json.Linq.JObject.FromObject(data, Newtonsoft.Json.JsonSerializer.Create(JsonSettings));
-            if (culturalComposition != null && culturalComposition.Count > 0)
+            char c = input[i];
+
+            bool isAlphaNum = (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
+            if (isAlphaNum)
             {
-                var arr = new Newtonsoft.Json.Linq.JArray();
-                foreach (var entry in culturalComposition)
-                {
-                    if (entry == null) continue;
-                    var o = new Newtonsoft.Json.Linq.JObject
-                    {
-                        ["cultureId"] = entry.cultureId,
-                        ["percentage"] = entry.percentage
-                    };
-                    arr.Add(o);
-                }
-                if (arr.Count > 0)
-                    j["culturalComposition"] = arr;
+                sb.Append(c);
+                prevDash = false;
+                continue;
             }
-            return j.ToString(Newtonsoft.Json.Formatting.Indented);
+
+            // collapse whitespace and punctuation into a single dash
+            if (!prevDash)
+            {
+                sb.Append('-');
+                prevDash = true;
+            }
         }
 
-        public override void ApplyJson(string json)
-        {
-            var loaded = FromJson<RegionInfoData>(json);
-            if (loaded != null) data = loaded;
-
-            culturalComposition.Clear();
-            try
-            {
-                var jo = Newtonsoft.Json.Linq.JObject.Parse(json);
-                var arr = jo["culturalComposition"] as Newtonsoft.Json.Linq.JArray;
-                if (arr != null)
-                {
-                    foreach (var token in arr)
-                    {
-                        if (token is Newtonsoft.Json.Linq.JObject o)
-                        {
-                            string cid = (string)o["cultureId"];
-                            // Parse percentage using ToObject<T>() to avoid CS7036 error with Value<T>()
-                            float? pct = o["percentage"]?.ToObject<float?>();
-                            if (!string.IsNullOrWhiteSpace(cid) && pct.HasValue)
-                            {
-                                culturalComposition.Add(new CultureCompositionEntry
-                                {
-                                    cultureId = cid,
-                                    percentage = pct.Value
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // ignore parse errors
-            }
-        }
+        // trim dashes
+        string s = sb.ToString().Trim('-');
+        return s;
     }
 }
+#endif

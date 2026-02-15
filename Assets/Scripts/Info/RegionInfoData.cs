@@ -1,154 +1,77 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using UnityEngine;
 
+/// <summary>
+/// Region-level InfoData used for Region/Country/Duchy/Lordship map layers.
+///
+/// Implemented plan changes:
+/// - "Biomes" are removed; only Terrain is tracked.
+/// - "Travel notes" and any dominant-biome fields are intentionally absent.
+/// - Vassals are stored as MapPoint IDs only (no embedded summary objects).
+/// - Derived fields (population, cultures, races, languages, terrain) should be recomputed
+///   from child map points and not manually edited.
+/// </summary>
 [Serializable]
 public class RegionInfoData
 {
-    [JsonProperty("regionId")]
     public string regionId;
-
-    [JsonProperty("displayName")]
     public string displayName;
-
-    // Used by the "Open Region Map" button
-    [JsonProperty("mapUrlOrPath")]
     public string mapUrlOrPath;
 
-    [JsonProperty("layer")]
-    public MapLayer layer = MapLayer.Regional;
+    /// <summary>
+    /// String form of the map layer (e.g. "Region", "Country", "Duchy").
+    /// Stored as a string to avoid hard-depending on a particular MapLayer enum.
+    /// </summary>
+    public string layer;
 
-    // Tabs
-    [JsonProperty("main")]
-    public RegionMainTab main = new RegionMainTab();
+    public RegionMainTabData main = new RegionMainTabData();
+    public RegionGeographyTabData geography = new RegionGeographyTabData();
 
-    // NOTE: Your RegionInfoWindowManager currently computes geography values from colliders and MapPoints,
-    // but having a geography object in JSON makes the Region template "complete" and future-proof.
-    [JsonProperty("geography")]
-    public RegionGeographyTab geography = new RegionGeographyTab();
+    /// <summary>
+    /// Direct vassals (MapPoint IDs). No other data should be stored here.
+    /// </summary>
+    public List<string> vassals = new List<string>();
 
-    [JsonProperty("culture")]
-    public RegionCultureTab culture = new RegionCultureTab();
-
-    //  New: explicit vassal countries list (authoritative political list)
-    [JsonProperty("vassals")]
-    public RegionVassalsTab vassals = new RegionVassalsTab();
-
-    // Optional extension object (future-proof)
-    [JsonProperty("ext")]
-    public Dictionary<string, object> ext = new Dictionary<string, object>();
-
-    // Back-compat convenience alias
-    [JsonIgnore]
-    public string id
-    {
-        get => !string.IsNullOrWhiteSpace(regionId) ? regionId : null;
-        set => regionId = value;
-    }
+    /// <summary>
+    /// Computed values derived from all descendant map points. These are not meant
+    /// to be directly edited in region authoring UI.
+    /// </summary>
+    public RegionDerivedInfo derived = new RegionDerivedInfo();
 }
 
 [Serializable]
-public class RegionMainTab
+public class RegionMainTabData
 {
-    [JsonProperty("description")]
-    [TextArea(3, 12)]
-    public string description = "";
-
-    [JsonProperty("notableFacts")]
+    public string description;
     public List<string> notableFacts = new List<string>();
 }
 
 [Serializable]
-public class RegionGeographyTab
+public class RegionGeographyTabData
 {
-    // Curated text you may want even though your UI currently computes the numeric parts.
-    [JsonProperty("overview")]
-    [TextArea(2, 12)]
-    public string overview = "";
+    public string overview;
+    public string climateNotes;
 
-    // Optional overrides / editorial values (if you ever want to show fixed numbers instead of collider-derived)
-    [JsonProperty("areaSqMiOverride")]
-    public float? areaSqMiOverride = null;
-
-    [JsonProperty("unityUnitsToMilesOverride")]
-    public float? unityUnitsToMilesOverride = null;
-
-    // Optional lists for lore / encyclopedia feel
-    [JsonProperty("dominantBiomes")]
-    public List<string> dominantBiomes = new List<string>();
-
-    [JsonProperty("dominantTerrain")]
+    /// <summary>
+    /// Derived top terrain IDs. This is computed from RegionDerivedInfo.terrainBreakdown.
+    /// </summary>
     public List<string> dominantTerrain = new List<string>();
-
-    [JsonProperty("climateNotes")]
-    [TextArea(2, 12)]
-    public string climateNotes = "";
-
-    [JsonProperty("travelNotes")]
-    [TextArea(2, 12)]
-    public string travelNotes = "";
 }
 
 [Serializable]
-public class RegionCultureTab
+public class RegionDerivedInfo
 {
-    [JsonProperty("entries")]
-    public List<RegionCultureEntry> entries = new List<RegionCultureEntry>();
-}
+    public int totalPopulation;
 
-[Serializable]
-public class RegionCultureEntry
-{
-    [JsonProperty("name")]
-    public string name;
+    /// <summary>Weighted by settlement population.</summary>
+    public List<PercentEntry> raceDistribution = new List<PercentEntry>();
 
-    [JsonProperty("description")]
-    [TextArea(2, 12)]
-    public string description;
-}
+    /// <summary>Weighted by settlement population.</summary>
+    public List<PercentEntry> cultureDistribution = new List<PercentEntry>();
 
-[Serializable]
-public class RegionVassalsTab
-{
-    [JsonProperty("countries")]
-    public List<RegionVassalCountry> countries = new List<RegionVassalCountry>();
+    /// <summary>Weighted by settlement population; computed from primaryLanguage.</summary>
+    public List<PercentEntry> languageDistribution = new List<PercentEntry>();
 
-    [JsonProperty("notes")]
-    [TextArea(2, 12)]
-    public string notes = "";
-}
-
-[Serializable]
-public class RegionVassalCountry
-{
-    // Should match the MapPoint.pointId of the Country-layer MapPoint (recommended),
-    // or your stable filename key for that country’s JSON.
-    [JsonProperty("countryId")]
-    public string countryId;
-
-    // Optional: show-name override if you don't want to rely on the MapPoint’s displayName
-    [JsonProperty("displayName")]
-    public string displayName;
-
-    // Optional: political relationship label (“Vassal”, “Protectorate”, “March”, etc.)
-    [JsonProperty("relationship")]
-    public string relationship = "Vassal";
-
-    // Optional: short one-liner for the relationship / obligations / quirks
-    [JsonProperty("summary")]
-    public string summary = "";
-
-    // Optional: if you want “at a glance” stats later (not required by current UI)
-    [JsonProperty("estimatedPopulation")]
-    public int? estimatedPopulation = null;
-
-    [JsonProperty("estimatedIncome")]
-    public float? estimatedIncome = null;
-
-    [JsonProperty("estimatedLevies")]
-    public int? estimatedLevies = null;
-
-    [JsonProperty("ext")]
-    public Dictionary<string, object> ext = new Dictionary<string, object>();
+    /// <summary>Weighted by unpopulated areaSqMi (if present), otherwise equal-weighted.</summary>
+    public List<PercentEntry> terrainBreakdown = new List<PercentEntry>();
 }
