@@ -1716,12 +1716,29 @@ namespace Zana.WorldAuthoring
             if (session.data.nature == null) session.data.nature = new UnpopulatedNatureTab();
             EditorGUILayout.Space(4);
             EditorGUILayout.LabelField("Nature", EditorStyles.boldLabel);
-            var floraProp = serializedObject.FindProperty("data.nature.flora");
-            if (floraProp != null) EditorGUILayout.PropertyField(floraProp, true);
-            var faunaProp = serializedObject.FindProperty("data.nature.fauna");
-            if (faunaProp != null) EditorGUILayout.PropertyField(faunaProp, true);
-            var resourcesProp = serializedObject.FindProperty("data.nature.resources");
-            if (resourcesProp != null) EditorGUILayout.PropertyField(resourcesProp, true);
+            // Narrative notes
+            var floraNotesProp = serializedObject.FindProperty("data.nature.floraNotes");
+            if (floraNotesProp != null) EditorGUILayout.PropertyField(floraNotesProp, new GUIContent("Flora Notes"), true);
+            var faunaNotesProp = serializedObject.FindProperty("data.nature.faunaNotes");
+            if (faunaNotesProp != null) EditorGUILayout.PropertyField(faunaNotesProp, new GUIContent("Fauna Notes"), true);
+            var resNotesProp = serializedObject.FindProperty("data.nature.resourcesNotes");
+            if (resNotesProp != null) EditorGUILayout.PropertyField(resNotesProp, new GUIContent("Resources Notes"), true);
+            // Distribution lists and structured resources
+            var floraDistProp = serializedObject.FindProperty("data.nature.floraDistribution");
+            if (floraDistProp != null)
+            {
+                EditorGUILayout.PropertyField(floraDistProp, new GUIContent("Flora Distribution"), true);
+            }
+            var faunaDistProp = serializedObject.FindProperty("data.nature.faunaDistribution");
+            if (faunaDistProp != null)
+            {
+                EditorGUILayout.PropertyField(faunaDistProp, new GUIContent("Fauna Distribution"), true);
+            }
+            var resItemsProp = serializedObject.FindProperty("data.nature.resourceItems");
+            if (resItemsProp != null)
+            {
+                EditorGUILayout.PropertyField(resItemsProp, new GUIContent("Resource Items"), true);
+            }
 
             // Draw history tab
             if (session.data.history == null) session.data.history = new UnpopulatedHistoryTab();

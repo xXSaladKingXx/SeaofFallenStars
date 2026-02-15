@@ -119,15 +119,56 @@ public class TerrainBreakdownEntry
 [Serializable]
 public class UnpopulatedNatureTab
 {
-    [JsonProperty("flora")]
+    // Narrative notes about flora present in this area. Kept separate from the
+    // distribution list so authors can provide descriptive flavour without
+    // enumerating specific entries. Previously stored under the key "flora".
+    [JsonProperty("floraNotes")]
+    [TextArea(2, 12)]
+    public string floraNotes;
+
+    // Narrative notes about fauna present in this area. Kept separate from the
+    // distribution list so authors can provide descriptive flavour without
+    // enumerating specific entries. Previously stored under the key "fauna".
+    [JsonProperty("faunaNotes")]
+    [TextArea(2, 12)]
+    public string faunaNotes;
+
+    // Narrative notes about harvestable resources present in this area. Authors
+    // can describe generic ores, herbs or artefacts here; structured resources
+    // should be added via resourceItems. Previously stored under the key
+    // "resources".
+    [JsonProperty("resourcesNotes")]
+    [TextArea(2, 12)]
+    public string resourcesNotes;
+
+    // Distribution of flora species in this area. Each entry references a
+    // species from the FloraCatalog (via id) and assigns a percentage value.
+    [JsonProperty("floraDistribution")]
+    public List<PercentEntry> floraDistribution = new List<PercentEntry>();
+
+    // Distribution of fauna species in this area. Each entry references a
+    // species from the FaunaCatalog (via id) and assigns a percentage value.
+    [JsonProperty("faunaDistribution")]
+    public List<PercentEntry> faunaDistribution = new List<PercentEntry>();
+
+    // Structured list of resources known to exist in this area. Each entry
+    // references an item from the ItemCatalog and provides a quantity with
+    // optional unit and notes. Use this instead of unstructured text for
+    // harvestable or mineable resources.
+    [JsonProperty("resourceItems")]
+    public List<Zana.WorldAuthoring.ItemQuantityEntry> resourceItems = new List<Zana.WorldAuthoring.ItemQuantityEntry>();
+
+    // Backwards compatibility: keep the old plain-text fields but do not
+    // serialize them. They map onto the new notes fields. Existing JSON
+    // files using these keys will still load correctly because the JSON
+    // property names remain the same; however they are ignored on save.
+    [JsonIgnore]
     [TextArea(2, 12)]
     public string flora;
-
-    [JsonProperty("fauna")]
+    [JsonIgnore]
     [TextArea(2, 12)]
     public string fauna;
-
-    [JsonProperty("resources")]
+    [JsonIgnore]
     [TextArea(2, 12)]
     public string resources;
 }

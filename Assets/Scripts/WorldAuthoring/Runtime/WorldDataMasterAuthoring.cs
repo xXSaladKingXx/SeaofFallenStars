@@ -79,6 +79,14 @@ namespace Zana.WorldAuthoring
                     return go.AddComponent<ReligionCatalogAuthoringSession>();
                 case WorldDataCategory.RaceCatalog:
                     return go.AddComponent<RaceCatalogAuthoringSession>();
+                case WorldDataCategory.FloraCatalog:
+                    return go.AddComponent<FloraCatalogAuthoringSession>();
+                case WorldDataCategory.FaunaCatalog:
+                    return go.AddComponent<FaunaCatalogAuthoringSession>();
+                case WorldDataCategory.ItemCatalog:
+                    return go.AddComponent<ItemCatalogAuthoringSession>();
+                case WorldDataCategory.StatCatalog:
+                    return go.AddComponent<StatCatalogAuthoringSession>();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(category), category, null);
             }

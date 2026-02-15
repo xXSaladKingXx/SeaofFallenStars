@@ -51,6 +51,23 @@ internal static class WorldDataChoicesCache
     private static readonly List<WorldDataIndexEntry> _raceEntries = new List<WorldDataIndexEntry>(512);
     private static readonly HashSet<string> _raceDedupe = new HashSet<string>();
 
+    // Flattened lists for flora and fauna definitions from their catalogs. Used for dropdowns
+    // in unpopulated nature distribution editors. Each entry contains the id and display name.
+    private static readonly List<WorldDataIndexEntry> _floraEntries = new List<WorldDataIndexEntry>(512);
+    private static readonly HashSet<string> _floraDedupe = new HashSet<string>();
+    private static readonly List<WorldDataIndexEntry> _faunaEntries = new List<WorldDataIndexEntry>(512);
+    private static readonly HashSet<string> _faunaDedupe = new HashSet<string>();
+
+    // Flattened list for item definitions from item catalogs. Enables dropdowns when
+    // selecting items for resource lists or inventory definitions.
+    private static readonly List<WorldDataIndexEntry> _itemEntries = new List<WorldDataIndexEntry>(1024);
+    private static readonly HashSet<string> _itemDedupe = new HashSet<string>();
+
+    // Flattened list for stat definitions from the stat catalog. Used by trait and
+    // item editors to select which stat a modifier targets.
+    private static readonly List<WorldDataIndexEntry> _statEntries = new List<WorldDataIndexEntry>(256);
+    private static readonly HashSet<string> _statDedupe = new HashSet<string>();
+
     public static void RefreshAll(bool force = false)
     {
         double now = EditorApplication.timeSinceStartup;
@@ -80,6 +97,15 @@ internal static class WorldDataChoicesCache
         _raceEntries.Clear();
         _raceDedupe.Clear();
 
+        _floraEntries.Clear();
+        _floraDedupe.Clear();
+        _faunaEntries.Clear();
+        _faunaDedupe.Clear();
+        _itemEntries.Clear();
+        _itemDedupe.Clear();
+        _statEntries.Clear();
+        _statDedupe.Clear();
+
         foreach (WorldDataCategory c in Enum.GetValues(typeof(WorldDataCategory)))
             _byCat[c] = new List<WorldDataIndexEntry>(256);
 
@@ -99,6 +125,13 @@ internal static class WorldDataChoicesCache
         // Scan religion and race catalogs so they appear in load/create menus
         ScanReligionCatalogs();
         ScanRaceCatalogs();
+        // Scan additional catalogs for flora, fauna, items and stats. These scans
+        // populate the index with catalog files themselves and flatten contained
+        // definitions into lists used for dropdown selections.
+        ScanFloraCatalogs();
+        ScanFaunaCatalogs();
+        ScanItemCatalogs();
+        ScanStatCatalogs();
 
         foreach (var kv in _byCat)
             kv.Value.Sort((a, b) => string.Compare(a.displayName ?? a.id, b.displayName ?? b.id, StringComparison.OrdinalIgnoreCase));
@@ -129,6 +162,15 @@ internal static class WorldDataChoicesCache
         _religionDedupe.Clear();
         _raceEntries.Clear();
         _raceDedupe.Clear();
+
+        _floraEntries.Clear();
+        _floraDedupe.Clear();
+        _faunaEntries.Clear();
+        _faunaDedupe.Clear();
+        _itemEntries.Clear();
+        _itemDedupe.Clear();
+        _statEntries.Clear();
+        _statDedupe.Clear();
     }
 
     public static IReadOnlyList<WorldDataIndexEntry> Get(WorldDataCategory category)
@@ -220,6 +262,50 @@ internal static class WorldDataChoicesCache
     {
         RefreshAll(false);
         return _raceEntries;
+    }
+
+    /// <summary>
+    /// Returns a flattened list of flora definitions from all flora catalogs. Each
+    /// entry contains the plant ID and display name. Call RefreshAll() if you
+    /// need to ensure the cache is up-to-date.
+    /// </summary>
+    public static IReadOnlyList<WorldDataIndexEntry> GetFloraDefinitions()
+    {
+        RefreshAll(false);
+        return _floraEntries;
+    }
+
+    /// <summary>
+    /// Returns a flattened list of fauna definitions from all fauna catalogs. Each
+    /// entry contains the creature ID and display name. Call RefreshAll() if you
+    /// need to ensure the cache is up-to-date.
+    /// </summary>
+    public static IReadOnlyList<WorldDataIndexEntry> GetFaunaDefinitions()
+    {
+        RefreshAll(false);
+        return _faunaEntries;
+    }
+
+    /// <summary>
+    /// Returns a flattened list of item definitions from all item catalogs. Each
+    /// entry contains the item ID and display name. Call RefreshAll() if you
+    /// need to ensure the cache is up-to-date.
+    /// </summary>
+    public static IReadOnlyList<WorldDataIndexEntry> GetItemDefinitions()
+    {
+        RefreshAll(false);
+        return _itemEntries;
+    }
+
+    /// <summary>
+    /// Returns a flattened list of stat definitions from all stat catalogs. Each
+    /// entry contains the stat ID and display name. Call RefreshAll() if you
+    /// need to ensure the cache is up-to-date.
+    /// </summary>
+    public static IReadOnlyList<WorldDataIndexEntry> GetStatDefinitions()
+    {
+        RefreshAll(false);
+        return _statEntries;
     }
 
     public static string[] ToDisplayArray(IReadOnlyList<WorldDataIndexEntry> entries, bool includeId = true)
@@ -731,6 +817,243 @@ internal static class WorldDataChoicesCache
             catch
             {
                 // ignore malformed catalogs
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // Flora catalog scanning
+    // ---------------------------------------------------------------------
+    /// <summary>
+    /// Scans flora catalog JSON files in both the editor and runtime directories. Each
+    /// catalog is added to the WorldDataCategory.FloraCatalog list for load/create
+    /// menus. All flora entries contained within the catalog are flattened into
+    /// _floraEntries for dropdowns (id + displayName). Duplicate IDs across
+    /// catalogs are deduped.
+    /// </summary>
+    private static void ScanFloraCatalogs()
+    {
+        ScanFloraCatalogDir(GetEditorDir(WorldDataCategory.FloraCatalog));
+        ScanFloraCatalogDir(GetRuntimeDir(WorldDataCategory.FloraCatalog));
+    }
+
+    private static void ScanFloraCatalogDir(string dir)
+    {
+        if (string.IsNullOrWhiteSpace(dir) || !Directory.Exists(dir)) return;
+        foreach (string file in Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories))
+        {
+            if (!TryParseJObject(file, out var jo)) continue;
+            // Recognize flora catalogs by presence of catalogId or flora array
+            bool looksLikeCatalog = jo["catalogId"] != null || jo["flora"] != null;
+            if (!looksLikeCatalog) continue;
+            string catalogId = (string)jo["catalogId"] ?? Path.GetFileNameWithoutExtension(file);
+            string catalogDn = (string)jo["displayName"] ?? catalogId;
+            AddEntry(WorldDataCategory.FloraCatalog, file, catalogId, catalogDn);
+            try
+            {
+                var arr = jo["flora"] as JArray;
+                if (arr != null)
+                {
+                    foreach (var item in arr)
+                    {
+                        if (item is not JObject f) continue;
+                        string id = ((string)f["id"])?.Trim();
+                        if (string.IsNullOrWhiteSpace(id)) continue;
+                        string dn = (string)f["displayName"];
+                        if (string.IsNullOrWhiteSpace(dn)) dn = id;
+                        if (_floraDedupe.Add(id))
+                        {
+                            _floraEntries.Add(new WorldDataIndexEntry
+                            {
+                                category = WorldDataCategory.FloraCatalog,
+                                id = id,
+                                displayName = dn,
+                                filePath = file
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ignore malformed catalogs
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // Fauna catalog scanning
+    // ---------------------------------------------------------------------
+    /// <summary>
+    /// Scans fauna catalog JSON files in both the editor and runtime directories. Each
+    /// catalog is added to the WorldDataCategory.FaunaCatalog list for load/create
+    /// menus. All fauna entries contained within the catalog are flattened into
+    /// _faunaEntries for dropdowns (id + displayName). Duplicate IDs across
+    /// catalogs are deduped.
+    /// </summary>
+    private static void ScanFaunaCatalogs()
+    {
+        ScanFaunaCatalogDir(GetEditorDir(WorldDataCategory.FaunaCatalog));
+        ScanFaunaCatalogDir(GetRuntimeDir(WorldDataCategory.FaunaCatalog));
+    }
+
+    private static void ScanFaunaCatalogDir(string dir)
+    {
+        if (string.IsNullOrWhiteSpace(dir) || !Directory.Exists(dir)) return;
+        foreach (string file in Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories))
+        {
+            if (!TryParseJObject(file, out var jo)) continue;
+            bool looksLikeCatalog = jo["catalogId"] != null || jo["fauna"] != null;
+            if (!looksLikeCatalog) continue;
+            string catalogId = (string)jo["catalogId"] ?? Path.GetFileNameWithoutExtension(file);
+            string catalogDn = (string)jo["displayName"] ?? catalogId;
+            AddEntry(WorldDataCategory.FaunaCatalog, file, catalogId, catalogDn);
+            try
+            {
+                var arr = jo["fauna"] as JArray;
+                if (arr != null)
+                {
+                    foreach (var item in arr)
+                    {
+                        if (item is not JObject f) continue;
+                        string id = ((string)f["id"])?.Trim();
+                        if (string.IsNullOrWhiteSpace(id)) continue;
+                        string dn = (string)f["displayName"];
+                        if (string.IsNullOrWhiteSpace(dn)) dn = id;
+                        if (_faunaDedupe.Add(id))
+                        {
+                            _faunaEntries.Add(new WorldDataIndexEntry
+                            {
+                                category = WorldDataCategory.FaunaCatalog,
+                                id = id,
+                                displayName = dn,
+                                filePath = file
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ignore parse errors
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // Item catalog scanning
+    // ---------------------------------------------------------------------
+    /// <summary>
+    /// Scans item catalog JSON files in both the editor and runtime directories. Each
+    /// catalog is added to the WorldDataCategory.ItemCatalog list for load/create
+    /// menus. All item entries contained within the catalog are flattened into
+    /// _itemEntries for dropdowns (id + displayName). Duplicate IDs across
+    /// catalogs are deduped.
+    /// </summary>
+    private static void ScanItemCatalogs()
+    {
+        ScanItemCatalogDir(GetEditorDir(WorldDataCategory.ItemCatalog));
+        ScanItemCatalogDir(GetRuntimeDir(WorldDataCategory.ItemCatalog));
+    }
+
+    private static void ScanItemCatalogDir(string dir)
+    {
+        if (string.IsNullOrWhiteSpace(dir) || !Directory.Exists(dir)) return;
+        foreach (string file in Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories))
+        {
+            if (!TryParseJObject(file, out var jo)) continue;
+            bool looksLikeCatalog = jo["catalogId"] != null || jo["items"] != null;
+            if (!looksLikeCatalog) continue;
+            string catalogId = (string)jo["catalogId"] ?? Path.GetFileNameWithoutExtension(file);
+            string catalogDn = (string)jo["displayName"] ?? catalogId;
+            AddEntry(WorldDataCategory.ItemCatalog, file, catalogId, catalogDn);
+            try
+            {
+                var arr = jo["items"] as JArray;
+                if (arr != null)
+                {
+                    foreach (var item in arr)
+                    {
+                        if (item is not JObject it) continue;
+                        string id = ((string)it["id"])?.Trim();
+                        if (string.IsNullOrWhiteSpace(id)) continue;
+                        string dn = (string)it["displayName"];
+                        if (string.IsNullOrWhiteSpace(dn)) dn = id;
+                        if (_itemDedupe.Add(id))
+                        {
+                            _itemEntries.Add(new WorldDataIndexEntry
+                            {
+                                category = WorldDataCategory.ItemCatalog,
+                                id = id,
+                                displayName = dn,
+                                filePath = file
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ignore parse errors
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // Stat catalog scanning
+    // ---------------------------------------------------------------------
+    /// <summary>
+    /// Scans stat catalog JSON files in both the editor and runtime directories. Each
+    /// catalog is added to the WorldDataCategory.StatCatalog list for load/create
+    /// menus. All stat entries contained within the catalog are flattened into
+    /// _statEntries for dropdowns (id + displayName). Duplicate IDs across
+    /// catalogs are deduped.
+    /// </summary>
+    private static void ScanStatCatalogs()
+    {
+        ScanStatCatalogDir(GetEditorDir(WorldDataCategory.StatCatalog));
+        ScanStatCatalogDir(GetRuntimeDir(WorldDataCategory.StatCatalog));
+    }
+
+    private static void ScanStatCatalogDir(string dir)
+    {
+        if (string.IsNullOrWhiteSpace(dir) || !Directory.Exists(dir)) return;
+        foreach (string file in Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories))
+        {
+            if (!TryParseJObject(file, out var jo)) continue;
+            bool looksLikeCatalog = jo["catalogId"] != null || jo["stats"] != null;
+            if (!looksLikeCatalog) continue;
+            string catalogId = (string)jo["catalogId"] ?? Path.GetFileNameWithoutExtension(file);
+            string catalogDn = (string)jo["displayName"] ?? catalogId;
+            AddEntry(WorldDataCategory.StatCatalog, file, catalogId, catalogDn);
+            try
+            {
+                var arr = jo["stats"] as JArray;
+                if (arr != null)
+                {
+                    foreach (var item in arr)
+                    {
+                        if (item is not JObject st) continue;
+                        string id = ((string)st["statId"])?.Trim();
+                        if (string.IsNullOrWhiteSpace(id)) continue;
+                        string dn = (string)st["displayName"];
+                        if (string.IsNullOrWhiteSpace(dn)) dn = id;
+                        if (_statDedupe.Add(id))
+                        {
+                            _statEntries.Add(new WorldDataIndexEntry
+                            {
+                                category = WorldDataCategory.StatCatalog,
+                                id = id,
+                                displayName = dn,
+                                filePath = file
+                            });
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ignore parse errors
             }
         }
     }
