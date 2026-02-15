@@ -38,13 +38,7 @@ public class SettlementInfoData
     // Source of truth for hierarchy metadata
     [JsonProperty("feudal")]
     public SettlementFeudalData feudal = new SettlementFeudalData();
-   
-    
 
-    // ------------------------------------------------------------------
-    // Back-compat: MANY scripts still reference these at the root level.
-    // These proxy into feudal so JSON stays normalized under "feudal".
-    // ------------------------------------------------------------------
 
     [JsonIgnore]
     public string settlementId
@@ -81,9 +75,6 @@ public class SettlementInfoData
         set { EnsureFeudal(); feudal.liegeSettlementId = value; }
     }
 
-    // SettlementHierarchyCalculator + InfoWindowManager currently expect a root-level "vassalContracts"
-    // and element type "SettlementVassalContract". We keep feudal.vassalContracts as the real store
-    // and project a view here.
     [JsonIgnore]
     public List<SettlementVassalContract> vassalContracts
     {
@@ -153,7 +144,6 @@ public class MainTab
     [JsonProperty("rulerDisplayName")]
     public string rulerDisplayName;
 
-    // Back-compat: some UI scripts still use "rulerName"
     [JsonIgnore]
     public string rulerName
     {
@@ -184,7 +174,6 @@ public class ArmyTab
 [Serializable]
 public class EconomyTab
 {
-    // Keep float so existing UI formatting and comparisons compile cleanly
     [JsonProperty("totalIncomePerMonth")]
     public float totalIncomePerMonth;
 
@@ -213,7 +202,6 @@ public class CulturalTab
     [JsonProperty("primaryTraits")]
     public string[] primaryTraits = Array.Empty<string>();
 
-    // Required by SettlementStatsCache
     [JsonProperty("raceDistribution")]
     public List<PercentEntry> raceDistribution = new List<PercentEntry>();
 
@@ -257,7 +245,26 @@ public class SettlementFeudalData
     [JsonProperty("liegeSettlementId")]
     public string liegeSettlementId;
 
-    // Source-of-truth storage
+    // Council Members (new fields)
+    [JsonProperty("castellanCharacterId")]
+    public string castellanCharacterId;
+
+    [JsonProperty("marshallCharacterId")]
+    public string marshallCharacterId;
+
+    [JsonProperty("stewardCharacterId")]
+    public string stewardCharacterId;
+
+    [JsonProperty("diplomatCharacterId")]
+    public string diplomatCharacterId;
+
+    [JsonProperty("spymasterCharacterId")]
+    public string spymasterCharacterId;
+
+    [JsonProperty("headPriestCharacterId")]
+    public string headPriestCharacterId;
+
+    // Source-of-truth storage for vassal contracts
     [JsonProperty("vassalContracts")]
     public List<VassalContractData> vassalContracts = new List<VassalContractData>();
 }
@@ -268,14 +275,12 @@ public class VassalContractData
     [JsonProperty("vassalSettlementId")]
     public string vassalSettlementId;
 
-    // 0..1 (recommended) or 0..100 (if you later decide) – consumers can normalize
     [JsonProperty("incomeTaxRate")]
     public float incomeTaxRate;
 
     [JsonProperty("troopTaxRate")]
     public float troopTaxRate;
 
-    // IMPORTANT: keep this as string; several UI + cache scripts treat it as string
     [JsonProperty("terms")]
     public string terms;
 }
@@ -305,4 +310,3 @@ public class PercentEntry
 [Serializable] public class SettlementHistoryData : HistoryTab { }
 
 #endregion
-

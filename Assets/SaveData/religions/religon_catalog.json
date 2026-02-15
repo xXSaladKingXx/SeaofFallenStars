@@ -8,9 +8,15 @@
       "description": "Cormyrean Denomination of Lathanderism",
       "traditions": [],
       "religiousLeaderCharacterId": null,
-      "traits": [
-        "defendersofthepass"
-      ]
+      "traits": []
+    },
+    {
+      "id": "tai",
+      "name": "The Cult of Blood",
+      "description": "The Primary Religion of Tai",
+      "traditions": [],
+      "religiousLeaderCharacterId": null,
+      "traits": []
     }
   ],
   "notes": null

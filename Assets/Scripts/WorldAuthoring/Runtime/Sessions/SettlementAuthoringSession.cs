@@ -46,6 +46,14 @@ namespace Zana.WorldAuthoring
         [Header("Men-at-Arms Quantity")]
         [HideInInspector]
         public System.Collections.Generic.List<MenAtArmsQuantityEntry> menAtArmsStacks = new System.Collections.Generic.List<MenAtArmsQuantityEntry>();
+        [Header("Council Members (Character Ids)")]
+        public string castellanCharacterId;
+        public string marshallCharacterId;
+        public string stewardCharacterId;
+        public string diplomatCharacterId;
+        public string spymasterCharacterId;
+        public string headPriestCharacterId;
+
 
         public override string BuildJson()
         {
@@ -125,7 +133,9 @@ namespace Zana.WorldAuthoring
                 }
             }
 
+
             return j.ToString(Newtonsoft.Json.Formatting.Indented);
+
         }
 
         public override void ApplyJson(string json)

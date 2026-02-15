@@ -880,9 +880,29 @@ public class MapManager : MonoBehaviour
 
             if (m != null)
             {
-                m.Invoke(mb, new object[] { point });
-                inited = true;
-                break;
+                try
+                {
+                    m.Invoke(mb, new object[] { point });
+                    inited = true;
+                    break;
+                }
+                catch (TargetInvocationException tie)
+                {
+                    // WARNING only (avoid Error Pause)
+                    Debug.LogWarning(
+                        $"[MapManager] Initialize(MapPoint) threw in {mb.GetType().Name} for window '{key}'.\n" +
+                        (tie.InnerException != null ? tie.InnerException.ToString() : tie.ToString()),
+                        mb);
+
+                    // keep searching for another Initialize(MapPoint) if present
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning(
+                        $"[MapManager] Failed invoking Initialize(MapPoint) in {mb.GetType().Name} for window '{key}'.\n{ex}",
+                        mb);
+                }
+
             }
         }
 

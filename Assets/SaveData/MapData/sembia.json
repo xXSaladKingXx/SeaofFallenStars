@@ -187,7 +187,15 @@
   "culturalComposition": [
     {
       "cultureId": "sembian",
-      "percentage": 1.0
+      "percentage": 0.95
+    },
+    {
+      "cultureId": "cormyrean",
+      "percentage": 0.04
+    },
+    {
+      "cultureId": "tai",
+      "percentage": 0.01
     }
   ],
   "raceDistribution": [

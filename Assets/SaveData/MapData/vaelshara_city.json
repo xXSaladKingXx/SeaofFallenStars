@@ -1,27 +1,19 @@
 {
-  "displayName": "Duchy of Seawatch",
+  "displayName": "City of Vael'Shara",
   "mapUrlOrPath": null,
-  "rulerCharacterId": "torrhenstorm",
+  "rulerCharacterId": null,
   "characterIds": [],
   "main": {
     "description": null,
     "population": 0,
-    "rulerDisplayName": "Duke Torrhen Storm",
+    "rulerDisplayName": null,
     "vassals": []
   },
   "army": {
     "totalArmy": 0,
-    "menAtArms": [
-      "heavy_infantry"
-    ],
-    "primaryCommanderDisplayName": "Duke Torrhen Storm",
-    "primaryCommanderCharacterId": "torrhenstorm",
-    "menAtArmsStacks": [
-      {
-        "menAtArmsId": "heavy_infantry",
-        "units": 15
-      }
-    ]
+    "menAtArms": [],
+    "primaryCommanderDisplayName": null,
+    "primaryCommanderCharacterId": null
   },
   "economy": {
     "totalIncomePerMonth": 0.0,
@@ -42,18 +34,18 @@
     "rulingFamilyMembers": []
   },
   "feudal": {
-    "settlementId": "seawatch",
+    "settlementId": "vaelshara_city",
     "layer": 0,
     "laws": "",
     "isPopulated": true,
     "capitalSettlementId": null,
     "liegeSettlementId": null,
-    "castellanCharacterId": "torrhenstorm",
-    "marshallCharacterId": "torrhenstorm",
-    "stewardCharacterId": "torrhenstorm",
-    "diplomatCharacterId": "torrhenstorm",
-    "spymasterCharacterId": "torrhenstorm",
-    "headPriestCharacterId": "torrhenstorm",
+    "castellanCharacterId": null,
+    "marshallCharacterId": null,
+    "stewardCharacterId": null,
+    "diplomatCharacterId": null,
+    "spymasterCharacterId": null,
+    "headPriestCharacterId": null,
     "vassalContracts": []
   }
 }

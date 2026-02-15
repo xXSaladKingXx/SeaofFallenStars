@@ -765,9 +765,9 @@ MonoBehaviour:
   dragTarget: {fileID: 7833149467275536490}
   parentCanvas: {fileID: 0}
   resizeHandle: {fileID: 4826438274489290047}
-  minUniformScale: 0.6
+  minUniformScale: 1
   maxUniformScale: 2
-  pixelsPerScaleMultiplier: 10
+  pixelsPerScaleMultiplier: 5
   forceResizePivot: 1
   resizePivot: {x: 0, y: 1}
   trySizeBasedOnCurrentCameraOrthoSize: 1

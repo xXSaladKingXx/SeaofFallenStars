@@ -1927,6 +1927,7 @@ GameObject:
   - component: {fileID: 90326787}
   - component: {fileID: 90326788}
   - component: {fileID: 90326789}
+  - component: {fileID: 90326790}
   m_Layer: 0
   m_Name: MapSystems
   m_TagString: Untagged
@@ -2006,7 +2007,7 @@ MonoBehaviour:
   mapPointNameplatePrefab: {fileID: 2794140108695180958, guid: f65107cda7e1e75468c959808ead0522, type: 3}
   nameplateNorthWorldPadding: 0
   nameplateScreenOffset: {x: 0, y: 10}
-  nameplateScaleRegional: 1.25
+  nameplateScaleRegional: 2
   nameplateScaleCountry: 1.1
   nameplateScaleDuchy: 1
   nameplateScaleLordship: 0.9
@@ -2061,6 +2062,20 @@ MonoBehaviour:
   ignoreHotkeysWhileTypingInInputField: 1
   enableGeographyToggle: 1
   logHotkeys: 1
+--- !u!114 &90326790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90326785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 935ebd95bfc0b9d4a8e384cb005307bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LogToFile
+  fileName: runtime_log.txt
+  includeStackTraces: 1
 --- !u!1001 &121435969
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3569,6 +3584,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 759524460}
     m_Modifications:
+    - target: {fileID: -7772355183713304284, guid: b5c3556110fc5264c9f44d785ac276ab, type: 3}
+      propertyPath: pointId
+      value: theworkshop
+      objectReference: {fileID: 0}
     - target: {fileID: -7772355183713304284, guid: b5c3556110fc5264c9f44d785ac276ab, type: 3}
       propertyPath: outlineWidth
       value: 0.02
@@ -5901,7 +5920,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7772355183713304284, guid: b5c3556110fc5264c9f44d785ac276ab, type: 3}
       propertyPath: displayName
-      value: Sundiall
+      value: City of Sundial
       objectReference: {fileID: 0}
     - target: {fileID: -7772355183713304284, guid: b5c3556110fc5264c9f44d785ac276ab, type: 3}
       propertyPath: outlineWidth
@@ -13949,6 +13968,94 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8496313361967478417, guid: 7f363a888096b154d9f80f4d4cef07d0, type: 3}
   m_PrefabInstance: {fileID: 950306752}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &967166041
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 967166043}
+  - component: {fileID: 967166042}
+  m_Layer: 0
+  m_Name: __AuthoringSession_Region
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &967166042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967166041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7327504284575554783cf842a962942d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.RegionAuthoringSession
+  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\MapData\dragonlands.json
+  data:
+    regionId: dragonlands
+    displayName: 'The Dragonlands '
+    mapUrlOrPath: 
+    layer: 1
+    main:
+      description: 'The Dragonlands are the region including where it''s rumored
+        ancient dragons used to roam. This includes the Kingdoms of Cormyr and Sembia,
+        as well as the lands of the Old Growth and the Dalelands. '
+      notableFacts: []
+    geography:
+      overview: 
+      dominantBiomes: []
+      dominantTerrain:
+      - forest
+      - plains
+      - mountains
+      - dead_plains
+      - swamp
+      climateNotes: 
+      travelNotes: 
+    culture:
+      entries: []
+    vassals:
+      countries:
+      - countryId: cormyr
+        displayName: 
+        relationship: 
+        summary: 
+      - countryId: sembia
+        displayName: 
+        relationship: 
+        summary: 
+      - countryId: theoldgrowth
+        displayName: 
+        relationship: 
+        summary: 
+      - countryId: thedalelands
+        displayName: 
+        relationship: 
+        summary: 
+      notes: 
+  culturalComposition: []
+--- !u!4 &967166043
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967166041}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1566514894}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1056156162
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15456,6 +15563,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 759524460}
     m_Modifications:
+    - target: {fileID: -7772355183713304284, guid: b5c3556110fc5264c9f44d785ac276ab, type: 3}
+      propertyPath: pointId
+      value: travelers_respite
+      objectReference: {fileID: 0}
     - target: {fileID: -7772355183713304284, guid: b5c3556110fc5264c9f44d785ac276ab, type: 3}
       propertyPath: outlineWidth
       value: 0.02
@@ -22303,7 +22414,7 @@ Transform:
   - {fileID: 1334595414}
   - {fileID: 480487642}
   - {fileID: 434817852}
-  - {fileID: 1743133149}
+  - {fileID: 967166043}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1566514895
@@ -22318,8 +22429,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddfd1b9cb89bab4185465c213e9a039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.WorldDataMasterAuthoring
-  activeCategory: 2
-  activeSession: {fileID: 1743133148}
+  activeCategory: 3
+  activeSession: {fileID: 967166042}
 --- !u!1001 &1581299612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25717,152 +25828,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1740752601}
   m_CullTransparentMesh: 1
---- !u!1 &1743133147
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1743133149}
-  - component: {fileID: 1743133148}
-  m_Layer: 0
-  m_Name: __AuthoringSession_Settlement
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1743133148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1743133147}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ea38c57cd2b884cbbf4f1be6577ab2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.SettlementAuthoringSession
-  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\MapData\cormyr.Json
-  data:
-    displayName: Kingdom of Cormyr
-    mapUrlOrPath: 
-    rulerCharacterId: char_azoun_matarys_iv
-    characterIds:
-    - char_azoun_matarys_iv
-    - guildmasterdavid
-    - buttons
-    - lordperseussungardner
-    - magistereustus
-    - marshalrayventheyoungersicklestone
-    - masteredwardsmith
-    - mastergeraltredstar
-    - masterofrevelscedricbanmont
-    - masterofthehuntjorvansenn
-    - matronilvadosk
-    main:
-      description: The Forest Kingdom under House Matarys. The Crown has sounded
-        the unprecedented four-blast muster and ordered all loyal banners to gather
-        at Arabel for war.
-      population: 117760
-      rulerDisplayName: King Azoun Matarys IV
-      vassals:
-      - arabel
-      - eveningstar
-      - shara_casma
-      - travelers_respite
-      - eastwatch
-      - westgate
-      - tails_end
-      - duchy_sundial
-      - marquessate_dragontooth
-      - county_selgaunt
-      - county_dragonsmaw
-      - trihold_sunguard
-      - duchy_vaelshara
-      - duchy_seawatch
-    army:
-      totalArmy: 30200
-      menAtArms:
-      - light_infantry
-      primaryCommanderDisplayName: King Azoun Matarys IV
-      primaryCommanderCharacterId: char_azoun_matarys_iv
-    economy:
-      totalIncomePerMonth: 21191.312
-      totalTreasury: 1200000
-      courtExpenses: 8000
-      armyExpenses: 2500
-      currentlyConstructing: []
-    cultural:
-      culture: Cormyrean
-      populationDistribution: 'Overwhemingly human with the exception of the eastern
-        duchy of Vael''Shara, which is the home of the elves. '
-      primaryTraits:
-      - fealty
-      - martial tradition
-      - forest-law
-      - pragmatic governance
-      - Defenders of the Pass
-      raceDistribution:
-      - key: Human
-        percent: 92
-      - key: Elvish
-        percent: 7.5
-      - key: Other
-        percent: 0.5
-      cultureDistribution:
-      - key: Cormyrean
-        percent: 85
-      - key: Elvish
-        percent: 7.5
-      - key: Cormyr-Sembian
-        percent: 7.5
-    history:
-      timelineEntries:
-      - '1346 DR : Azoun IV crowned.'
-      - '1350 DR : Civil war; rebel lands redist1ributed; debts deepen.'
-      - '1388 DR : Four-blast muster; banners called to Arabel.'
-      rulingFamilyMembers:
-      - char_azoun_matarys_iv
-    feudal:
-      settlementId: cormyr
-      layer: 2
-      laws: 
-      isPopulated: 1
-      capitalSettlementId: arabel
-      liegeSettlementId: 
-      vassalContracts:
-      - vassalSettlementId: default
-        incomeTaxRate: 0.075
-        troopTaxRate: 0.35
-        terms: Loyalty
-  culturalComposition: []
-  raceDistribution: []
-  menAtArmsStacks:
-  - menAtArmsId: light_infantry
-    units: 1
-  - menAtArmsId: light_infantry
-    units: 1
-  - menAtArmsId: light_infantry
-    units: 1
---- !u!4 &1743133149
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1743133147}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1771581501
 GameObject:
   m_ObjectHideFlags: 0

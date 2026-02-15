@@ -55,10 +55,6 @@ public class RegionMainTab
     [TextArea(3, 12)]
     public string description = "";
 
-    // Optional: quick lore snippets you might want later (not required by current UI)
-    [JsonProperty("tagline")]
-    public string tagline = "";
-
     [JsonProperty("notableFacts")]
     public List<string> notableFacts = new List<string>();
 }

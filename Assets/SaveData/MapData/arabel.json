@@ -2,32 +2,15 @@
   "displayName": "Arabel",
   "mapUrlOrPath": "",
   "rulerCharacterId": "char_azoun_matarys_iv",
-  "characterIds": [
-    "char_azoun_matarys_iv"
-  ],
+  "characterIds": [],
   "main": {
-    "description": "Kingdom capital city.",
-    "population": 24000,
+    "description": "",
+    "population": 0,
     "rulerDisplayName": "King Azoun Matarys IV",
-    "vassals": [
-      "eveningstar",
-      "sharacasma",
-      "travelersrespite",
-      "eastwatch",
-      "westgate",
-      "sundial",
-      "dragontooth",
-      "selgaunt",
-      "dragonsmaw",
-      "sunguard",
-      "vaelshara",
-      "seawatch",
-      "tailsend",
-      "scales"
-    ]
+    "vassals": []
   },
   "army": {
-    "totalArmy": 12250,
+    "totalArmy": 0,
     "menAtArms": [
       "purple_dragons"
     ],
@@ -41,15 +24,15 @@
     ]
   },
   "economy": {
-    "totalIncomePerMonth": 15400.0,
-    "totalTreasury": 354000.0,
-    "courtExpenses": "800",
-    "armyExpenses": "2800",
+    "totalIncomePerMonth": 0.0,
+    "totalTreasury": 0.0,
+    "courtExpenses": "",
+    "armyExpenses": "",
     "currentlyConstructing": []
   },
   "cultural": {
-    "culture": "Cormyrean",
-    "populationDistribution": "",
+    "culture": "cormyr",
+    "populationDistribution": "1",
     "primaryTraits": [],
     "raceDistribution": [],
     "cultureDistribution": []
@@ -60,27 +43,17 @@
   },
   "feudal": {
     "settlementId": "arabel",
-    "layer": 5,
+    "layer": 0,
     "laws": "",
     "isPopulated": true,
     "capitalSettlementId": "",
     "liegeSettlementId": "cormyr",
+    "castellanCharacterId": "torrhenstorm",
+    "marshallCharacterId": "torrhenstorm",
+    "stewardCharacterId": "torrhenstorm",
+    "diplomatCharacterId": "torrhenstorm",
+    "spymasterCharacterId": "torrhenstorm",
+    "headPriestCharacterId": "torrhenstorm",
     "vassalContracts": []
-  },
-  "culturalComposition": [
-    {
-      "cultureId": "cormyrean",
-      "percentage": 1.0
-    }
-  ],
-  "raceDistribution": [
-    {
-      "raceId": "human",
-      "percentage": 0.95
-    },
-    {
-      "raceId": "elf",
-      "percentage": 0.05
-    }
-  ]
+  }
 }

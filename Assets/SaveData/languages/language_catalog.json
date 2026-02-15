@@ -3,7 +3,7 @@
   "displayName": "Languages",
   "languages": [
     {
-      "id": "cormyr_common",
+      "id": "cormyrean",
       "name": "Cormyrean Common",
       "primaryCultureId": "cormyrean",
       "nativeRegionId": null,
@@ -17,7 +17,7 @@
       "description": "The language spoken by the people of Tai. It's smooth and elegant."
     },
     {
-      "id": "sembia_common",
+      "id": "sembian",
       "name": "Sembian Common",
       "primaryCultureId": "sembian",
       "nativeRegionId": null,

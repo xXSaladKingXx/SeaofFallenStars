@@ -1,0 +1,85 @@
+{
+  "characterId": "dukeamosvaelshara",
+  "displayName": "Duke Amos Vael'Shara The Younger",
+  "playerName": null,
+  "className": null,
+  "subclassName": null,
+  "background": null,
+  "race": null,
+  "subrace": null,
+  "level": 0,
+  "alignment": null,
+  "experiencePoints": 0,
+  "life": {
+    "birthDate": null,
+    "isAlive": true,
+    "deathDate": null
+  },
+  "appearance": {
+    "age": null,
+    "height": null,
+    "weight": null,
+    "eyes": null,
+    "skin": null,
+    "hair": null,
+    "portraitSprite": null
+  },
+  "abilities": {
+    "str": 10,
+    "dex": 10,
+    "con": 10,
+    "intel": 10,
+    "wis": 10,
+    "cha": 10
+  },
+  "savingThrows": null,
+  "skills": null,
+  "combat": {
+    "armorClass": 0,
+    "initiativeMisc": 0,
+    "speedFeet": 0,
+    "hitDice": null,
+    "hitDiceUsed": 0,
+    "maxHp": 0,
+    "currentHp": 0,
+    "tempHp": 0
+  },
+  "proficiencies": {
+    "armor": null,
+    "weapons": null,
+    "tools": null,
+    "languages": null
+  },
+  "attacks": null,
+  "equipment": null,
+  "featuresAndTraits": null,
+  "personality": {
+    "traits": null,
+    "ideals": null,
+    "bonds": null,
+    "flaws": null
+  },
+  "backstory": null,
+  "relationships": {
+    "parents": null,
+    "siblings": null,
+    "children": null,
+    "spouse": null,
+    "other": null
+  },
+  "feudal": {
+    "isFeudal": false,
+    "rank": null,
+    "rulesSettlementId": null,
+    "vassalSettlementIds": null
+  },
+  "spellcasting": {
+    "isCaster": false,
+    "spellcastingClass": null,
+    "spellcastingAbility": null,
+    "spellSaveDc": 0,
+    "spellAttackBonus": 0,
+    "spellLevels": null
+  },
+  "notes": null
+}

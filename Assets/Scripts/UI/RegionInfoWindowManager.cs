@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
@@ -40,6 +40,20 @@ public class RegionInfoWindowManager : MonoBehaviour
     [Header("Culture Tab UI")]
     [SerializeField] private TMP_Dropdown cultureDropdown;
     [SerializeField] private TMP_Text cultureDescriptionText; // optional: assign if you have it
+    // Added: dropdowns and description text for races, languages, and religions.
+    [SerializeField] private TMP_Dropdown raceDropdown;
+    [SerializeField] private TMP_Text raceDescriptionText;
+    [SerializeField] private TMP_Dropdown languageDropdown;
+    [SerializeField] private TMP_Text languageDescriptionText;
+    [SerializeField] private TMP_Dropdown religionDropdown;
+    [SerializeField] private TMP_Text religionDescriptionText;
+
+    // === SubInfo ===
+    [Header("Sub Info Panel")]
+    [SerializeField] private GameObject subInfoPrefab;
+
+    // Root canvas reference for subinfo spawning
+    private Canvas _rootCanvas;
 
     [Header("Map Panel Prefab (Optional)")]
     [SerializeField] private GameObject mapPanelPrefab;
@@ -59,7 +73,8 @@ public class RegionInfoWindowManager : MonoBehaviour
 
     private bool _wired;
 
-    private const string DROPDOWN_DEFAULT = "— Select —";
+    // Default placeholder for dropdowns. Use simple ASCII characters to avoid font issues.
+    private const string DROPDOWN_DEFAULT = "- Select -";
 
     private static readonly BindingFlags AnyInstance =
         BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -70,6 +85,12 @@ public class RegionInfoWindowManager : MonoBehaviour
         _regionBoundary = _regionPoint != null ? _regionPoint.regionBoundaryCollider : null;
 
         _data = _regionPoint != null ? _regionPoint.GetRegionInfoData() : null;
+
+        // Find root canvas for spawning subinfo panels
+        if (_rootCanvas == null)
+        {
+            _rootCanvas = GetComponentInParent<Canvas>(true);
+        }
 
         WireUIOnce();
         RefreshAll();
@@ -186,41 +207,197 @@ public class RegionInfoWindowManager : MonoBehaviour
 
     private void RefreshCultureTab()
     {
-        if (cultureDropdown == null) return;
+        // Build dynamic culture/race/language/religion distribution from child populated settlements.
+        // If any of the dropdowns are not assigned, skip those categories.
+        // Compute aggregated distributions across all child populated MapPoints.
+        var cultureCounts = new Dictionary<string, float>(StringComparer.OrdinalIgnoreCase);
+        var raceCounts = new Dictionary<string, float>(StringComparer.OrdinalIgnoreCase);
+        var languageCounts = new Dictionary<string, float>(StringComparer.OrdinalIgnoreCase);
+        var religionCounts = new Dictionary<string, float>(StringComparer.OrdinalIgnoreCase);
+        int settlementCount = 0; // number of populated settlements considered
+        float totalPopulation = 0f; // sum of populations across settlements
 
-        cultureDropdown.onValueChanged.RemoveAllListeners();
-        cultureDropdown.ClearOptions();
-
-        var entries = _data?.culture?.entries;
-        var options = new List<string> { DROPDOWN_DEFAULT };
-
-        if (entries != null)
+        // Traverse all descendants of the region to find populated settlements.
+        var stack = new Stack<MapPoint>();
+        if (_regionPoint != null)
         {
-            for (int i = 0; i < entries.Count; i++)
+            var firstChildren = _regionPoint.GetChildren();
+            if (firstChildren != null)
             {
-                var e = entries[i];
-                if (e == null) continue;
-                options.Add(!string.IsNullOrWhiteSpace(e.name) ? e.name : $"Culture {i + 1}");
+                foreach (var c in firstChildren)
+                    if (c != null) stack.Push(c);
+            }
+        }
+        var visited = new HashSet<MapPoint>();
+        while (stack.Count > 0)
+        {
+            var p = stack.Pop();
+            if (p == null || !visited.Add(p)) continue;
+
+            var kids = p.GetChildren();
+            if (kids != null)
+            {
+                foreach (var k in kids)
+                    if (k != null) stack.Push(k);
+            }
+
+            // Only consider populated points
+            try
+            {
+                // Use Settlement info kind instead of Populated, as per user instructions
+                if (p.infoKind == MapPoint.InfoKind.Settlement)
+                {
+                    // Attempt to get settlement info
+                    var sInfo = p.GetSettlementInfoData();
+                    if (sInfo != null)
+                    {
+                        settlementCount++;
+                        // Use population to weight contributions; default to 1 if not specified
+                        int pop = 0;
+                        try
+                        {
+                            pop = sInfo?.main?.population ?? 0;
+                        }
+                        catch
+                        {
+                            pop = 0;
+                        }
+                        float fpop = pop > 0 ? (float)pop : 0f;
+                        totalPopulation += fpop;
+                        // Culture distribution: use distribution if available, else fallback to single culture
+                        var cul = sInfo.cultural;
+                        if (cul != null)
+                        {
+                            var cd = cul.cultureDistribution;
+                            if (cd != null && cd.Count > 0)
+                            {
+                                foreach (var pe in cd)
+                                {
+                                    if (pe == null || string.IsNullOrWhiteSpace(pe.key)) continue;
+                                    float existing = 0f;
+                                    cultureCounts.TryGetValue(pe.key, out existing);
+                                    // weight by population and percent
+                                    cultureCounts[pe.key] = existing + (pe.percent / 100f) * fpop;
+                                }
+                            }
+                            else if (!string.IsNullOrWhiteSpace(cul.culture))
+                            {
+                                float existing = 0f;
+                                cultureCounts.TryGetValue(cul.culture, out existing);
+                                cultureCounts[cul.culture] = existing + fpop;
+                            }
+                            // Race distribution
+                            var rd = cul.raceDistribution;
+                            if (rd != null && rd.Count > 0)
+                            {
+                                foreach (var pe in rd)
+                                {
+                                    if (pe == null || string.IsNullOrWhiteSpace(pe.key)) continue;
+                                    float existing = 0f;
+                                    raceCounts.TryGetValue(pe.key, out existing);
+                                    raceCounts[pe.key] = existing + (pe.percent / 100f) * fpop;
+                                }
+                            }
+                            // Languages: get list via reflection
+                            List<string> langList = null;
+                            object langObj;
+                            if (TryGetValueByPath(sInfo, "cultural.languages", out langObj) && langObj is IEnumerable<string> langEnum)
+                                langList = new List<string>(langEnum);
+                            if (langList != null)
+                            {
+                                foreach (var lang in langList)
+                                {
+                                    if (string.IsNullOrWhiteSpace(lang)) continue;
+                                    float existing = 0f;
+                                    languageCounts.TryGetValue(lang, out existing);
+                                    // treat each language as full population
+                                    languageCounts[lang] = existing + fpop;
+                                }
+                            }
+                            // Religions: get list via reflection
+                            List<string> relList = null;
+                            object relObj;
+                            if (TryGetValueByPath(sInfo, "cultural.religions", out relObj) && relObj is IEnumerable<string> relEnum)
+                                relList = new List<string>(relEnum);
+                            if (relList != null)
+                            {
+                                foreach (var rel in relList)
+                                {
+                                    if (string.IsNullOrWhiteSpace(rel)) continue;
+                                    float existing = 0f;
+                                    religionCounts.TryGetValue(rel, out existing);
+                                    religionCounts[rel] = existing + fpop;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // ignore exceptions from MapPoint methods
             }
         }
 
-        cultureDropdown.AddOptions(options);
-        cultureDropdown.value = 0;
-        cultureDropdown.RefreshShownValue();
-
-        if (cultureDescriptionText != null)
-            cultureDescriptionText.text = "";
-
-        cultureDropdown.onValueChanged.AddListener(idx =>
+        // Helper to populate dropdowns with aggregated distribution
+        void PopulateDistributionDropdown(TMP_Dropdown dd, TMP_Text descText, Dictionary<string, float> counts)
         {
-            if (idx <= 0) return;
-            int eIdx = idx - 1;
-            if (entries == null || eIdx < 0 || eIdx >= entries.Count) return;
+            if (dd == null) return;
+            dd.onValueChanged.RemoveAllListeners();
+            dd.ClearOptions();
+            var opts = new List<string> { DROPDOWN_DEFAULT };
+            var keysList = new List<string>();
+            foreach (var kv in counts)
+            {
+                // Use weighted total population to compute percentages (kv.Value stores weighted population contribution)
+                float pct = (totalPopulation > 0f) ? (kv.Value / totalPopulation * 100f) : 0f;
+                keysList.Add($"{kv.Key} ({pct:0.#}%)");
+            }
+            // sort by descending percent
+            keysList.Sort((a, b) =>
+            {
+                float pa = 0f;
+                float pb = 0f;
+                int idxA = a.LastIndexOf('(');
+                int idxAPer = a.LastIndexOf('%');
+                if (idxA >= 0 && idxAPer > idxA && float.TryParse(a.Substring(idxA + 1, idxAPer - idxA - 1), out float tmpA))
+                    pa = tmpA;
+                int idxB = b.LastIndexOf('(');
+                int idxBPer = b.LastIndexOf('%');
+                if (idxB >= 0 && idxBPer > idxB && float.TryParse(b.Substring(idxB + 1, idxBPer - idxB - 1), out float tmpB))
+                    pb = tmpB;
+                return pb.CompareTo(pa);
+            });
+            opts.AddRange(keysList);
+            dd.AddOptions(opts);
+            dd.value = 0;
+            dd.RefreshShownValue();
+            if (descText != null)
+                descText.text = "";
+            dd.onValueChanged.AddListener(idx =>
+            {
+                if (idx <= 0) return;
+                int listIndex = idx - 1;
+                if (listIndex < 0 || listIndex >= keysList.Count) return;
+                string entry = keysList[listIndex];
+                // Clear description text since sub-info panel will handle details
+                if (descText != null)
+                    descText.text = "";
+                // Extract the key name before the percentage and parentheses
+                string keyName = entry;
+                int parenIndex = entry.LastIndexOf('(');
+                if (parenIndex > 0)
+                    keyName = entry.Substring(0, parenIndex).Trim();
+                // Show sub-info panel for the selected item
+                ShowSubInfo(keyName);
+            });
+        }
 
-            var e = entries[eIdx];
-            if (cultureDescriptionText != null)
-                cultureDescriptionText.text = e != null ? (e.description ?? "") : "";
-        });
+        // Populate each dropdown
+        PopulateDistributionDropdown(cultureDropdown, cultureDescriptionText, cultureCounts);
+        PopulateDistributionDropdown(raceDropdown, raceDescriptionText, raceCounts);
+        PopulateDistributionDropdown(languageDropdown, languageDescriptionText, languageCounts);
+        PopulateDistributionDropdown(religionDropdown, religionDescriptionText, religionCounts);
     }
 
     private void RefreshGeographyTab()
@@ -300,9 +477,9 @@ public class RegionInfoWindowManager : MonoBehaviour
 
             string name = !string.IsNullOrWhiteSpace(c.displayName) ? c.displayName : (c.pointId ?? c.name);
             if (regionAreaSqMi > 0.0001f)
-                lines.Add($"• {name}: {area:0.##} sq mi ({(area / regionAreaSqMi * 100f):0.#}%)");
+                lines.Add($"Â• {name}: {area:0.##} sq mi ({(area / regionAreaSqMi * 100f):0.#}%)");
             else
-                lines.Add($"• {name}: {area:0.##} sq mi");
+                lines.Add($"Â• {name}: {area:0.##} sq mi");
         }
 
         return string.Join("\n", lines);
@@ -460,7 +637,7 @@ public class RegionInfoWindowManager : MonoBehaviour
         foreach (var kv in entries)
         {
             float pct = Mathf.Clamp01(kv.Value / regionAreaSqMi) * 100f;
-            lines.Add($"• {kv.Key}: {pct:0.#}% ({kv.Value:0.##} sq mi)");
+            lines.Add($"Â• {kv.Key}: {pct:0.#}% ({kv.Value:0.##} sq mi)");
         }
 
         return string.Join("\n", lines);
@@ -571,5 +748,93 @@ public class RegionInfoWindowManager : MonoBehaviour
 #else
         return new List<MapPoint>(GameObject.FindObjectsOfType<MapPoint>(includeInactive));
 #endif
+    }
+
+    // Helpers copied from InfoWindowManager: reflection-based retrieval of values by path.
+    private static bool TryGetValueByPath(object root, string path, out object value)
+    {
+        value = null;
+        if (root == null || string.IsNullOrWhiteSpace(path)) return false;
+        object current = root;
+        foreach (string part in path.Split('.'))
+        {
+            if (string.IsNullOrWhiteSpace(part)) return false;
+            if (!TryGetMemberValue(current, part, out current) || current == null)
+                return false;
+        }
+        value = current;
+        return true;
+    }
+
+    private static bool TryGetMemberValue(object obj, string memberName, out object value)
+    {
+        value = null;
+        if (obj == null) return false;
+        Type t = obj.GetType();
+        // Try property first
+        PropertyInfo prop = t.GetProperty(memberName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase);
+        if (prop != null)
+        {
+            try { value = prop.GetValue(obj); return true; } catch { return false; }
+        }
+        // Try field next
+        FieldInfo field = t.GetField(memberName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase);
+        if (field != null)
+        {
+            try { value = field.GetValue(obj); return true; } catch { return false; }
+        }
+        return false;
+    }
+
+    // === SubInfo Methods (copied/adapted from InfoWindowManager) ===
+    /// <summary>
+    /// Spawn a subinfo panel for the given key. Uses reflection to call Initialize/Init/Set methods on the prefab's components.
+    /// </summary>
+    /// <param name="key">The identifier of the culture/race/language/religion to show.</param>
+    private void ShowSubInfo(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key) || subInfoPrefab == null) return;
+        // Use root canvas or fallback to this object's root
+        Transform parent = (_rootCanvas != null ? _rootCanvas.transform : transform.root);
+        GameObject panel = Instantiate(subInfoPrefab, parent);
+
+        // Attempt to call Initialize/Init/Set on components
+        foreach (MonoBehaviour mb in panel.GetComponentsInChildren<MonoBehaviour>(true))
+        {
+            if (mb == null) continue;
+            Type t = mb.GetType();
+            // Try Initialize(string)
+            if (TryInvokeInitializeSubInfo(mb, t, "Initialize", key)) return;
+            // Try Init(string)
+            if (TryInvokeInitializeSubInfo(mb, t, "Init", key)) return;
+            // Try Set(string)
+            if (TryInvokeInitializeSubInfo(mb, t, "Set", key)) return;
+        }
+    }
+
+    /// <summary>
+    /// Try invoking a method with a single string parameter on the target object.
+    /// </summary>
+    private bool TryInvokeInitializeSubInfo(object target, Type targetType, string methodName, string key)
+    {
+        try
+        {
+            MethodInfo[] methods = targetType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            foreach (MethodInfo m in methods)
+            {
+                if (m.Name != methodName) continue;
+                var ps = m.GetParameters();
+                if (ps.Length == 1 && ps[0].ParameterType == typeof(string))
+                {
+                    m.Invoke(target, new object[] { key });
+                    return true;
+                }
+            }
+        }
+        catch
+        {
+            // ignore
+        }
+        return false;
     }
 }

@@ -39,12 +39,31 @@
   "army": {
     "totalArmy": 30200,
     "menAtArms": [
-      "Realm levies (approx): 30,200",
-      "Purple Dragons (standing): 1000",
-      "Vael’Shara Company Mercenaries: 600 (elite defenders, Crown-aligned)"
+      "light_infantry",
+      "purple_dragons",
+      "heavy_infantry",
+      "light_cavalry"
     ],
     "primaryCommanderDisplayName": "King Azoun Matarys IV",
-    "primaryCommanderCharacterId": "char_azoun_matarys_iv"
+    "primaryCommanderCharacterId": "char_azoun_matarys_iv",
+    "menAtArmsStacks": [
+      {
+        "menAtArmsId": "light_infantry",
+        "units": 8
+      },
+      {
+        "menAtArmsId": "purple_dragons",
+        "units": 20
+      },
+      {
+        "menAtArmsId": "heavy_infantry",
+        "units": 8
+      },
+      {
+        "menAtArmsId": "light_cavalry",
+        "units": 5
+      }
+    ]
   },
   "economy": {
     "totalIncomePerMonth": 21191.3125,
@@ -109,12 +128,66 @@
     "isPopulated": true,
     "capitalSettlementId": "arabel",
     "liegeSettlementId": "",
+    "castellanCharacterId": "torrhenstorm",
+    "marshallCharacterId": "torrhenstorm",
+    "stewardCharacterId": "torrhenstorm",
+    "diplomatCharacterId": "torrhenstorm",
+    "spymasterCharacterId": "torrhenstorm",
+    "headPriestCharacterId": "torrhenstorm",
     "vassalContracts": [
       {
         "vassalSettlementId": "default",
         "incomeTaxRate": 0.075,
         "troopTaxRate": 0.35,
         "terms": "Loyalty"
+      },
+      {
+        "vassalSettlementId": "main",
+        "incomeTaxRate": 0.25,
+        "troopTaxRate": 1.0,
+        "terms": "wartime"
+      },
+      {
+        "vassalSettlementId": "arabel",
+        "incomeTaxRate": 1.0,
+        "troopTaxRate": 1.0,
+        "terms": "Capital"
+      },
+      {
+        "vassalSettlementId": "eastwatch",
+        "incomeTaxRate": 0.0,
+        "troopTaxRate": 0.0,
+        "terms": "Special Outpost"
+      },
+      {
+        "vassalSettlementId": "sundial",
+        "incomeTaxRate": 0.25,
+        "troopTaxRate": 1.0,
+        "terms": "Wartime"
+      },
+      {
+        "vassalSettlementId": "sundial",
+        "incomeTaxRate": 0.25,
+        "troopTaxRate": 1.0,
+        "terms": "Wartime"
+      },
+      {
+        "vassalSettlementId": "eveningstar",
+        "incomeTaxRate": 0.35,
+        "troopTaxRate": 1.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "dragontooth",
+        "incomeTaxRate": 0.35,
+        "troopTaxRate": 1.0,
+        "terms": ""
+      },
+      {
+        "vassalSettlementId": "trihold_sunguard",
+        "incomeTaxRate": 0.35,
+        "troopTaxRate": 1.0,
+        "terms": ""
       }
     ]
   }

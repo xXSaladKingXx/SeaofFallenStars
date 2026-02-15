@@ -6,41 +6,31 @@
       "id": "human",
       "displayName": "Human",
       "description": "",
-      "traits": [
-        "defendersofthepass"
-      ]
+      "traits": []
     },
     {
       "id": "elf",
       "displayName": "Elf",
       "description": "",
-      "traits": [
-        "defendersofthepass"
-      ]
+      "traits": []
     },
     {
       "id": "dwarf",
       "displayName": "Dwarf",
       "description": "",
-      "traits": [
-        "defendersofthepass"
-      ]
+      "traits": []
     },
     {
       "id": "halfling",
       "displayName": "Halfling",
       "description": "",
-      "traits": [
-        "defendersofthepass"
-      ]
+      "traits": []
     },
     {
       "id": "gnome",
       "displayName": "Gnome",
       "description": "",
-      "traits": [
-        "defendersofthepass"
-      ]
+      "traits": []
     },
     {
       "id": "tiefling",
@@ -61,14 +51,6 @@
     {
       "id": "halfelf",
       "displayName": "Half-Elf",
-      "description": "",
-      "traits": [
-        "defendersofthepass"
-      ]
-    },
-    {
-      "id": "halforc",
-      "displayName": "Half-Orc",
       "description": "",
       "traits": [
         "defendersofthepass"
