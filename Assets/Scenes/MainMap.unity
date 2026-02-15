@@ -2007,7 +2007,7 @@ MonoBehaviour:
   mapPointNameplatePrefab: {fileID: 2794140108695180958, guid: f65107cda7e1e75468c959808ead0522, type: 3}
   nameplateNorthWorldPadding: 0
   nameplateScreenOffset: {x: 0, y: 10}
-  nameplateScaleRegional: 2
+  nameplateScaleRegional: 1.5
   nameplateScaleCountry: 1.1
   nameplateScaleDuchy: 1
   nameplateScaleLordship: 0.9
@@ -28217,7 +28217,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 700
+  orthographic size: 650
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -28247,12 +28247,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapCameraController
   mapBounds: {fileID: 2110414839}
   minZoom: 15
-  maxZoom: 500
+  maxZoom: 650
   zoomSpeed: 1000
   panSpeed: 30
   snapDuration: 1
   resetPosition: {x: 0, y: 0, z: -10}
-  resetZoom: 500
+  resetZoom: 650
   useSettingsMenuController: 0
   lockCursorToMapPointDuringPan: 1
   blockZoomOverAnyUI: 0
