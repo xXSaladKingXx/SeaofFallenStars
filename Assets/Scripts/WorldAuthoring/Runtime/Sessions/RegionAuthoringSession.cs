@@ -1,116 +1,107 @@
-#if UNITY_EDITOR
-using Newtonsoft.Json;
 using System;
-using System.IO;
-using System.Text;
-using UnityEditor;
+using System.Collections.Generic;
 using UnityEngine;
-using Zana.WorldAuthoring;
 
-/// <summary>
-/// Authoring wrapper for RegionInfoData.
-///
-/// Requested behaviors implemented:
-/// - Regions track vassals as MapPoint IDs only.
-/// - Region derived fields are recomputed from child map points on save.
-/// - Biomes/travel-notes are not part of this model.
-/// </summary>
-[CreateAssetMenu(menuName = "SeaofFallenStars/World Authoring/Region Authoring Session")]
-public class RegionAuthoringSession : ScriptableObject
+namespace Zana.WorldAuthoring
 {
-    [SerializeField] public RegionInfoData model = new RegionInfoData();
-
-    [Tooltip("Optional: override the JSON file path used for load/save. If empty, the session uses MapData/<regionId>.json")]
-    public string overrideJsonPath;
-
-    public void EnsureIds()
+    /// <summary>
+    /// Authoring session for RegionInfoData (Regions/Countries/Duchies/Lordships).
+    ///
+    /// NOTES
+    /// - Vassals are stored as MapPoint IDs only (RegionInfoData.vassals).
+    /// - Derived fields (population, distributions, terrain breakdown) are recalculated from child MapPoints on save.
+    /// - The inspector UI for this session is customized (see RegionAuthoringSessionEditor) so derived fields are not shown.
+    /// </summary>
+    public sealed class RegionAuthoringSession : WorldDataAuthoringSessionBase
     {
-        if (model == null) model = new RegionInfoData();
-        if (model.main == null) model.main = new RegionMainTabData();
-        if (model.geography == null) model.geography = new RegionGeographyTabData();
-        if (model.vassals == null) model.vassals = new System.Collections.Generic.List<string>();
-        if (model.derived == null) model.derived = new RegionDerivedInfo();
+        [Header("Region Data")]
+        public RegionInfoData data = new RegionInfoData();
 
-        if (string.IsNullOrWhiteSpace(model.regionId))
-            model.regionId = Slugify(model.displayName);
-    }
+        public override WorldDataCategory Category => WorldDataCategory.Region;
 
-    public void RecalculateDerived()
-    {
-        EnsureIds();
-        string mapDataDir = WorldDataDirectoryResolver.GetEditorMapDataDir();
-        RegionDerivedCalculator.Recalculate(model, mapDataDir);
-    }
-
-    public string GetDefaultJsonPath()
-    {
-        EnsureIds();
-        string dir = WorldDataDirectoryResolver.EnsureEditorDirectory(WorldDataCategory.Region); // MapData
-        return Path.Combine(dir, $"{model.regionId}.json");
-    }
-
-    public void SaveJson()
-    {
-        EnsureIds();
-        RecalculateDerived();
-
-        string path = string.IsNullOrWhiteSpace(overrideJsonPath) ? GetDefaultJsonPath() : overrideJsonPath;
-        string json = JsonConvert.SerializeObject(model, Formatting.Indented);
-        File.WriteAllText(path, json);
-        AssetDatabase.Refresh();
-    }
-
-    public void LoadJson(string filePath)
-    {
-        if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
-            return;
-
-        try
+        public override string GetDefaultFileBaseName()
         {
-            string txt = File.ReadAllText(filePath);
-            var loaded = JsonConvert.DeserializeObject<RegionInfoData>(txt);
-            model = loaded ?? new RegionInfoData();
-            overrideJsonPath = filePath;
-        }
-        catch
-        {
-            // If parsing fails, keep current model.
-        }
+            // Prefer explicit regionId, else derive from displayName.
+            if (data == null) data = new RegionInfoData();
 
-        EnsureIds();
-    }
-
-    private static string Slugify(string input)
-    {
-        if (string.IsNullOrWhiteSpace(input)) return "";
-
-        input = input.Trim().ToLowerInvariant();
-        var sb = new StringBuilder(input.Length);
-        bool prevDash = false;
-
-        for (int i = 0; i < input.Length; i++)
-        {
-            char c = input[i];
-
-            bool isAlphaNum = (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
-            if (isAlphaNum)
+            if (string.IsNullOrWhiteSpace(data.regionId))
             {
-                sb.Append(c);
-                prevDash = false;
-                continue;
+                if (!string.IsNullOrWhiteSpace(data.displayName))
+                    data.regionId = Slugify(data.displayName);
             }
 
-            // collapse whitespace and punctuation into a single dash
-            if (!prevDash)
-            {
-                sb.Append('-');
-                prevDash = true;
-            }
+            return string.IsNullOrWhiteSpace(data.regionId) ? "new_region" : data.regionId.Trim();
         }
 
-        // trim dashes
-        string s = sb.ToString().Trim('-');
-        return s;
+        public override string BuildJson()
+        {
+            if (data == null) data = new RegionInfoData();
+
+            // Ensure required sub-objects exist to avoid nulls.
+            if (data.main == null) data.main = new RegionMainTabData();
+            if (data.geography == null) data.geography = new RegionGeographyTabData();
+            if (data.vassals == null) data.vassals = new List<string>();
+            if (data.derived == null) data.derived = new RegionDerivedInfo();
+
+            // Ensure regionId.
+            if (string.IsNullOrWhiteSpace(data.regionId))
+                data.regionId = Slugify(data.displayName);
+
+            // Recompute derived fields from child map points.
+            RegionDerivedCalculator.RecalculateFromChildren(data);
+
+            return ToJson(data);
+        }
+
+        public override void ApplyJson(string json)
+        {
+            data = string.IsNullOrWhiteSpace(json)
+                ? new RegionInfoData()
+                : (FromJson<RegionInfoData>(json) ?? new RegionInfoData());
+
+            // Repair null sub-objects for safety in inspector/editor.
+            if (data.main == null) data.main = new RegionMainTabData();
+            if (data.geography == null) data.geography = new RegionGeographyTabData();
+            if (data.vassals == null) data.vassals = new List<string>();
+            if (data.derived == null) data.derived = new RegionDerivedInfo();
+        }
+
+        private static string Slugify(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s))
+                return string.Empty;
+
+            s = s.Trim().ToLowerInvariant();
+
+            var chars = new List<char>(s.Length);
+            bool prevDash = false;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                char c = s[i];
+
+                if (char.IsLetterOrDigit(c))
+                {
+                    chars.Add(c);
+                    prevDash = false;
+                    continue;
+                }
+
+                // Convert whitespace and punctuation to single dashes.
+                if (!prevDash)
+                {
+                    chars.Add('-');
+                    prevDash = true;
+                }
+            }
+
+            string result = new string(chars.ToArray()).Trim('-');
+
+            // Collapse any accidental multiple dashes.
+            while (result.Contains("--"))
+                result = result.Replace("--", "-");
+
+            return result;
+        }
     }
 }
-#endif

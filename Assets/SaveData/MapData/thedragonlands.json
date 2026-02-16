@@ -1,0 +1,26 @@
+{
+  "regionId": "thedragonlands",
+  "displayName": "The Dragonlands",
+  "mapUrlOrPath": "",
+  "layer": "Regional",
+  "main": {
+    "description": "The Lands where dragons used to roam a millenia ago, during the Age of Heroes. The Heroes of song and legent wiped out the dragons, and along with them House Matarys wiped out the House of the Dragon, taking control of Cormyr. Sembia is rumored to have hosted a grand fight between a dragon and a friendly goddess the Sembians call The Mother, and the Old Growth and the Dalelands north of Cormyr and West of Sembia respectively are the old prowling lands of the dragons.  the Old Growth is where the people of Cormyr were rumored to come from, before dragons came and forced them through the mountains for protection.",
+    "notableFacts": []
+  },
+  "geography": {
+    "overview": "The Dalelands are swamps of thick bog and sickness, ",
+    "climateNotes": "",
+    "dominantTerrain": []
+  },
+  "vassals": [
+    "dalelands",
+    "oldgrowth"
+  ],
+  "derived": {
+    "totalPopulation": 0,
+    "raceDistribution": [],
+    "cultureDistribution": [],
+    "languageDistribution": [],
+    "terrainBreakdown": []
+  }
+}

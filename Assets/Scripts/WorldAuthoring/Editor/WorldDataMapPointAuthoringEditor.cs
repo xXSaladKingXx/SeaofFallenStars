@@ -168,7 +168,9 @@ namespace Zana.WorldAuthoring
                         if (r.data == null) r.data = new RegionInfoData();
                         r.data.displayName = mp.displayName;
                         r.data.regionId = stableId;
-                        r.data.layer = MapLayer.Regional; // Regions always on Regional layer
+
+                        // RegionInfoData.layer is a string in this project schema; store the enum name.
+                        r.data.layer = MapLayer.Regional.ToString();
                         break;
                     }
 
