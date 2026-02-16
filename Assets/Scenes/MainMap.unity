@@ -5461,7 +5461,7 @@ PrefabInstance:
     - target: {fileID: 1066173710444387827, guid: d50939f54e4aec84692d126a576e534a, type: 3}
       propertyPath: 'childMapPoints.Array.data[4]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2146820091}
     - target: {fileID: 1066173710444387827, guid: d50939f54e4aec84692d126a576e534a, type: 3}
       propertyPath: 'childMapPoints.Array.data[5]'
       value: 
@@ -14857,201 +14857,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6708433214696300015, guid: e4cd0f86f86235c459fcb879ef7a6243, type: 3}
   m_PrefabInstance: {fileID: 1263697057}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1263809052
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1263809054}
-  - component: {fileID: 1263809053}
-  m_Layer: 0
-  m_Name: __AuthoringSession_Settlement
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1263809053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1263809052}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ea38c57cd2b884cbbf4f1be6577ab2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.SettlementAuthoringSession
-  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\MapData\cormyr.Json
-  data:
-    displayName: Kingdom of Cormyr
-    mapUrlOrPath: 
-    rulerCharacterId: char_azoun_matarys_iv
-    characterIds:
-    - char_azoun_matarys_iv
-    - guildmasterdavid
-    - buttons
-    - lordperseussungardner
-    - magistereustus
-    - marshalrayventheyoungersicklestone
-    - masteredwardsmith
-    - mastergeraltredstar
-    - masterofrevelscedricbanmont
-    - masterofthehuntjorvansenn
-    - matronilvadosk
-    main:
-      description: The Forest Kingdom under House Matarys. The Crown has sounded
-        the unprecedented four-blast muster and ordered all loyal banners to gather
-        at Arabel for war.
-      population: 117760
-      rulerDisplayName: King Azoun Matarys IV
-      vassals:
-      - arabel
-      - eveningstar
-      - shara_casma
-      - travelers_respite
-      - eastwatch
-      - westgate
-      - tails_end
-      - duchy_sundial
-      - marquessate_dragontooth
-      - county_selgaunt
-      - county_dragonsmaw
-      - trihold_sunguard
-      - duchy_vaelshara
-      - duchy_seawatch
-    army:
-      totalArmy: 30200
-      menAtArms:
-      - light_infantry
-      - purple_dragons
-      - heavy_infantry
-      - light_cavalry
-      primaryCommanderDisplayName: King Azoun Matarys IV
-      primaryCommanderCharacterId: char_azoun_matarys_iv
-    economy:
-      totalIncomePerMonth: 21191.312
-      totalTreasury: 1200000
-      courtExpenses: 8000
-      armyExpenses: 2500
-      currentlyConstructing: []
-    cultural:
-      culture: Cormyrean
-      populationDistribution: 'Overwhemingly human with the exception of the eastern
-        duchy of Vael''Shara, which is the home of the elves. '
-      primaryTraits:
-      - fealty
-      - martial tradition
-      - forest-law
-      - pragmatic governance
-      - Defenders of the Pass
-      raceDistribution:
-      - key: Human
-        percent: 92
-      - key: Elvish
-        percent: 7.5
-      - key: Other
-        percent: 0.5
-      cultureDistribution:
-      - key: Cormyrean
-        percent: 85
-      - key: Elvish
-        percent: 7.5
-      - key: Cormyr-Sembian
-        percent: 7.5
-    history:
-      timelineEntries:
-      - '1346 DR : Azoun IV crowned.'
-      - '1350 DR : Civil war; rebel lands redist1ributed; debts deepen.'
-      - '1388 DR : Four-blast muster; banners called to Arabel.'
-      rulingFamilyMembers:
-      - char_azoun_matarys_iv
-    feudal:
-      settlementId: cormyr
-      layer: 2
-      laws: 
-      isPopulated: 1
-      capitalSettlementId: arabel
-      liegeSettlementId: 
-      castellanCharacterId: torrhenstorm
-      marshallCharacterId: torrhenstorm
-      stewardCharacterId: torrhenstorm
-      diplomatCharacterId: torrhenstorm
-      spymasterCharacterId: torrhenstorm
-      headPriestCharacterId: torrhenstorm
-      vassalContracts:
-      - vassalSettlementId: default
-        incomeTaxRate: 0.075
-        troopTaxRate: 0.35
-        terms: Loyalty
-      - vassalSettlementId: main
-        incomeTaxRate: 0.25
-        troopTaxRate: 1
-        terms: wartime
-      - vassalSettlementId: arabel
-        incomeTaxRate: 1
-        troopTaxRate: 1
-        terms: Capital
-      - vassalSettlementId: eastwatch
-        incomeTaxRate: 0
-        troopTaxRate: 0
-        terms: Special Outpost
-      - vassalSettlementId: sundial
-        incomeTaxRate: 0.25
-        troopTaxRate: 1
-        terms: Wartime
-      - vassalSettlementId: sundial
-        incomeTaxRate: 0.25
-        troopTaxRate: 1
-        terms: Wartime
-      - vassalSettlementId: eveningstar
-        incomeTaxRate: 0.35
-        troopTaxRate: 1
-        terms: 
-      - vassalSettlementId: dragontooth
-        incomeTaxRate: 0.35
-        troopTaxRate: 1
-        terms: 
-      - vassalSettlementId: trihold_sunguard
-        incomeTaxRate: 0.35
-        troopTaxRate: 1
-        terms: 
-  culturalComposition: []
-  raceDistribution: []
-  menAtArmsStacks:
-  - menAtArmsId: light_infantry
-    units: 8
-  - menAtArmsId: purple_dragons
-    units: 20
-  - menAtArmsId: heavy_infantry
-    units: 8
-  - menAtArmsId: light_cavalry
-    units: 5
-  castellanCharacterId: 
-  marshallCharacterId: 
-  stewardCharacterId: 
-  diplomatCharacterId: 
-  spymasterCharacterId: 
-  headPriestCharacterId: 
---- !u!4 &1263809054
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1263809052}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1292244476
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15407,6 +15212,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ee97f708755fe4f81783a381f9b311, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapPoint
+--- !u!1 &1307465621
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1307465623}
+  - component: {fileID: 1307465622}
+  m_Layer: 0
+  m_Name: __AuthoringSession_FloraCatalog
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1307465622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307465621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41e763269eb08e64aa51fa584243b57d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.FloraCatalogAuthoringSession
+  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\flora\flora_catalog.json
+  data:
+    catalogId: flora_catalog
+    displayName: Flora Catalog
+    notes: 
+    flora:
+    - id: 
+      displayName: 
+      family: 
+      traits: []
+      description: 
+      habitats:
+      - 
+      seasons: []
+      toxicityNotes: 
+      yieldItems: []
+      notes: 
+--- !u!4 &1307465623
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307465621}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1566514894}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1311366934 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -5691339420074304175, guid: 941687045533e6c4e80fb22904fbe850, type: 3}
@@ -22532,7 +22398,7 @@ Transform:
   - {fileID: 1334595414}
   - {fileID: 480487642}
   - {fileID: 434817852}
-  - {fileID: 1263809054}
+  - {fileID: 1307465623}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1566514895
@@ -22547,8 +22413,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddfd1b9cb89bab4185465c213e9a039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.WorldDataMasterAuthoring
-  activeCategory: 2
-  activeSession: {fileID: 1263809053}
+  activeCategory: 12
+  activeSession: {fileID: 1307465622}
 --- !u!1001 &1581299612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23498,7 +23364,7 @@ PrefabInstance:
       objectReference: {fileID: 1596302416}
     - target: {fileID: -1892976854852134252, guid: 7f363a888096b154d9f80f4d4cef07d0, type: 3}
       propertyPath: childMapPoints.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: -1892976854852134252, guid: 7f363a888096b154d9f80f4d4cef07d0, type: 3}
       propertyPath: 'childMapPoints.Array.data[0]'
@@ -23519,7 +23385,7 @@ PrefabInstance:
     - target: {fileID: -1892976854852134252, guid: 7f363a888096b154d9f80f4d4cef07d0, type: 3}
       propertyPath: 'childMapPoints.Array.data[4]'
       value: 
-      objectReference: {fileID: 2146820091}
+      objectReference: {fileID: 0}
     - target: {fileID: 422633834071788096, guid: 7f363a888096b154d9f80f4d4cef07d0, type: 3}
       propertyPath: m_Name
       value: dragonlands
