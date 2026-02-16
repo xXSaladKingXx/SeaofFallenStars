@@ -48,19 +48,11 @@ namespace Zana.WorldAuthoring
         public string role;
 
         /// <summary>
-        /// Quality tier describes the relative effectiveness of the unit compared to others
-        /// (e.g. Low, Medium, High, Elite). This field is purely descriptive and may be
-        /// interpreted by game logic to modify upkeep, morale or other secondary values.
-        /// </summary>
-        [JsonProperty("qualityTier")]
-        public string qualityTier;
-
-        /// <summary>
         /// A collection of geography bonuses that apply when this unit fights in specific
         /// terrain or water subtypes. Each bonus entry defines the subtype ID and a flat
         /// bonus value to apply to attack/defense rolls when in that environment. Use
         /// drop‑downs in the authoring UI to select valid subtype IDs from your
-        /// geography type catalog. If no entry exists for a given subtype, the unit
+        /// terrain catalog. If no entry exists for a given subtype, the unit
         /// receives no special bonus in that terrain.
         /// </summary>
         [JsonProperty("geographyBonuses")]
@@ -70,9 +62,8 @@ namespace Zana.WorldAuthoring
     /// <summary>
     /// Represents a bonus that a men‑at‑arms unit receives when fighting in a specific
     /// geography subtype. For example, a naval unit might have a +2 bonus when in
-    /// "coastal" water and +1 in "open sea". The id field should reference a subtype
-    /// defined in your world geography catalog. The bonus applies cumulatively to both
-    /// attack and defense unless your combat system differentiates between them.
+    /// "coastal" water and +1 in "open sea". The subtypeId field should reference an ID
+    /// defined in your Terrain catalog.
     /// </summary>
     [Serializable]
     public sealed class GeographyBonus

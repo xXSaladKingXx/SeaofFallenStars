@@ -41,32 +41,22 @@ public enum WorldDataCategory
     RaceCatalog = 11,
 
     /// <summary>
-    /// Catalog of flora. Each catalog defines a collection of plant species along with
-    /// descriptive metadata (family, traits, habitats, seasons, yields, etc.). Flora
-    /// catalogs are used by unpopulated areas to specify flora distributions.
+    /// Catalog of flora definitions (plants/fungi) referenced by world authoring.
     /// </summary>
     FloraCatalog = 12,
 
     /// <summary>
-    /// Catalog of fauna. Each catalog defines a collection of animal species along with
-    /// descriptive metadata (family, traits, habitats, size categories, drops, etc.).
-    /// Fauna catalogs are used by unpopulated areas to specify fauna distributions.
+    /// Catalog of fauna definitions (animals/creatures) referenced by world authoring.
     /// </summary>
     FaunaCatalog = 13,
 
     /// <summary>
-    /// Catalog of items. Items include mundane equipment, trade goods and optional
-    /// magical artefacts. Item catalogs provide canonical definitions for inventory
-    /// items, resource drops and harvest yields.
+    /// Catalog of item definitions referenced by world authoring.
     /// </summary>
     ItemCatalog = 14,
 
     /// <summary>
-    /// Catalog of statistics. The stat catalog enumerates every stat that can be
-    /// referenced or modified by traits, items or other systems. Each stat entry
-    /// defines a unique identifier, display name, scope, value type and metadata about
-    /// whether it is an input or derived quantity. It also controls whether the
-    /// statistic can be modified by stat modifiers.
+    /// Catalog of terrain/subtype definitions (used for geography and men-at-arms bonuses).
     /// </summary>
-    StatCatalog = 15,
+    TerrainCatalog = 15,
 }

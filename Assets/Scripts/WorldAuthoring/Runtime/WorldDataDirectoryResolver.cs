@@ -111,48 +111,6 @@ namespace Zana.WorldAuthoring
                    ?? Path.Combine(Application.dataPath, "SaveData", "menatarms");
         }
 
-        // --- New catalog editor directories ---
-
-        /// <summary>
-        /// Editor directory for flora catalogs. Returns the configured path if present in
-        /// DataPaths (Editor_FloraPath); otherwise defaults to Assets/SaveData/flora.
-        /// </summary>
-        public static string GetEditorFloraDir()
-        {
-            return TryReadStaticStringMember("DataPaths", "Editor_FloraPath")
-                   ?? Path.Combine(Application.dataPath, "SaveData", "flora");
-        }
-
-        /// <summary>
-        /// Editor directory for fauna catalogs. Returns the configured path if present in
-        /// DataPaths (Editor_FaunaPath); otherwise defaults to Assets/SaveData/fauna.
-        /// </summary>
-        public static string GetEditorFaunaDir()
-        {
-            return TryReadStaticStringMember("DataPaths", "Editor_FaunaPath")
-                   ?? Path.Combine(Application.dataPath, "SaveData", "fauna");
-        }
-
-        /// <summary>
-        /// Editor directory for item catalogs. Returns the configured path if present in
-        /// DataPaths (Editor_ItemsPath); otherwise defaults to Assets/SaveData/items.
-        /// </summary>
-        public static string GetEditorItemsDir()
-        {
-            return TryReadStaticStringMember("DataPaths", "Editor_ItemsPath")
-                   ?? Path.Combine(Application.dataPath, "SaveData", "items");
-        }
-
-        /// <summary>
-        /// Editor directory for stat catalogs. Returns the configured path if present in
-        /// DataPaths (Editor_StatsPath); otherwise defaults to Assets/SaveData/stats.
-        /// </summary>
-        public static string GetEditorStatsDir()
-        {
-            return TryReadStaticStringMember("DataPaths", "Editor_StatsPath")
-                   ?? Path.Combine(Application.dataPath, "SaveData", "stats");
-        }
-
         // Additional editor directories for new catalog types
         public static string GetEditorTraitsDir()
         {
@@ -176,6 +134,30 @@ namespace Zana.WorldAuthoring
         {
             return TryReadStaticStringMember("DataPaths", "Editor_RacesPath")
                    ?? Path.Combine(Application.dataPath, "SaveData", "races");
+        }
+
+        public static string GetEditorFloraDir()
+        {
+            return TryReadStaticStringMember("DataPaths", "Editor_FloraPath")
+                   ?? Path.Combine(Application.dataPath, "SaveData", "flora");
+        }
+
+        public static string GetEditorFaunaDir()
+        {
+            return TryReadStaticStringMember("DataPaths", "Editor_FaunaPath")
+                   ?? Path.Combine(Application.dataPath, "SaveData", "fauna");
+        }
+
+        public static string GetEditorItemsDir()
+        {
+            return TryReadStaticStringMember("DataPaths", "Editor_ItemsPath")
+                   ?? Path.Combine(Application.dataPath, "SaveData", "items");
+        }
+
+        public static string GetEditorTerrainDir()
+        {
+            return TryReadStaticStringMember("DataPaths", "Editor_TerrainPath")
+                   ?? Path.Combine(Application.dataPath, "SaveData", "terrain");
         }
 
         // -------------------- Runtime directories --------------------
@@ -213,48 +195,6 @@ namespace Zana.WorldAuthoring
                    ?? Path.Combine(Application.persistentDataPath, "menatarms");
         }
 
-        // --- New catalog runtime directories ---
-
-        /// <summary>
-        /// Runtime directory for flora catalogs. Returns the configured path if present in
-        /// DataPaths (Runtime_FloraPath); otherwise defaults to persistentDataPath/flora.
-        /// </summary>
-        public static string GetRuntimeFloraDir()
-        {
-            return TryReadStaticStringMember("DataPaths", "Runtime_FloraPath")
-                   ?? Path.Combine(Application.persistentDataPath, "flora");
-        }
-
-        /// <summary>
-        /// Runtime directory for fauna catalogs. Returns the configured path if present in
-        /// DataPaths (Runtime_FaunaPath); otherwise defaults to persistentDataPath/fauna.
-        /// </summary>
-        public static string GetRuntimeFaunaDir()
-        {
-            return TryReadStaticStringMember("DataPaths", "Runtime_FaunaPath")
-                   ?? Path.Combine(Application.persistentDataPath, "fauna");
-        }
-
-        /// <summary>
-        /// Runtime directory for item catalogs. Returns the configured path if present in
-        /// DataPaths (Runtime_ItemsPath); otherwise defaults to persistentDataPath/items.
-        /// </summary>
-        public static string GetRuntimeItemsDir()
-        {
-            return TryReadStaticStringMember("DataPaths", "Runtime_ItemsPath")
-                   ?? Path.Combine(Application.persistentDataPath, "items");
-        }
-
-        /// <summary>
-        /// Runtime directory for stat catalogs. Returns the configured path if present in
-        /// DataPaths (Runtime_StatsPath); otherwise defaults to persistentDataPath/stats.
-        /// </summary>
-        public static string GetRuntimeStatsDir()
-        {
-            return TryReadStaticStringMember("DataPaths", "Runtime_StatsPath")
-                   ?? Path.Combine(Application.persistentDataPath, "stats");
-        }
-
         // Additional runtime directories for new catalog types
         public static string GetRuntimeTraitsDir()
         {
@@ -278,6 +218,30 @@ namespace Zana.WorldAuthoring
         {
             return TryReadStaticStringMember("DataPaths", "Runtime_RacesPath")
                    ?? Path.Combine(Application.persistentDataPath, "races");
+        }
+
+        public static string GetRuntimeFloraDir()
+        {
+            return TryReadStaticStringMember("DataPaths", "Runtime_FloraPath")
+                   ?? Path.Combine(Application.persistentDataPath, "flora");
+        }
+
+        public static string GetRuntimeFaunaDir()
+        {
+            return TryReadStaticStringMember("DataPaths", "Runtime_FaunaPath")
+                   ?? Path.Combine(Application.persistentDataPath, "fauna");
+        }
+
+        public static string GetRuntimeItemsDir()
+        {
+            return TryReadStaticStringMember("DataPaths", "Runtime_ItemsPath")
+                   ?? Path.Combine(Application.persistentDataPath, "items");
+        }
+
+        public static string GetRuntimeTerrainDir()
+        {
+            return TryReadStaticStringMember("DataPaths", "Runtime_TerrainPath")
+                   ?? Path.Combine(Application.persistentDataPath, "terrain");
         }
 
         // -------------------- Category mapping --------------------
@@ -314,8 +278,8 @@ namespace Zana.WorldAuthoring
                     return GetEditorFaunaDir();
                 case WorldDataCategory.ItemCatalog:
                     return GetEditorItemsDir();
-                case WorldDataCategory.StatCatalog:
-                    return GetEditorStatsDir();
+                case WorldDataCategory.TerrainCatalog:
+                    return GetEditorTerrainDir();
                 default:
                     return GetEditorMapDataDir();
             }
@@ -353,8 +317,8 @@ namespace Zana.WorldAuthoring
                     return GetRuntimeFaunaDir();
                 case WorldDataCategory.ItemCatalog:
                     return GetRuntimeItemsDir();
-                case WorldDataCategory.StatCatalog:
-                    return GetRuntimeStatsDir();
+                case WorldDataCategory.TerrainCatalog:
+                    return GetRuntimeTerrainDir();
                 default:
                     return GetRuntimeMapDataDir();
             }
