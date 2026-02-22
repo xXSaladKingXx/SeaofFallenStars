@@ -134,6 +134,19 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         if (s.data.history == null) s.data.history = new SettlementInfoData.SettlementHistoryTab();
         if (s.data.feudal == null) s.data.feudal = new SettlementInfoData.SettlementFeudalData();
 
+        // Flag to track whether any modifications have been made during this GUI pass.
+        bool changed = false;
+
+        // Ensure feudal mode is enabled so that liege and vassal options are available.  Some
+        // UI elements may be disabled if this flag is false.  If it is currently false,
+        // automatically enable it and record an undo so the user can revert this change.
+        if (s.data.feudal != null && !s.data.feudal.isFeudal)
+        {
+            Undo.RecordObject(s, "Enable Feudal");
+            s.data.feudal.isFeudal = true;
+            changed = true;
+        }
+
         var characters = WorldDataChoicesCache.GetCharacters();
         var settlements = WorldDataChoicesCache.GetSettlements();
         var armies = WorldDataChoicesCache.GetArmies();
@@ -143,7 +156,7 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         var settlementNameById = settlements.ToDictionary(e => e.id, e => e.displayName);
         var armyNameById = armies.ToDictionary(e => e.id, e => e.displayName);
 
-        bool changed = false;
+        // 'changed' is declared above; do not re-declare here.
 
         WorldAuthoringEditorUI.DrawHelpersHeader("Feudal Hierarchy");
 

@@ -22337,6 +22337,7 @@ Transform:
   - {fileID: 1334595414}
   - {fileID: 480487642}
   - {fileID: 434817852}
+  - {fileID: 1924719647}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1566514895
@@ -22351,8 +22352,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddfd1b9cb89bab4185465c213e9a039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.WorldDataMasterAuthoring
-  activeCategory: 7
-  activeSession: {fileID: 0}
+  activeCategory: 2
+  activeSession: {fileID: 1924719646}
 --- !u!1001 &1581299612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28040,6 +28041,132 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8503565047064196923, guid: b5c3556110fc5264c9f44d785ac276ab, type: 3}
   m_PrefabInstance: {fileID: 1916330637}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1924719645
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1924719647}
+  - component: {fileID: 1924719646}
+  m_Layer: 0
+  m_Name: __AuthoringSession_Settlement
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1924719646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924719645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ea38c57cd2b884cbbf4f1be6577ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettlementAuthoringSession
+  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\MapData\arabel.json
+  data:
+    isPopulated: 0
+    characterIds: []
+    settlementId: arabel
+    displayName: Arabel
+    rulerCharacterId: char_azoun_matarys_iv
+    liegeSettlementId: 
+    mapUrlOrPath: 
+    capitalSettlementId: 
+    main:
+      description: 
+      notableFacts: []
+      population: 0
+      rulerDisplayName: King Azoun Matarys IV
+      rulerName: 
+      vassals: []
+      characterIds: []
+    army:
+      armyIds:
+      - cormyrarmy
+      totalArmy: 22
+      menAtArms:
+      - heavy_infantry
+      - light_cavalry
+      - light_infantry
+      - purple_dragons
+      primaryCommanderDisplayName: King Azoun Matarys IV
+      primaryCommanderCharacterId: char_azoun_matarys_iv
+    economy:
+      mainExports: 
+      mainImports: 
+      mainIndustries: 
+      notes: 
+      totalIncomePerMonth: 0
+      totalTreasury: 0
+      courtExpenses: 
+      armyExpenses: 
+      currentlyConstructing: []
+    cultural:
+      culture: 
+      raceDistribution: []
+      religion: cormyr_lathanderism
+      traits: []
+      languages:
+      - cormyrean
+      customs: []
+      populationDistribution: 
+      primaryTraits: []
+      cultureDistribution:
+      - key: cormyrean
+        percent: 92.644066
+      - key: cormyrean
+        percent: 7.355939
+    history:
+      notes: 
+      timelineEntries: []
+      rulingFamilyMembers: []
+    feudal:
+      castellanCharacterId: 
+      marshallCharacterId: char_tomasmellsen
+      stewardCharacterId: 
+      diplomatCharacterId: 
+      spymasterCharacterId: 
+      headPriestCharacterId: 
+      vassalContracts: []
+      settlementId: 
+      layer: 
+      isPopulated: 0
+      isFeudal: 0
+      liegeSettlementId: 
+      notes: 
+      laws: 
+      capitalSettlementId: 
+  culturalComposition: []
+  raceDistribution: []
+  castellanCharacterId: 
+  marshallCharacterId: 
+  stewardCharacterId: 
+  diplomatCharacterId: 
+  spymasterCharacterId: 
+  headPriestCharacterId: 
+--- !u!4 &1924719647
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924719645}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1566514894}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1961433506
 GameObject:
   m_ObjectHideFlags: 0
