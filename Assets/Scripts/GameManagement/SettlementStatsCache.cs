@@ -276,9 +276,12 @@ public static class SettlementStatsCache
                     }
                     else
                     {
-                        incomeTax = 0f;
-                        troopTax = 0f;
-                        terms = "No contract found (0% assumed)";
+                        // Apply default feudal tax rates when no explicit contract is defined.
+                        // Settlements with vassals should pay some portion of their income and troops to their liege.
+                        // The default contract is 25% income tax and 35% levy/troop tax.
+                        incomeTax = 0.25f;
+                        troopTax = 0.35f;
+                        terms = "Default contract (25% income / 35% levy)";
                     }
                 }
 

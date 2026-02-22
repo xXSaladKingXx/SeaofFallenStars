@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace Zana.WorldAuthoring
 {
+    /// <summary>
+    /// Custom inspector for <see cref="WorldDataMapPointAuthoring"/> which allows
+    /// authors to seed and edit JSON data files directly from a MapPoint in the scene.
+    /// </summary>
     [CustomEditor(typeof(WorldDataMapPointAuthoring))]
     public sealed class WorldDataMapPointAuthoringEditor : UnityEditor.Editor
     {
@@ -142,6 +146,10 @@ namespace Zana.WorldAuthoring
             EditorGUIUtility.PingObject(master);
         }
 
+        /// <summary>
+        /// Seeds a newly created session with default values based on the linked MapPoint.
+        /// Converts enum values to strings where necessary to satisfy the JSON schema.
+        /// </summary>
         private static void SeedFromMapPoint(WorldDataAuthoringSessionBase session, string stableId, MapPoint mp)
         {
             if (session == null || mp == null) return;
@@ -153,13 +161,16 @@ namespace Zana.WorldAuthoring
                         if (s.data == null) s.data = new SettlementInfoData();
                         s.data.displayName = mp.displayName;
 
+                        // Ensure the feudal object exists and set basic identity fields.
                         s.data.feudal ??= new SettlementFeudalData();
                         s.data.feudal.settlementId = stableId;
-                        s.data.feudal.layer = mp.layer;
+                        // Convert the MapLayer enum into a string for the feudal layer field.
+                        s.data.feudal.layer = mp.layer.ToString();
                         s.data.feudal.isPopulated = true;
 
+                        // Ensure main tab exists and has a non-null ruler name.
                         s.data.main ??= new MainTab();
-                        s.data.main.rulerDisplayName ??= "";
+                        s.data.main.rulerDisplayName ??= string.Empty;
                         break;
                     }
 
@@ -169,7 +180,7 @@ namespace Zana.WorldAuthoring
                         r.data.displayName = mp.displayName;
                         r.data.regionId = stableId;
 
-                        // RegionInfoData.layer is a string in this project schema; store the enum name.
+                        // RegionInfoData.layer is stored as a string; assign the enum name.
                         r.data.layer = MapLayer.Regional.ToString();
                         break;
                     }
@@ -179,14 +190,14 @@ namespace Zana.WorldAuthoring
                         if (u.data == null) u.data = new UnpopulatedInfoData();
                         u.data.displayName = mp.displayName;
                         u.data.areaId = stableId;
+                        // UnpopulatedInfoData.layer is a MapLayer enum in the JSON model; assign directly.
                         u.data.layer = mp.layer;
 
-                        // UnpopulatedInfoData.subtype is a STRING in your schema
+                        // Map the MapPoint's unpopulated subtype enum to the appropriate string.
                         u.data.subtype =
                             mp.unpopulatedSubtype == MapPoint.UnpopulatedSubtype.Water ? "Water" :
                             mp.unpopulatedSubtype == MapPoint.UnpopulatedSubtype.Ruins ? "Ruins" :
                             "Wilderness";
-
                         break;
                     }
 

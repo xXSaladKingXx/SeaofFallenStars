@@ -165,6 +165,28 @@ public class SettlementInfoData
         [JsonProperty("vassalContracts")] public List<VassalContractData> vassalContracts = new List<VassalContractData>();
 
         /// <summary>
+        /// Unique identifier for this settlement.  Duplicated from the root for
+        /// backwards compatibility; used by some editor scripts when seeding
+        /// settlement data from a MapPoint.
+        /// </summary>
+        [JsonProperty("settlementId")] public string settlementId;
+
+        /// <summary>
+        /// The map layer this settlement belongs to.  Stored as a string to
+        /// support conversions between enum and string representations.  This
+        /// value is copied from the MapPoint when creating a new settlement
+        /// from a MapPoint in the editor.
+        /// </summary>
+        [JsonProperty("layer")] public string layer;
+
+        /// <summary>
+        /// Indicates whether this settlement is populated.  When true, the
+        /// settlement is considered active; when false, some UI panels may
+        /// ignore it.  Copied from the MapPoint during seeding.
+        /// </summary>
+        [JsonProperty("isPopulated")] public bool isPopulated;
+
+        /// <summary>
         /// Indicates whether this settlement participates in the feudal system.  Used by
         /// authoring tools to enable or disable feudal features.
         /// </summary>

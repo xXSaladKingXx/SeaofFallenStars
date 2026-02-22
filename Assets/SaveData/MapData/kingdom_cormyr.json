@@ -1,0 +1,83 @@
+{
+  "isPopulated": false,
+  "characterIds": [],
+  "settlementId": "kingdom_cormyr",
+  "displayName": "Kingdom of Cormyr",
+  "rulerCharacterId": "char_azoun_matarys_iv",
+  "liegeSettlementId": null,
+  "mapUrlOrPath": null,
+  "capitalSettlementId": null,
+  "main": {
+    "description": null,
+    "notableFacts": [],
+    "population": 0,
+    "rulerDisplayName": "King Azoun Matarys IV",
+    "rulerName": null,
+    "vassals": [
+      "arabel",
+      "eveningstar",
+      "sunguard"
+    ],
+    "characterIds": []
+  },
+  "army": {
+    "armyIds": [
+      "cormyrarmy"
+    ],
+    "totalArmy": 22,
+    "menAtArms": [
+      "heavy_infantry",
+      "light_cavalry",
+      "light_infantry",
+      "purple_dragons"
+    ],
+    "primaryCommanderDisplayName": "King Azoun Matarys IV",
+    "primaryCommanderCharacterId": "char_azoun_matarys_iv"
+  },
+  "economy": {
+    "mainExports": null,
+    "mainImports": null,
+    "mainIndustries": null,
+    "notes": null,
+    "totalIncomePerMonth": 0.0,
+    "totalTreasury": 0.0,
+    "courtExpenses": null,
+    "armyExpenses": null,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": null,
+    "raceDistribution": [],
+    "religion": null,
+    "traits": [],
+    "languages": [],
+    "customs": [],
+    "populationDistribution": null,
+    "primaryTraits": [],
+    "cultureDistribution": []
+  },
+  "history": {
+    "notes": null,
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "castellanCharacterId": null,
+    "marshallCharacterId": "char_tomasmellsen",
+    "stewardCharacterId": null,
+    "diplomatCharacterId": null,
+    "spymasterCharacterId": null,
+    "headPriestCharacterId": null,
+    "vassalContracts": [],
+    "settlementId": null,
+    "layer": null,
+    "isPopulated": false,
+    "feudal": false,
+    "liegeSettlementId": null,
+    "notes": null,
+    "laws": null,
+    "capitalSettlementId": null
+  },
+  "culturalComposition": [],
+  "raceDistribution": []
+}

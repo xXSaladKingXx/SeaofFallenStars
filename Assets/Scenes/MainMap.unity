@@ -1843,201 +1843,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8503565047064196923, guid: b5c3556110fc5264c9f44d785ac276ab, type: 3}
   m_PrefabInstance: {fileID: 36630579}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &51004937
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 51004939}
-  - component: {fileID: 51004938}
-  m_Layer: 0
-  m_Name: __AuthoringSession_Settlement
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &51004938
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 51004937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ea38c57cd2b884cbbf4f1be6577ab2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.SettlementAuthoringSession
-  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\MapData\cormyr.Json
-  data:
-    displayName: Kingdom of Cormyr
-    mapUrlOrPath: 
-    rulerCharacterId: char_azoun_matarys_iv
-    characterIds:
-    - char_azoun_matarys_iv
-    - guildmasterdavid
-    - buttons
-    - lordperseussungardner
-    - magistereustus
-    - marshalrayventheyoungersicklestone
-    - masteredwardsmith
-    - mastergeraltredstar
-    - masterofrevelscedricbanmont
-    - masterofthehuntjorvansenn
-    - matronilvadosk
-    main:
-      description: The Forest Kingdom under House Matarys. The Crown has sounded
-        the unprecedented four-blast muster and ordered all loyal banners to gather
-        at Arabel for war.
-      population: 117760
-      rulerDisplayName: King Azoun Matarys IV
-      vassals:
-      - arabel
-      - eveningstar
-      - shara_casma
-      - travelers_respite
-      - eastwatch
-      - westgate
-      - tails_end
-      - duchy_sundial
-      - marquessate_dragontooth
-      - county_selgaunt
-      - county_dragonsmaw
-      - trihold_sunguard
-      - duchy_vaelshara
-      - duchy_seawatch
-    army:
-      totalArmy: 30200
-      menAtArms:
-      - light_infantry
-      - purple_dragons
-      - heavy_infantry
-      - light_cavalry
-      primaryCommanderDisplayName: King Azoun Matarys IV
-      primaryCommanderCharacterId: char_azoun_matarys_iv
-    economy:
-      totalIncomePerMonth: 21191.312
-      totalTreasury: 1200000
-      courtExpenses: 8000
-      armyExpenses: 2500
-      currentlyConstructing: []
-    cultural:
-      culture: Cormyrean
-      populationDistribution: 'Overwhemingly human with the exception of the eastern
-        duchy of Vael''Shara, which is the home of the elves. '
-      primaryTraits:
-      - fealty
-      - martial tradition
-      - forest-law
-      - pragmatic governance
-      - Defenders of the Pass
-      raceDistribution:
-      - key: Human
-        percent: 92
-      - key: Elvish
-        percent: 7.5
-      - key: Other
-        percent: 0.5
-      cultureDistribution:
-      - key: Cormyrean
-        percent: 85
-      - key: Elvish
-        percent: 7.5
-      - key: Cormyr-Sembian
-        percent: 7.5
-    history:
-      timelineEntries:
-      - '1346 DR : Azoun IV crowned.'
-      - '1350 DR : Civil war; rebel lands redist1ributed; debts deepen.'
-      - '1388 DR : Four-blast muster; banners called to Arabel.'
-      rulingFamilyMembers:
-      - char_azoun_matarys_iv
-    feudal:
-      settlementId: cormyr
-      layer: 2
-      laws: 
-      isPopulated: 1
-      capitalSettlementId: arabel
-      liegeSettlementId: 
-      castellanCharacterId: torrhenstorm
-      marshallCharacterId: torrhenstorm
-      stewardCharacterId: torrhenstorm
-      diplomatCharacterId: torrhenstorm
-      spymasterCharacterId: torrhenstorm
-      headPriestCharacterId: torrhenstorm
-      vassalContracts:
-      - vassalSettlementId: default
-        incomeTaxRate: 0.075
-        troopTaxRate: 0.35
-        terms: Loyalty
-      - vassalSettlementId: main
-        incomeTaxRate: 0.25
-        troopTaxRate: 1
-        terms: wartime
-      - vassalSettlementId: arabel
-        incomeTaxRate: 1
-        troopTaxRate: 1
-        terms: Capital
-      - vassalSettlementId: eastwatch
-        incomeTaxRate: 0
-        troopTaxRate: 0
-        terms: Special Outpost
-      - vassalSettlementId: sundial
-        incomeTaxRate: 0.25
-        troopTaxRate: 1
-        terms: Wartime
-      - vassalSettlementId: sundial
-        incomeTaxRate: 0.25
-        troopTaxRate: 1
-        terms: Wartime
-      - vassalSettlementId: eveningstar
-        incomeTaxRate: 0.35
-        troopTaxRate: 1
-        terms: 
-      - vassalSettlementId: dragontooth
-        incomeTaxRate: 0.35
-        troopTaxRate: 1
-        terms: 
-      - vassalSettlementId: trihold_sunguard
-        incomeTaxRate: 0.35
-        troopTaxRate: 1
-        terms: 
-  culturalComposition: []
-  raceDistribution: []
-  menAtArmsStacks:
-  - menAtArmsId: light_infantry
-    units: 8
-  - menAtArmsId: purple_dragons
-    units: 20
-  - menAtArmsId: heavy_infantry
-    units: 8
-  - menAtArmsId: light_cavalry
-    units: 5
-  castellanCharacterId: 
-  marshallCharacterId: 
-  stewardCharacterId: 
-  diplomatCharacterId: 
-  spymasterCharacterId: 
-  headPriestCharacterId: 
---- !u!4 &51004939
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 51004937}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &55649748
 GameObject:
   m_ObjectHideFlags: 0
@@ -5587,7 +5392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1066173710444387827, guid: d50939f54e4aec84692d126a576e534a, type: 3}
       propertyPath: pointId
-      value: cormyr
+      value: kingdom_Cormyr
       objectReference: {fileID: 0}
     - target: {fileID: 1066173710444387827, guid: d50939f54e4aec84692d126a576e534a, type: 3}
       propertyPath: themeMusic
@@ -5599,7 +5404,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1066173710444387827, guid: d50939f54e4aec84692d126a576e534a, type: 3}
       propertyPath: displayName
-      value: Cormyr
+      value: Kingdom of Cormyr
       objectReference: {fileID: 0}
     - target: {fileID: 1066173710444387827, guid: d50939f54e4aec84692d126a576e534a, type: 3}
       propertyPath: outlineWidth
@@ -22532,7 +22337,7 @@ Transform:
   - {fileID: 1334595414}
   - {fileID: 480487642}
   - {fileID: 434817852}
-  - {fileID: 51004939}
+  - {fileID: 1729646325}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1566514895
@@ -22547,8 +22352,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddfd1b9cb89bab4185465c213e9a039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.WorldDataMasterAuthoring
-  activeCategory: 2
-  activeSession: {fileID: 51004938}
+  activeCategory: 9
+  activeSession: {fileID: 1729646324}
 --- !u!1001 &1581299612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25838,6 +25643,71 @@ MonoBehaviour:
   showInlineEditor: 1
   autoCreateIfMissing: 1
   useStableKey: 1
+--- !u!1 &1729646323
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1729646325}
+  - component: {fileID: 1729646324}
+  m_Layer: 0
+  m_Name: __AuthoringSession_LanguageCatalog
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1729646324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729646323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa1641b522f07e741862be53cf59e57b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.LanguageCatalogAuthoringSession
+  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\languages\language_catalog.json
+  data:
+    catalogId: language_catalog
+    displayName: Languages
+    languages:
+    - id: cormyrean
+      name: Cormyrean Common
+      primaryCultureId: cormyrean
+      nativeRegionId: 
+      description: The Corymr Dialect of the Common Sword Coast Language
+    - id: tai
+      name: Tai
+      primaryCultureId: tai
+      nativeRegionId: 
+      description: The language spoken by the people of Tai. It's smooth and elegant.
+    - id: sembian
+      name: Sembian Common
+      primaryCultureId: sembian
+      nativeRegionId: 
+      description: Sembian dialect of the common tongue.
+    notes: 
+--- !u!4 &1729646325
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729646323}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1566514894}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1740752601
 GameObject:
   m_ObjectHideFlags: 0
