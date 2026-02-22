@@ -96,6 +96,11 @@ public sealed class SettlementAuthoringSessionEditor : Editor
     private int _liegePick;
     private int _addVassalPick;
     private int _addArmyPick;
+    // Culture and language state
+    private readonly List<int> _culturePickIndices = new List<int>();
+    private int _addCulturePick;
+    private int _primaryLanguagePick;
+    private readonly List<bool> _languageSelections = new List<bool>();
 
     public override void OnInspectorGUI()
     {
@@ -216,18 +221,67 @@ public sealed class SettlementAuthoringSessionEditor : Editor
 
         // Council
         WorldAuthoringEditorUI.DrawHelpersHeader("Council");
-        changed |= DrawCharacterIdFieldWithNone(s, "Castellan", characters, ref s.data.feudal.castellanCharacterId);
-        changed |= DrawCharacterIdFieldWithNone(s, "Marshall", characters, ref s.data.feudal.marshallCharacterId);
-        changed |= DrawCharacterIdFieldWithNone(s, "Steward", characters, ref s.data.feudal.stewardCharacterId);
-        changed |= DrawCharacterIdFieldWithNone(s, "Diplomat", characters, ref s.data.feudal.diplomatCharacterId);
-        changed |= DrawCharacterIdFieldWithNone(s, "Spymaster", characters, ref s.data.feudal.spymasterCharacterId);
-        changed |= DrawCharacterIdFieldWithNone(s, "Head Priest", characters, ref s.data.feudal.headPriestCharacterId);
+        // We cannot pass properties or indexers by ref directly, so copy values to local variables,
+        // invoke the helper, then assign back if changed.
+        {
+            string id = s.data.feudal.castellanCharacterId;
+            bool c = DrawCharacterIdFieldWithNone(s, "Castellan", characters, ref id);
+            if (c)
+            {
+                s.data.feudal.castellanCharacterId = id;
+                changed = true;
+            }
+        }
+        {
+            string id = s.data.feudal.marshallCharacterId;
+            bool c = DrawCharacterIdFieldWithNone(s, "Marshall", characters, ref id);
+            if (c)
+            {
+                s.data.feudal.marshallCharacterId = id;
+                changed = true;
+            }
+        }
+        {
+            string id = s.data.feudal.stewardCharacterId;
+            bool c = DrawCharacterIdFieldWithNone(s, "Steward", characters, ref id);
+            if (c)
+            {
+                s.data.feudal.stewardCharacterId = id;
+                changed = true;
+            }
+        }
+        {
+            string id = s.data.feudal.diplomatCharacterId;
+            bool c = DrawCharacterIdFieldWithNone(s, "Diplomat", characters, ref id);
+            if (c)
+            {
+                s.data.feudal.diplomatCharacterId = id;
+                changed = true;
+            }
+        }
+        {
+            string id = s.data.feudal.spymasterCharacterId;
+            bool c = DrawCharacterIdFieldWithNone(s, "Spymaster", characters, ref id);
+            if (c)
+            {
+                s.data.feudal.spymasterCharacterId = id;
+                changed = true;
+            }
+        }
+        {
+            string id = s.data.feudal.headPriestCharacterId;
+            bool c = DrawCharacterIdFieldWithNone(s, "Head Priest", characters, ref id);
+            if (c)
+            {
+                s.data.feudal.headPriestCharacterId = id;
+                changed = true;
+            }
+        }
 
         // Armies
         WorldAuthoringEditorUI.DrawHelpersHeader("Armies");
 
         var armyIds = new List<string>((s.data.army.armyIds ?? Array.Empty<string>()).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()));
-
         for (int i = 0; i < armyIds.Count; i++)
         {
             string id = armyIds[i];
@@ -257,27 +311,181 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             }
         }
 
-        // Normalize and re-derive summary
-        var normalized = armyIds.Distinct(StringComparer.Ordinal).ToArray();
-        if (!Enumerable.SequenceEqual(normalized, s.data.army.armyIds ?? Array.Empty<string>(), StringComparer.Ordinal))
+        // Normalize army list and update summary
+        var normalizedArmies = armyIds.Distinct(StringComparer.Ordinal).ToArray();
+        if (!Enumerable.SequenceEqual(normalizedArmies, s.data.army.armyIds ?? Array.Empty<string>(), StringComparer.Ordinal))
         {
             Undo.RecordObject(s, "Update Army List");
-            s.data.army.armyIds = normalized;
+            s.data.army.armyIds = normalizedArmies;
             changed = true;
         }
 
-        // Always re-derive in inspector so the user sees totals without needing to save.
-        RecalculateDerivedArmySummary(s);
+        // Culture distribution and languages
+        WorldAuthoringEditorUI.DrawHelpersHeader("Culture Distribution");
 
+        if (s.data.cultural.cultureDistribution == null)
+            s.data.cultural.cultureDistribution = new List<PercentEntry>();
+        if (s.data.cultural.languages == null)
+            s.data.cultural.languages = Array.Empty<string>();
+
+        while (_culturePickIndices.Count < s.data.cultural.cultureDistribution.Count)
+            _culturePickIndices.Add(0);
+        while (_culturePickIndices.Count > s.data.cultural.cultureDistribution.Count)
+            _culturePickIndices.RemoveAt(_culturePickIndices.Count - 1);
+
+        var cultureEntries = WorldDataChoicesCache.GetCultureEntries();
+        for (int i = 0; i < s.data.cultural.cultureDistribution.Count; i++)
+        {
+            var entry = s.data.cultural.cultureDistribution[i];
+            if (entry == null)
+            {
+                entry = new PercentEntry { key = null, percent = 0f };
+                s.data.cultural.cultureDistribution[i] = entry;
+            }
+
+            EditorGUILayout.BeginHorizontal();
+            // Copy the indexer value to a local variable. We cannot pass a list indexer directly to a ref parameter.
+            int culturePickIdx = _culturePickIndices[i];
+            var selectedCulture = WorldAuthoringEditorUI.PopupChoice("Culture", cultureEntries, ref culturePickIdx);
+            // Update the stored index if it changed
+            if (culturePickIdx != _culturePickIndices[i])
+            {
+                _culturePickIndices[i] = culturePickIdx;
+            }
+            var newKey = selectedCulture?.id;
+            if (entry.key != newKey)
+            {
+                Undo.RecordObject(s, "Change Culture Entry");
+                entry.key = newKey;
+                changed = true;
+            }
+            float percent = EditorGUILayout.FloatField(entry.percent);
+            percent = Mathf.Clamp(percent, 0f, 100f);
+            if (!Mathf.Approximately(percent, entry.percent))
+            {
+                Undo.RecordObject(s, "Change Culture Percent");
+                entry.percent = percent;
+                changed = true;
+            }
+            if (GUILayout.Button("Remove", GUILayout.Width(60)))
+            {
+                Undo.RecordObject(s, "Remove Culture Entry");
+                s.data.cultural.cultureDistribution.RemoveAt(i);
+                _culturePickIndices.RemoveAt(i);
+                changed = true;
+                i--;
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
+        _addCulturePick = Mathf.Clamp(_addCulturePick, 0, cultureEntries.Count - 1);
+        EditorGUILayout.BeginHorizontal();
+        var addCultureEntry = WorldAuthoringEditorUI.PopupChoice("Add culture", cultureEntries, ref _addCulturePick);
+        if (addCultureEntry != null && GUILayout.Button("Add", GUILayout.Width(60)))
+        {
+            Undo.RecordObject(s, "Add Culture Entry");
+            s.data.cultural.cultureDistribution.Add(new PercentEntry { key = addCultureEntry.id, percent = 0f });
+            _culturePickIndices.Add(_addCulturePick);
+            changed = true;
+        }
+        EditorGUILayout.EndHorizontal();
+
+        if (s.data.cultural.cultureDistribution.Count > 0)
+        {
+            float sum = s.data.cultural.cultureDistribution.Sum(e => Mathf.Max(0f, e?.percent ?? 0f));
+            if (sum > 0.0001f)
+            {
+                foreach (var e in s.data.cultural.cultureDistribution)
+                {
+                    float normalizedPct = Mathf.Max(0f, e?.percent ?? 0f) / sum * 100f;
+                    if (!Mathf.Approximately(normalizedPct, e.percent))
+                    {
+                        e.percent = normalizedPct;
+                        changed = true;
+                    }
+                }
+            }
+        }
+
+        if (s.data.cultural.cultureDistribution.Count > 0)
+        {
+            var topEntry = s.data.cultural.cultureDistribution.OrderByDescending(e => e.percent).FirstOrDefault();
+            if (topEntry != null && !string.IsNullOrWhiteSpace(topEntry.key))
+            {
+                string derivedRel = DeriveReligionFromCulture(topEntry.key);
+                if (!string.IsNullOrWhiteSpace(derivedRel) && s.data.cultural.religion != derivedRel)
+                {
+                    Undo.RecordObject(s, "Derive Religion");
+                    s.data.cultural.religion = derivedRel;
+                    changed = true;
+                }
+            }
+        }
+        else if (!string.IsNullOrWhiteSpace(s.data.cultural.culture))
+        {
+            string derivedRel = DeriveReligionFromCulture(s.data.cultural.culture);
+            if (!string.IsNullOrWhiteSpace(derivedRel) && s.data.cultural.religion != derivedRel)
+            {
+                Undo.RecordObject(s, "Derive Religion");
+                s.data.cultural.religion = derivedRel;
+                changed = true;
+            }
+        }
+
+        WorldAuthoringEditorUI.DrawHelpersHeader("Languages");
+        var languageDefs = WorldDataChoicesCache.GetLanguageDefinitions();
+        while (_languageSelections.Count < languageDefs.Count) _languageSelections.Add(false);
+        while (_languageSelections.Count > languageDefs.Count) _languageSelections.RemoveAt(_languageSelections.Count - 1);
+        if (s.data.cultural.languages != null && s.data.cultural.languages.Length > 0)
+        {
+            string currentPrimaryId = s.data.cultural.languages[0];
+            int idx = 0;
+            for (int i = 0; i < languageDefs.Count; i++)
+            {
+                if (string.Equals(languageDefs[i].id, currentPrimaryId, StringComparison.OrdinalIgnoreCase))
+                {
+                    idx = i;
+                    break;
+                }
+            }
+            _primaryLanguagePick = idx;
+        }
+        var primaryLangEntry = WorldAuthoringEditorUI.PopupChoice("Primary Language", languageDefs, ref _primaryLanguagePick);
+        string newPrimaryId = primaryLangEntry?.id;
+        List<string> selectedLangs = new List<string>();
+        if (!string.IsNullOrWhiteSpace(newPrimaryId)) selectedLangs.Add(newPrimaryId);
+        EditorGUILayout.LabelField("Secondary Languages", EditorStyles.boldLabel);
+        for (int i = 0; i < languageDefs.Count; i++)
+        {
+            if (i == _primaryLanguagePick) continue;
+            string langId = languageDefs[i].id;
+            bool curSel = s.data.cultural.languages != null && s.data.cultural.languages.Skip(1).Contains(langId);
+            bool newSel = EditorGUILayout.ToggleLeft(languageDefs[i].displayName ?? langId, curSel);
+            if (newSel != curSel)
+            {
+                changed = true;
+            }
+            _languageSelections[i] = newSel;
+        }
+        for (int i = 0; i < languageDefs.Count; i++)
+        {
+            if (i == _primaryLanguagePick) continue;
+            if (_languageSelections[i])
+            {
+                selectedLangs.Add(languageDefs[i].id);
+            }
+        }
+        s.data.cultural.languages = selectedLangs.ToArray();
+
+        // Recalculate army summary after modifications
+        RecalculateDerivedArmySummary(s);
         using (new EditorGUI.DisabledScope(true))
         {
             EditorGUILayout.IntField("Total Army (Derived)", s.data.army.totalArmy);
             EditorGUILayout.TextField("Primary Commander (Derived)", s.data.army.primaryCommanderDisplayName ?? string.Empty);
         }
 
-        // Draw the rest, avoiding duplicate fields we handle explicitly above.
         serializedObject.Update();
-
         HashSet<string> skip = new HashSet<string>
         {
             "m_Script",
@@ -295,22 +503,17 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             "data.army.totalArmy",
             "data.army.menAtArms",
             "data.army.primaryCommanderDisplayName",
-            "data.army.primaryCommanderCharacterId",
+            "data.army.primaryCommanderCharacterId"
         };
-
         var prop = serializedObject.GetIterator();
         bool enterChildren = true;
         while (prop.NextVisible(enterChildren))
         {
             enterChildren = false;
             if (skip.Contains(prop.propertyPath)) continue;
-            // Draw without children; NextVisible() will respect foldout states and draw child fields
-            // on subsequent iterations (avoids duplicate child rendering).
             EditorGUILayout.PropertyField(prop, false);
         }
-
         serializedObject.ApplyModifiedProperties();
-
         if (changed)
         {
             EditorUtility.SetDirty(s);
@@ -335,29 +538,21 @@ public sealed class SettlementAuthoringSessionEditor : Editor
     {
         if (s == null || s.data == null) return;
         if (s.data.army == null) s.data.army = new SettlementInfoData.ArmyTab();
-
-        // Load referenced armies and aggregate.
         string[] armyIds = s.data.army.armyIds ?? Array.Empty<string>();
         int total = 0;
         HashSet<string> menAtArmsIds = new HashSet<string>(StringComparer.Ordinal);
-
         string chosenCommanderId = null;
         string chosenCommanderName = null;
         int bestTotal = int.MinValue;
-
         foreach (string rawId in armyIds)
         {
             string id = string.IsNullOrWhiteSpace(rawId) ? null : rawId.Trim();
             if (string.IsNullOrEmpty(id)) continue;
-
             if (!TryLoadArmyJson(id, out JObject armyJson))
                 continue;
-
             int armyTotal = armyJson.Value<int?>("totalArmy") ?? 0;
             if (armyTotal < 0) armyTotal = 0;
             total += armyTotal;
-
-            // Support both "menAtArms" and "menAtArmsStacks" army schemas.
             var menToken = armyJson["menAtArms"] ?? armyJson["menAtArmsStacks"];
             if (menToken is JArray menArray)
             {
@@ -375,7 +570,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                     }
                 }
             }
-
             if (armyTotal > bestTotal)
             {
                 bestTotal = armyTotal;
@@ -383,7 +577,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 chosenCommanderName = armyJson.Value<string>("primaryCommanderDisplayName");
             }
         }
-
         s.data.army.totalArmy = total;
         s.data.army.menAtArms = menAtArmsIds.OrderBy(x => x, StringComparer.Ordinal).ToArray();
         s.data.army.primaryCommanderCharacterId = string.IsNullOrWhiteSpace(chosenCommanderId) ? null : chosenCommanderId;
@@ -394,23 +587,17 @@ public sealed class SettlementAuthoringSessionEditor : Editor
     {
         armyRoot = null;
         if (string.IsNullOrWhiteSpace(armyId)) return false;
-
         string fileName = armyId.Trim();
         if (!fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             fileName += ".json";
-
         string primaryDir = Application.isEditor ? DataPaths.Editor_ArmiesPath : DataPaths.Runtime_ArmiesPath;
         string secondaryDir = Application.isEditor ? DataPaths.Runtime_ArmiesPath : DataPaths.Editor_ArmiesPath;
-
         string primaryPath = Path.Combine(primaryDir, fileName);
         string secondaryPath = Path.Combine(secondaryDir, fileName);
-
         string json = null;
         if (File.Exists(primaryPath)) json = File.ReadAllText(primaryPath);
         else if (File.Exists(secondaryPath)) json = File.ReadAllText(secondaryPath);
-
         if (string.IsNullOrWhiteSpace(json)) return false;
-
         try
         {
             armyRoot = JObject.Parse(json);
@@ -420,5 +607,35 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         {
             return false;
         }
+    }
+
+    private static string DeriveReligionFromCulture(string cultureId)
+    {
+        if (string.IsNullOrWhiteSpace(cultureId)) return null;
+        var cultures = WorldDataChoicesCache.GetCultureEntries();
+        var entry = cultures.FirstOrDefault(e => e != null && string.Equals(e.id, cultureId, StringComparison.OrdinalIgnoreCase));
+        if (entry == null || string.IsNullOrWhiteSpace(entry.filePath)) return null;
+        try
+        {
+            var jsonText = File.ReadAllText(entry.filePath);
+            var jo = JObject.Parse(jsonText);
+            var rel = jo["religions"] as JArray;
+            if (rel != null && rel.Count > 0)
+                return (string)rel[0];
+            var cArray = jo["cultures"] as JArray;
+            if (cArray != null)
+            {
+                foreach (var c in cArray)
+                {
+                    if (c is JObject obj && string.Equals((string)obj["id"], cultureId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var r = obj["religions"] as JArray;
+                        if (r != null && r.Count > 0) return (string)r[0];
+                    }
+                }
+            }
+        }
+        catch { }
+        return null;
     }
 }

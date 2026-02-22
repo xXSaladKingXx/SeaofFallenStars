@@ -50,11 +50,23 @@
     "raceDistribution": [],
     "religion": null,
     "traits": [],
-    "languages": [],
+    "languages": [
+      "cormyrean",
+      "sembian"
+    ],
     "customs": [],
     "populationDistribution": null,
     "primaryTraits": [],
-    "cultureDistribution": []
+    "cultureDistribution": [
+      {
+        "key": "cormyrean",
+        "percent": 83.05648
+      },
+      {
+        "key": "sembian",
+        "percent": 16.9435215
+      }
+    ]
   },
   "history": {
     "notes": null,
