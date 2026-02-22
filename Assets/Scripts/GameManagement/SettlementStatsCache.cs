@@ -8,7 +8,7 @@ using UnityEngine;
 /// - Income and Troops are taxed.
 /// - Population is additive only (not taxed).
 /// - Country capital is included at 0% income/troop tax.
-/// 
+///
 /// This cache is safe to call from any UI panel; it rebuilds lazily.
 /// </summary>
 public static class SettlementStatsCache
@@ -358,9 +358,10 @@ public static class SettlementStatsCache
         return stats;
     }
 
-    private static VassalContractData FindContract(SettlementInfoData liegeData, string vassalSettlementId)
+    // Change return type of FindContract to use nested VassalContractData inside SettlementInfoData.
+    private static SettlementInfoData.VassalContractData FindContract(SettlementInfoData liegeData, string vassalSettlementId)
     {
-        if (liegeData?.feudal?.vassalContracts == null) return null;
+        if (liegeData?.feudal?.vassalContracts == null || string.IsNullOrWhiteSpace(vassalSettlementId)) return null;
 
         foreach (var c in liegeData.feudal.vassalContracts)
         {

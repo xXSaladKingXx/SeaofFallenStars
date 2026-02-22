@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using Zana.WorldAuthoring;
 
 /// <summary>
 /// Authoring session wrapper for Settlement JSON.
@@ -103,9 +104,16 @@ public sealed class SettlementAuthoringSession : WorldDataAuthoringSessionBase
         data.cultural.customs ??= Array.Empty<string>();
 
         data.main.notableFacts ??= new List<string>();
+        // Ensure the various distribution lists and arrays are initialised to avoid null reference errors.
         data.cultural.raceDistribution ??= new List<PercentEntry>();
-        data.history.timelineEntries ??= new List<TimelineEntry>();
+        data.cultural.cultureDistribution ??= new List<PercentEntry>();
+        data.cultural.primaryTraits ??= Array.Empty<string>();
+        // timelineEntries is now an array rather than a List, so ensure an empty array instead of a List
+        data.history.timelineEntries ??= Array.Empty<TimelineEntry>();
+        data.history.rulingFamilyMembers ??= Array.Empty<string>();
         data.feudal.vassalContracts ??= new List<SettlementInfoData.VassalContractData>();
+        // Ensure currently constructing projects is an empty array
+        data.economy.currentlyConstructing ??= Array.Empty<string>();
     }
 
     private void RecalculateDerivedArmyTab()

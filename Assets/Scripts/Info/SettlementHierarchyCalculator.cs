@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Performs vassal hierarchy computations for settlements.
+/// Computes aggregate realm statistics and resolves tax contracts between settlements.
+/// </summary>
 public static class SettlementHierarchyCalculator
 {
     public class ComputedStats
@@ -13,7 +17,7 @@ public static class SettlementHierarchyCalculator
         public int realmTroops;
         public float realmIncomeGross;
 
-        // Ruler ìtakeî (what this settlementís ruler directly controls/collects)
+        // Ruler ‚Äútake‚Äù (what this settlement‚Äôs ruler directly controls/collects)
         public int rulerTroopsNet;
         public float rulerIncomeNet;
 
@@ -102,9 +106,11 @@ public static class SettlementHierarchyCalculator
         var vassals = (data.main != null && data.main.vassals != null) ? data.main.vassals : Array.Empty<string>();
 
         // Capital acts like a vassal with 0 tax, fully counted both in realm totals and ruler take
-        if (!string.IsNullOrWhiteSpace(data.capitalSettlementId))
+        // Prefer feudal.capitalSettlementId but fall back to root-level capitalSettlementId for compatibility.
+        string capId = data.feudal?.capitalSettlementId ?? data.capitalSettlementId;
+        if (!string.IsNullOrWhiteSpace(capId))
         {
-            var cap = Compute(data.capitalSettlementId);
+            var cap = Compute(capId);
             if (cap != null)
             {
                 result.realmPopulation += cap.realmPopulation;
@@ -124,7 +130,7 @@ public static class SettlementHierarchyCalculator
             int baseTroops = (data.army != null) ? data.army.totalArmy : 0;
             float baseIncome = (data.economy != null) ? data.economy.totalIncomePerMonth : 0f;
 
-            // Treat these as both realm and ruler take for ìsingle holdingî settlements
+            // Treat these as both realm and ruler take for ‚Äúsingle holding‚Äù settlements
             result.realmPopulation += basePop;
             result.realmTroops += baseTroops;
             result.realmIncomeGross += baseIncome;
@@ -140,7 +146,7 @@ public static class SettlementHierarchyCalculator
             if (string.IsNullOrWhiteSpace(childId)) continue;
 
             // Safety: ignore if it equals capital
-            if (!string.IsNullOrWhiteSpace(data.capitalSettlementId) && childId == data.capitalSettlementId)
+            if (!string.IsNullOrWhiteSpace(capId) && childId == capId)
                 continue;
 
             var child = Compute(childId);
@@ -155,14 +161,14 @@ public static class SettlementHierarchyCalculator
             float incomeRate = 0f;
             float troopRate = 0f;
 
-            var contract = FindContract(data.vassalContracts, childId);
+            var contract = FindContract(data.feudal?.vassalContracts, childId);
             if (contract != null)
             {
                 incomeRate = Mathf.Clamp01(contract.incomeTaxRate);
                 troopRate = Mathf.Clamp01(contract.troopTaxRate);
             }
 
-            // Tax is assessed against the vassal rulerís net (what they control after collecting from THEIR vassals)
+            // Tax is assessed against the vassal ruler‚Äôs net (what they control after collecting from THEIR vassals)
             float taxedIncome = child.rulerIncomeNet * incomeRate;
             float taxedTroopsF = child.rulerTroopsNet * troopRate;
 
@@ -170,14 +176,14 @@ public static class SettlementHierarchyCalculator
             result.rulerTroopsNet += Mathf.RoundToInt(taxedTroopsF);
         }
 
-        // Resolve liege contract for ìafter liege taxî display
+        // Resolve liege contract for ‚Äúafter liege tax‚Äù display
         ResolveLiegeTax(result, data);
 
         _cache[settlementId] = result;
         return result;
     }
 
-    private static SettlementVassalContract FindContract(List<SettlementVassalContract> list, string vassalId)
+    private static SettlementInfoData.VassalContractData FindContract(List<SettlementInfoData.VassalContractData> list, string vassalId)
     {
         if (list == null || list.Count == 0 || string.IsNullOrWhiteSpace(vassalId))
             return null;
@@ -220,10 +226,10 @@ public static class SettlementHierarchyCalculator
             liegeId
         );
 
-        if (liegeData == null || liegeData.vassalContracts == null)
+        if (liegeData == null || liegeData.feudal?.vassalContracts == null)
             return;
 
-        var contract = FindContract(liegeData.vassalContracts, stats.settlementId);
+        var contract = FindContract(liegeData.feudal.vassalContracts, stats.settlementId);
         if (contract == null)
             return;
 
