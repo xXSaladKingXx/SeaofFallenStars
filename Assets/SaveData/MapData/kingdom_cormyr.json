@@ -6,7 +6,7 @@
   "rulerCharacterId": "char_azoun_matarys_iv",
   "liegeSettlementId": null,
   "mapUrlOrPath": null,
-  "capitalSettlementId": null,
+  "capitalSettlementId": "arabel",
   "main": {
     "description": null,
     "notableFacts": [],
@@ -48,7 +48,7 @@
   "cultural": {
     "culture": null,
     "raceDistribution": [],
-    "religion": null,
+    "religion": "cormyr_lathanderism",
     "traits": [],
     "languages": [
       "cormyrean",
@@ -63,7 +63,7 @@
         "percent": 83.05648
       },
       {
-        "key": "sembian",
+        "key": "cormyrean",
         "percent": 16.9435215
       }
     ]
@@ -88,7 +88,7 @@
     "liegeSettlementId": null,
     "notes": null,
     "laws": null,
-    "capitalSettlementId": null
+    "capitalSettlementId": "arabel"
   },
   "culturalComposition": [],
   "raceDistribution": []

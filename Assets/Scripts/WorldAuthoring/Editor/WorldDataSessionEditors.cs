@@ -102,6 +102,20 @@ public sealed class SettlementAuthoringSessionEditor : Editor
     private int _primaryLanguagePick;
     private readonly List<bool> _languageSelections = new List<bool>();
 
+    // Track race selection indices for the race distribution editor.  Mirrors the culture
+    // distribution state management.  Each element corresponds to one PercentEntry in
+    // s.data.cultural.raceDistribution.
+    private readonly List<int> _racePickIndices = new List<int>();
+    // Index of the race to add when the user chooses from the "Add race" dropdown.
+    private int _addRacePick;
+    // Track the currently selected religion.  We do not persist this index; instead,
+    // we look up the current religion id and compute the appropriate index on each
+    // inspector draw.
+    private int _religionPick;
+
+    // Track selected capital index for capital dropdown
+    private int _capitalPick;
+
     public override void OnInspectorGUI()
     {
         var s = (SettlementAuthoringSession)target;
@@ -154,20 +168,27 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             changed = true;
         }
 
-        // Liege (allow blank)
-        bool hasLiegeToggle = !string.IsNullOrWhiteSpace(s.data.liegeSettlementId);
-        bool hasLiegeNew = EditorGUILayout.Toggle("Has Liege", hasLiegeToggle);
-        if (!hasLiegeNew)
+        // Liege (allow blank).  We first render a toggle to indicate whether this
+        // settlement has a liege.  Changing the toggle will clear or enable
+        // selection of a liege settlement.  We explicitly record undo for
+        // toggling to preserve undo/redo state.
+        bool currentHasLiege = !string.IsNullOrWhiteSpace(s.data.liegeSettlementId);
+        bool newHasLiege = EditorGUILayout.Toggle("Has Liege", currentHasLiege);
+        if (newHasLiege != currentHasLiege)
         {
-            if (!string.IsNullOrWhiteSpace(s.data.liegeSettlementId))
+            Undo.RecordObject(s, newHasLiege ? "Enable Liege" : "Disable Liege");
+            if (!newHasLiege)
             {
-                Undo.RecordObject(s, "Clear Liege");
+                // Clearing the toggle removes the liege ID.
                 s.data.liegeSettlementId = null;
-                changed = true;
             }
+            changed = true;
         }
-        else
+        if (newHasLiege)
         {
+            // Show the settlement picker for selecting a liege.  Allow "(none)" to
+            // represent no liege.  Retrieve the index based on the current
+            // liegeSettlementId and assign the selection back to the data model.
             _liegePick = WorldAuthoringEditorUI.GetIndexByIdWithNone(settlements, s.data.liegeSettlementId, _liegePick);
             var liegeEntry = WorldAuthoringEditorUI.PopupChoiceWithNone("Liege Settlement", settlements, ref _liegePick, "(none)");
             string newLiegeId = liegeEntry?.id;
@@ -477,6 +498,280 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         }
         s.data.cultural.languages = selectedLangs.ToArray();
 
+        // -------------------------------------------------------------------------
+        // Race distribution and religion selection.  For settlements without
+        // vassals we expose full editing controls.  For settlements with vassals
+        // these values are determined by the aggregated stats and are displayed
+        // separately in the Aggregated Stats section.
+        // -------------------------------------------------------------------------
+
+        // Build a quick lookup for whether this settlement has direct vassals.  If
+        // there are any vassals, we treat the local cultural demographics as the
+        // capital stats and display aggregated values below.
+        bool hasVassals = s.data.main != null && s.data.main.vassals != null && s.data.main.vassals.Length > 0;
+
+        // Race distribution and religion can always be edited.  When the settlement
+        // has vassals, these fields represent the capital settlement's base stats.
+        // --- Race Distribution Editor ---
+        WorldAuthoringEditorUI.DrawHelpersHeader("Race Distribution");
+        if (s.data.cultural.raceDistribution == null)
+            s.data.cultural.raceDistribution = new List<PercentEntry>();
+
+        // Ensure the helper lists match the size of the distribution list.
+        while (_racePickIndices.Count < s.data.cultural.raceDistribution.Count)
+            _racePickIndices.Add(0);
+        while (_racePickIndices.Count > s.data.cultural.raceDistribution.Count)
+            _racePickIndices.RemoveAt(_racePickIndices.Count - 1);
+
+        var raceDefs = WorldDataChoicesCache.GetRaceDefinitions();
+        for (int i = 0; i < s.data.cultural.raceDistribution.Count; i++)
+        {
+            var entry = s.data.cultural.raceDistribution[i];
+            if (entry == null)
+            {
+                entry = new PercentEntry { key = null, percent = 0f };
+                s.data.cultural.raceDistribution[i] = entry;
+            }
+            EditorGUILayout.BeginHorizontal();
+            // Drop-down for race ID
+            // Copy the pick index to a local variable so we don't pass a list indexer as ref.  
+            int racePick = _racePickIndices[i];
+            var selectedRace = WorldAuthoringEditorUI.PopupChoice("Race", raceDefs, ref racePick);
+            // Write the updated pick index back to our list.
+            if (racePick != _racePickIndices[i])
+                _racePickIndices[i] = racePick;
+            var newRaceKey = selectedRace?.id;
+            if (entry.key != newRaceKey)
+            {
+                Undo.RecordObject(s, "Change Race Entry");
+                entry.key = newRaceKey;
+                changed = true;
+            }
+            // Percentage field (0–100)
+            float racePercent = EditorGUILayout.FloatField(entry.percent);
+            racePercent = Mathf.Clamp(racePercent, 0f, 100f);
+            if (!Mathf.Approximately(racePercent, entry.percent))
+            {
+                Undo.RecordObject(s, "Change Race Percent");
+                entry.percent = racePercent;
+                changed = true;
+            }
+            // Remove button
+            if (GUILayout.Button("Remove", GUILayout.Width(60)))
+            {
+                Undo.RecordObject(s, "Remove Race Entry");
+                s.data.cultural.raceDistribution.RemoveAt(i);
+                _racePickIndices.RemoveAt(i);
+                changed = true;
+                i--;
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        // Add race dropdown
+        _addRacePick = Mathf.Clamp(_addRacePick, 0, raceDefs.Count - 1);
+        EditorGUILayout.BeginHorizontal();
+        var addRaceEntry = WorldAuthoringEditorUI.PopupChoice("Add race", raceDefs, ref _addRacePick);
+        if (addRaceEntry != null && GUILayout.Button("Add", GUILayout.Width(60)))
+        {
+            Undo.RecordObject(s, "Add Race Entry");
+            s.data.cultural.raceDistribution.Add(new PercentEntry { key = addRaceEntry.id, percent = 0f });
+            _racePickIndices.Add(_addRacePick);
+            changed = true;
+        }
+        EditorGUILayout.EndHorizontal();
+        // Normalize race percentages to sum to 100
+        if (s.data.cultural.raceDistribution.Count > 0)
+        {
+            float raceSum = 0f;
+            foreach (var e in s.data.cultural.raceDistribution)
+                raceSum += Mathf.Max(0f, e?.percent ?? 0f);
+            if (raceSum > 0.0001f)
+            {
+                foreach (var e in s.data.cultural.raceDistribution)
+                {
+                    float norm = Mathf.Max(0f, e?.percent ?? 0f) / raceSum * 100f;
+                    if (!Mathf.Approximately(norm, e.percent))
+                    {
+                        e.percent = norm;
+                        changed = true;
+                    }
+                }
+            }
+        }
+
+        // --- Religion Selection Editor ---
+        WorldAuthoringEditorUI.DrawHelpersHeader("Religion");
+        var religionDefs = WorldDataChoicesCache.GetReligionDefinitions();
+        if (religionDefs != null && religionDefs.Count > 0)
+        {
+            // Determine current index based on the selected religion ID.
+            int currentRelIndex = 0;
+            if (!string.IsNullOrWhiteSpace(s.data.cultural.religion))
+            {
+                for (int i = 0; i < religionDefs.Count; i++)
+                {
+                    if (string.Equals(religionDefs[i]?.id, s.data.cultural.religion, StringComparison.OrdinalIgnoreCase))
+                    {
+                        currentRelIndex = i;
+                        break;
+                    }
+                }
+            }
+            _religionPick = currentRelIndex;
+            var chosenRel = WorldAuthoringEditorUI.PopupChoice("Religion", religionDefs, ref _religionPick);
+            string newRelId = chosenRel?.id;
+            if (s.data.cultural.religion != newRelId)
+            {
+                Undo.RecordObject(s, "Change Religion");
+                s.data.cultural.religion = newRelId;
+                changed = true;
+            }
+        }
+        // End race and religion editing
+
+        // -------------------------------------------------------------------------
+        // Aggregated stats and capital selection for settlements with vassals.
+        // When a settlement has vassals, its economy, army and demographic stats
+        // are derived from the capital settlement and aggregated from its vassals.
+        // We therefore show non-editable totals along with editable base values from
+        // the designated capital.  If there are no vassals, no aggregated stats are
+        // shown.
+        // -------------------------------------------------------------------------
+
+        if (hasVassals)
+        {
+            // Capital selection.  Build a list of vassal entries for the dropdown.  We
+            // rely on the settlement name lookup built earlier from the world data.
+            var vassalEntries = new List<WorldDataIndexEntry>();
+            foreach (var vid in s.data.main.vassals)
+            {
+                if (string.IsNullOrWhiteSpace(vid)) continue;
+                string nm = settlementNameById.TryGetValue(vid, out var disp) ? disp : vid;
+                vassalEntries.Add(new WorldDataIndexEntry { id = vid, displayName = nm });
+            }
+            if (vassalEntries.Count > 0)
+            {
+                // Determine the current capital index.  If the existing capital ID is not
+                // among the vassal list, default to the first entry.
+                int capIndex = 0;
+                if (!string.IsNullOrWhiteSpace(s.data.feudal?.capitalSettlementId))
+                {
+                    for (int i = 0; i < vassalEntries.Count; i++)
+                    {
+                        if (string.Equals(vassalEntries[i].id, s.data.feudal.capitalSettlementId, StringComparison.OrdinalIgnoreCase))
+                        {
+                            capIndex = i;
+                            break;
+                        }
+                    }
+                }
+                _capitalPick = capIndex;
+                WorldAuthoringEditorUI.DrawHelpersHeader("Capital");
+                var capitalChoice = WorldAuthoringEditorUI.PopupChoice("Capital Settlement", vassalEntries, ref _capitalPick);
+                string newCapId = capitalChoice?.id;
+                if (s.data.feudal.capitalSettlementId != newCapId)
+                {
+                    Undo.RecordObject(s, "Set Capital");
+                    s.data.feudal.capitalSettlementId = newCapId;
+                    // Mirror the root-level capital field for backwards compatibility.
+                    s.data.capitalSettlementId = newCapId;
+                    changed = true;
+                }
+            }
+
+            // Recompute aggregated stats using the SettlementStatsCache.  We call
+            // Invalidate() before computing to ensure the cache is fresh; this
+            // operation is safe but can be expensive if called repeatedly.  In
+            // practice, authoring sessions are short-lived and the settlement tree
+            // small, so this performance cost is acceptable.
+            SettlementStatsCache.Invalidate();
+            var stats = SettlementStatsCache.GetStatsOrNull(s.data.settlementId);
+            if (stats != null)
+            {
+                WorldAuthoringEditorUI.DrawHelpersHeader("Aggregated Totals (derived)");
+                EditorGUILayout.LabelField("Total Population", stats.totalPopulation.ToString());
+                EditorGUILayout.LabelField("Gross Income", stats.grossIncome.ToString("F1"));
+                EditorGUILayout.LabelField("Income Tax Paid Up", stats.incomePaidUp.ToString("F1"));
+                EditorGUILayout.LabelField("Net Income", stats.netIncome.ToString("F1"));
+                EditorGUILayout.LabelField("Gross Troops", stats.grossTroops.ToString());
+                EditorGUILayout.LabelField("Troops Tax Paid Up", stats.troopsPaidUp.ToString());
+                EditorGUILayout.LabelField("Net Troops", stats.netTroops.ToString());
+                // Display aggregated race distribution.
+                if (stats.totalPopulation > 0)
+                {
+                    EditorGUILayout.LabelField("Races", EditorStyles.boldLabel);
+                    // Build display name lookup for races.  Use a distinct variable name to
+                    // avoid colliding with the raceDefs defined in the race editor above.
+                    var allRaceDefs = WorldDataChoicesCache.GetRaceDefinitions();
+                    var raceMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var def in allRaceDefs)
+                    {
+                        if (def != null && !string.IsNullOrWhiteSpace(def.id))
+                            raceMap[def.id] = def.displayName;
+                    }
+                    foreach (var kv in stats.populationByRace.OrderByDescending(kv => kv.Value))
+                    {
+                        float pct = stats.totalPopulation > 0 ? (float)kv.Value / stats.totalPopulation * 100f : 0f;
+                        string rn = raceMap.TryGetValue(kv.Key, out var disp) ? disp : kv.Key;
+                        EditorGUILayout.LabelField($"- {rn} : {pct:F1}%");
+                    }
+                }
+                // Display aggregated culture distribution.
+                if (stats.totalPopulation > 0)
+                {
+                    EditorGUILayout.LabelField("Cultures", EditorStyles.boldLabel);
+                    var cultDefs = WorldDataChoicesCache.GetCultureEntries();
+                    var cultMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var def in cultDefs)
+                    {
+                        if (def != null && !string.IsNullOrWhiteSpace(def.id))
+                            cultMap[def.id] = def.displayName;
+                    }
+                    foreach (var kv in stats.populationByCulture.OrderByDescending(kv => kv.Value))
+                    {
+                        float pct = stats.totalPopulation > 0 ? (float)kv.Value / stats.totalPopulation * 100f : 0f;
+                        string cn = cultMap.TryGetValue(kv.Key, out var disp) ? disp : kv.Key;
+                        EditorGUILayout.LabelField($"- {cn} : {pct:F1}%");
+                    }
+                }
+                // Display aggregated religions.
+                if (stats.totalPopulation > 0)
+                {
+                    EditorGUILayout.LabelField("Religions", EditorStyles.boldLabel);
+                    var relDefs = WorldDataChoicesCache.GetReligionDefinitions();
+                    var relMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var def in relDefs)
+                    {
+                        if (def != null && !string.IsNullOrWhiteSpace(def.id))
+                            relMap[def.id] = def.displayName;
+                    }
+                    foreach (var kv in stats.populationByReligion.OrderByDescending(kv => kv.Value))
+                    {
+                        float pct = stats.totalPopulation > 0 ? (float)kv.Value / stats.totalPopulation * 100f : 0f;
+                        string rn = relMap.TryGetValue(kv.Key, out var disp) ? disp : kv.Key;
+                        EditorGUILayout.LabelField($"- {rn} : {pct:F1}%");
+                    }
+                }
+                // Display aggregated languages (unique list).
+                if (stats.populationByLanguage.Count > 0)
+                {
+                    EditorGUILayout.LabelField("Languages", EditorStyles.boldLabel);
+                    var langDefs = WorldDataChoicesCache.GetLanguageDefinitions();
+                    var langMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var def in langDefs)
+                    {
+                        if (def != null && !string.IsNullOrWhiteSpace(def.id))
+                            langMap[def.id] = def.displayName;
+                    }
+                    foreach (var kv in stats.populationByLanguage)
+                    {
+                        string ln = langMap.TryGetValue(kv.Key, out var disp) ? disp : kv.Key;
+                        EditorGUILayout.LabelField($"- {ln}");
+                    }
+                }
+            }
+        }
+
         // Recalculate army summary after modifications
         RecalculateDerivedArmySummary(s);
         using (new EditorGUI.DisabledScope(true))
@@ -504,6 +799,10 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             "data.army.menAtArms",
             "data.army.primaryCommanderDisplayName",
             "data.army.primaryCommanderCharacterId"
+            ,"data.cultural.languages"
+            ,"data.cultural.raceDistribution"
+            ,"data.cultural.cultureDistribution"
+            ,"data.cultural.religion"
         };
         var prop = serializedObject.GetIterator();
         bool enterChildren = true;

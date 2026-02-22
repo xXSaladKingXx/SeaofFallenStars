@@ -22337,7 +22337,6 @@ Transform:
   - {fileID: 1334595414}
   - {fileID: 480487642}
   - {fileID: 434817852}
-  - {fileID: 1729646325}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1566514895
@@ -22352,8 +22351,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddfd1b9cb89bab4185465c213e9a039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.WorldDataMasterAuthoring
-  activeCategory: 9
-  activeSession: {fileID: 1729646324}
+  activeCategory: 7
+  activeSession: {fileID: 0}
 --- !u!1001 &1581299612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25643,71 +25642,6 @@ MonoBehaviour:
   showInlineEditor: 1
   autoCreateIfMissing: 1
   useStableKey: 1
---- !u!1 &1729646323
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1729646325}
-  - component: {fileID: 1729646324}
-  m_Layer: 0
-  m_Name: __AuthoringSession_LanguageCatalog
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1729646324
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1729646323}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa1641b522f07e741862be53cf59e57b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.LanguageCatalogAuthoringSession
-  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\languages\language_catalog.json
-  data:
-    catalogId: language_catalog
-    displayName: Languages
-    languages:
-    - id: cormyrean
-      name: Cormyrean Common
-      primaryCultureId: cormyrean
-      nativeRegionId: 
-      description: The Corymr Dialect of the Common Sword Coast Language
-    - id: tai
-      name: Tai
-      primaryCultureId: tai
-      nativeRegionId: 
-      description: The language spoken by the people of Tai. It's smooth and elegant.
-    - id: sembian
-      name: Sembian Common
-      primaryCultureId: sembian
-      nativeRegionId: 
-      description: Sembian dialect of the common tongue.
-    notes: 
---- !u!4 &1729646325
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1729646323}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1740752601
 GameObject:
   m_ObjectHideFlags: 0

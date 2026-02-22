@@ -81,6 +81,30 @@
           "bonus": -3
         }
       ]
+    },
+    {
+      "id": "heavy_cavalry",
+      "displayName": "Heavy Cavalry",
+      "notes": "",
+      "attack": 2,
+      "defense": 3,
+      "size": 60,
+      "role": "cavalry",
+      "qualityTier": "1",
+      "geographyBonuses": [
+        {
+          "subtypeId": "forest",
+          "bonus": -1
+        },
+        {
+          "subtypeId": "plains",
+          "bonus": 3
+        },
+        {
+          "subtypeId": "mountains",
+          "bonus": -3
+        }
+      ]
     }
   ],
   "notes": ""

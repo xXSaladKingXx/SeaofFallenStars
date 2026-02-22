@@ -43,6 +43,21 @@
       ],
       "religions": [],
       "notes": ""
+    },
+    {
+      "id": "cormyr-sembian",
+      "displayName": "Cormyr-Sembian",
+      "description": "The Culture created when King Azoun I took thousands of Sembian serfs, who settled in the east. Later, when Selguant was won as a peace price, more Sembian blood came into the Cormyrean sphere. Since, they have intermarried and blended over many generations with the Cormyrean culture, while still retaining some of their old traditions.",
+      "traits": [
+        "defendersofthepass"
+      ],
+      "languages": [
+        "cormyrean"
+      ],
+      "religions": [
+        "cormyr_lathanderism"
+      ],
+      "notes": ""
     }
   ],
   "traits": [

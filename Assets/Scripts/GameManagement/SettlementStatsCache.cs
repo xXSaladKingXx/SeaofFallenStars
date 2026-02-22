@@ -233,10 +233,26 @@ public static class SettlementStatsCache
                 }
                 var childStats = ComputeGrossRecursive(childId, id, incomeTax, troopTax, childIsCapital, terms);
                 if (childStats == null) continue;
-                double incomePaidUp = childStats.incomePaidUp;
-                int troopsPaidUp = childStats.troopsPaidUp;
-                stats.grossIncome += incomePaidUp;
-                stats.grossTroops += troopsPaidUp;
+                // Determine how much of the child's contributions flow up to the liege.
+                // For normal vassals, only the paid‐up taxes are added to the liege's gross values.
+                // For the designated capital, treat the child's net (post‐tax) values as the base stats for the liege.
+                double incomeContribution;
+                int troopContribution;
+                if (childIsCapital)
+                {
+                    // Capitals are the seat of power for higher tier titles.  Use their net values (after their own
+                    // vassal taxes) as the base stats instead of just the tax.  This ensures that independent
+                    // settlements aggregate their capital's economy and army in full, rather than only collecting tax.
+                    incomeContribution = childStats.netIncome;
+                    troopContribution = childStats.netTroops;
+                }
+                else
+                {
+                    incomeContribution = childStats.incomePaidUp;
+                    troopContribution = childStats.troopsPaidUp;
+                }
+                stats.grossIncome += incomeContribution;
+                stats.grossTroops += troopContribution;
                 stats.totalPopulation += childStats.totalPopulation;
                 MergeCounts(stats.populationByRace, childStats.populationByRace);
                 MergeCounts(stats.populationByCulture, childStats.populationByCulture);
@@ -250,10 +266,12 @@ public static class SettlementStatsCache
                     troopTaxRate = troopTax,
                     terms = terms,
                     vassalGrossIncome = childStats.grossIncome,
-                    incomePaidUp = incomePaidUp,
+                    // Record how much this vassal contributes to the liege.  For capitals, this is the net income
+                    // and net troops; for normal vassals, it is the paid‐up tax.
+                    incomePaidUp = incomeContribution,
                     vassalNetIncome = childStats.netIncome,
                     vassalGrossTroops = childStats.grossTroops,
-                    troopsPaidUp = troopsPaidUp,
+                    troopsPaidUp = troopContribution,
                     vassalNetTroops = childStats.netTroops,
                     vassalTotalPopulation = childStats.totalPopulation,
                     isCapital = childIsCapital

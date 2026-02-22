@@ -1,59 +1,90 @@
 {
-  "displayName": "Arabel",
-  "mapUrlOrPath": "",
-  "rulerCharacterId": "char_azoun_matarys_iv",
+  "isPopulated": false,
   "characterIds": [],
+  "settlementId": "arabel",
+  "displayName": "Arabel",
+  "rulerCharacterId": "char_azoun_matarys_iv",
+  "liegeSettlementId": null,
+  "mapUrlOrPath": null,
+  "capitalSettlementId": null,
   "main": {
-    "description": "",
+    "description": null,
+    "notableFacts": [],
     "population": 0,
     "rulerDisplayName": "King Azoun Matarys IV",
-    "vassals": []
+    "rulerName": null,
+    "vassals": [],
+    "characterIds": []
   },
   "army": {
-    "totalArmy": 0,
+    "armyIds": [
+      "cormyrarmy"
+    ],
+    "totalArmy": 22,
     "menAtArms": [
+      "heavy_infantry",
+      "light_cavalry",
+      "light_infantry",
       "purple_dragons"
     ],
     "primaryCommanderDisplayName": "King Azoun Matarys IV",
-    "primaryCommanderCharacterId": "char_azoun_matarys_iv",
-    "menAtArmsStacks": [
-      {
-        "menAtArmsId": "purple_dragons",
-        "units": 20
-      }
-    ]
+    "primaryCommanderCharacterId": "char_azoun_matarys_iv"
   },
   "economy": {
+    "mainExports": null,
+    "mainImports": null,
+    "mainIndustries": null,
+    "notes": null,
     "totalIncomePerMonth": 0.0,
     "totalTreasury": 0.0,
-    "courtExpenses": "",
-    "armyExpenses": "",
+    "courtExpenses": null,
+    "armyExpenses": null,
     "currentlyConstructing": []
   },
   "cultural": {
-    "culture": "cormyr",
-    "populationDistribution": "1",
-    "primaryTraits": [],
+    "culture": null,
     "raceDistribution": [],
-    "cultureDistribution": []
+    "religion": null,
+    "traits": [],
+    "languages": [
+      "cormyrean"
+    ],
+    "customs": [],
+    "populationDistribution": null,
+    "primaryTraits": [],
+    "cultureDistribution": [
+      {
+        "key": "cormyrean",
+        "percent": 92.6440659
+      },
+      {
+        "key": "cormyrean",
+        "percent": 7.355939
+      }
+    ]
   },
   "history": {
+    "notes": null,
     "timelineEntries": [],
     "rulingFamilyMembers": []
   },
   "feudal": {
-    "settlementId": "arabel",
-    "layer": 0,
-    "laws": "",
-    "isPopulated": true,
-    "capitalSettlementId": "",
-    "liegeSettlementId": "cormyr",
-    "castellanCharacterId": "torrhenstorm",
-    "marshallCharacterId": "torrhenstorm",
-    "stewardCharacterId": "torrhenstorm",
-    "diplomatCharacterId": "torrhenstorm",
-    "spymasterCharacterId": "torrhenstorm",
-    "headPriestCharacterId": "torrhenstorm",
-    "vassalContracts": []
-  }
+    "castellanCharacterId": null,
+    "marshallCharacterId": "char_tomasmellsen",
+    "stewardCharacterId": null,
+    "diplomatCharacterId": null,
+    "spymasterCharacterId": null,
+    "headPriestCharacterId": null,
+    "vassalContracts": [],
+    "settlementId": null,
+    "layer": null,
+    "isPopulated": false,
+    "feudal": false,
+    "liegeSettlementId": null,
+    "notes": null,
+    "laws": null,
+    "capitalSettlementId": null
+  },
+  "culturalComposition": [],
+  "raceDistribution": []
 }

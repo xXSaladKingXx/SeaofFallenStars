@@ -36,25 +36,19 @@
       "id": "tiefling",
       "displayName": "Tiefling",
       "description": "",
-      "traits": [
-        "defendersofthepass"
-      ]
+      "traits": []
     },
     {
       "id": "dragonborn",
       "displayName": "Dragonborn",
       "description": "",
-      "traits": [
-        "defendersofthepass"
-      ]
+      "traits": []
     },
     {
       "id": "halfelf",
       "displayName": "Half-Elf",
       "description": "",
-      "traits": [
-        "defendersofthepass"
-      ]
+      "traits": []
     }
   ],
   "notes": null
