@@ -10,17 +10,57 @@
   "geography": {
     "overview": "The Dalelands are swamps of thick bog and sickness, ",
     "climateNotes": "",
-    "dominantTerrain": []
+    "dominantTerrain": [
+      "saltwater"
+    ]
   },
   "vassals": [
     "dalelands",
-    "oldgrowth"
+    "oldgrowth",
+    "cormyr",
+    "sembia"
   ],
   "derived": {
-    "totalPopulation": 0,
-    "raceDistribution": [],
-    "cultureDistribution": [],
-    "languageDistribution": [],
-    "terrainBreakdown": []
+    "totalPopulation": 121777,
+    "raceDistribution": [
+      {
+        "key": "Human",
+        "percent": 0.615384638
+      },
+      {
+        "key": "Other",
+        "percent": 0.334448159
+      },
+      {
+        "key": "Elvish",
+        "percent": 0.0501672253
+      }
+    ],
+    "cultureDistribution": [
+      {
+        "key": "Cormyrean",
+        "percent": 0.854948
+      },
+      {
+        "key": "Elvish",
+        "percent": 0.07252601
+      },
+      {
+        "key": "Cormyr-Sembian",
+        "percent": 0.07252601
+      }
+    ],
+    "languageDistribution": [
+      {
+        "key": "cormyr_common",
+        "percent": 1.0
+      }
+    ],
+    "terrainBreakdown": [
+      {
+        "key": "saltwater",
+        "percent": 1.0
+      }
+    ]
   }
 }

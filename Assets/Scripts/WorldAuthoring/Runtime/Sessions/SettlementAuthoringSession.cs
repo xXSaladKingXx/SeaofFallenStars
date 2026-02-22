@@ -1,267 +1,219 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
-namespace Zana.WorldAuthoring
+/// <summary>
+/// Authoring session wrapper for Settlement JSON.
+/// 
+/// Key behavior:
+/// - Settlement's Army tab is derived from referenced Army JSON objects.
+/// - The settlement stores only armyIds (references). All other army fields are re-generated on save.
+/// </summary>
+public sealed class SettlementAuthoringSession : WorldDataAuthoringSessionBase
 {
-    public sealed class SettlementAuthoringSession : WorldDataAuthoringSessionBase
+    public SettlementInfoData data = new SettlementInfoData();
+
+    // Non-invasive / editor-only helper lists persisted in JSON at top-level.
+    public List<CultureCompositionEntry> culturalComposition = new List<CultureCompositionEntry>();
+    public List<RaceDistributionEntry> raceDistribution = new List<RaceDistributionEntry>();
+
+    // Legacy public fields kept for compatibility with old inspectors (not injected into JSON anymore).
+    public string castellanCharacterId;
+    public string marshallCharacterId;
+    public string stewardCharacterId;
+    public string diplomatCharacterId;
+    public string spymasterCharacterId;
+    public string headPriestCharacterId;
+
+    public override WorldDataCategory Category => WorldDataCategory.Settlement;
+
+    public override string GetDefaultFileBaseName()
+        => data != null && !string.IsNullOrWhiteSpace(data.settlementId)
+            ? data.settlementId
+            : "new_settlement";
+
+    public override string BuildJson()
     {
-        [Header("Data")]
-        public SettlementInfoData data = new SettlementInfoData();
+        EnsureDataShape();
 
-        public override WorldDataCategory Category => WorldDataCategory.Settlement;
+        // Normalize and derive the Army tab from referenced Army JSONs.
+        RecalculateDerivedArmyTab();
 
-        public override string GetDefaultFileBaseName()
+        JObject root = JObject.FromObject(data);
+
+        if (culturalComposition != null)
+            root["culturalComposition"] = JArray.FromObject(culturalComposition);
+
+        if (raceDistribution != null)
+            root["raceDistribution"] = JArray.FromObject(raceDistribution);
+
+        return root.ToString();
+    }
+
+    public override void ApplyJson(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
         {
-            string id = data != null ? data.settlementId : null;
-            if (!string.IsNullOrWhiteSpace(id)) return id;
-            string dn = data != null ? data.displayName : null;
-            return string.IsNullOrWhiteSpace(dn) ? "settlement" : dn;
+            data = new SettlementInfoData();
+            culturalComposition = new List<CultureCompositionEntry>();
+            raceDistribution = new List<RaceDistributionEntry>();
+            EnsureDataShape();
+            return;
         }
 
-        /// <summary>
-        /// Breakdown of the settlement's population by culture. Each entry specifies
-        /// a culture identifier and the fraction of the population belonging to that
-        /// culture. When serialized, this list is written to a top‑level JSON
-        /// property named "culturalComposition". Values should sum to 1.0 but this
-        /// is not enforced programmatically.
-        /// </summary>
-        [Header("Cultural Composition")]
-        [HideInInspector]
-        public System.Collections.Generic.List<CultureCompositionEntry> culturalComposition = new System.Collections.Generic.List<CultureCompositionEntry>();
+        JObject root = JObject.Parse(json);
 
-        /// <summary>
-        /// Breakdown of the settlement's population by race. Each entry specifies
-        /// a race identifier and the fraction of the population belonging to that
-        /// race. Serialized to a top-level JSON property named "raceDistribution".
-        /// </summary>
-        [Header("Race Distribution")]
-        [HideInInspector]
-        public System.Collections.Generic.List<RaceDistributionEntry> raceDistribution = new System.Collections.Generic.List<RaceDistributionEntry>();
+        data = root.ToObject<SettlementInfoData>() ?? new SettlementInfoData();
 
-        /// <summary>
-        /// Men-at-arms assignments for the settlement, with an explicit unit quantity.
-        /// This is injected into the settlement JSON under the "army" object as
-        /// "menAtArmsStacks" (array of { menAtArmsId, units }). Editors and runtime
-        /// code can still use the legacy "menAtArms" id list for compatibility.
-        /// </summary>
-        [Header("Men-at-Arms Quantity")]
-        [HideInInspector]
-        public System.Collections.Generic.List<MenAtArmsQuantityEntry> menAtArmsStacks = new System.Collections.Generic.List<MenAtArmsQuantityEntry>();
-        [Header("Council Members (Character Ids)")]
-        public string castellanCharacterId;
-        public string marshallCharacterId;
-        public string stewardCharacterId;
-        public string diplomatCharacterId;
-        public string spymasterCharacterId;
-        public string headPriestCharacterId;
+        culturalComposition = root["culturalComposition"]?.ToObject<List<CultureCompositionEntry>>() ?? new List<CultureCompositionEntry>();
+        raceDistribution = root["raceDistribution"]?.ToObject<List<RaceDistributionEntry>>() ?? new List<RaceDistributionEntry>();
 
+        EnsureDataShape();
 
-        public override string BuildJson()
+        // Keep derived fields consistent when loading older files.
+        RecalculateDerivedArmyTab();
+    }
+
+    private void EnsureDataShape()
+    {
+        if (data == null)
+            data = new SettlementInfoData();
+
+        data.main ??= new SettlementInfoData.MainTab();
+        data.army ??= new SettlementInfoData.ArmyTab();
+        data.economy ??= new SettlementInfoData.EconomyTab();
+        data.cultural ??= new SettlementInfoData.CulturalTab();
+        data.history ??= new SettlementInfoData.SettlementHistoryTab();
+        data.feudal ??= new SettlementInfoData.SettlementFeudalData();
+
+        if (string.IsNullOrWhiteSpace(data.settlementId))
+            data.settlementId = "new_settlement_" + Guid.NewGuid().ToString("N").Substring(0, 8);
+
+        data.main.vassals ??= Array.Empty<string>();
+        data.main.characterIds ??= Array.Empty<string>();
+
+        data.army.armyIds ??= Array.Empty<string>();
+        data.army.menAtArms ??= Array.Empty<string>();
+
+        data.cultural.traits ??= Array.Empty<string>();
+        data.cultural.languages ??= Array.Empty<string>();
+        data.cultural.customs ??= Array.Empty<string>();
+
+        data.main.notableFacts ??= new List<string>();
+        data.cultural.raceDistribution ??= new List<PercentEntry>();
+        data.history.timelineEntries ??= new List<TimelineEntry>();
+        data.feudal.vassalContracts ??= new List<SettlementInfoData.VassalContractData>();
+    }
+
+    private void RecalculateDerivedArmyTab()
+    {
+        if (data == null)
+            return;
+
+        data.army ??= new SettlementInfoData.ArmyTab();
+
+        // Normalize ids (trim, remove blanks, de-dupe)
+        string[] idsRaw = data.army.armyIds ?? Array.Empty<string>();
+        List<string> ids = idsRaw
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Select(x => x.Trim())
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        data.army.armyIds = ids.ToArray();
+
+        int totalArmy = 0;
+        HashSet<string> menAtArmsIds = new HashSet<string>(StringComparer.Ordinal);
+
+        int bestArmyTotal = int.MinValue;
+        string commanderId = null;
+        string commanderName = null;
+
+        foreach (string armyId in ids)
         {
-            // Serialize the settlement data to a JObject so we can inject additional
-            // authoring properties without altering the core SettlementInfoData schema.
-            var j = Newtonsoft.Json.Linq.JObject.FromObject(data, Newtonsoft.Json.JsonSerializer.Create(JsonSettings));
+            if (!TryLoadArmyRoot(armyId, out JObject armyRoot))
+                continue;
 
-            // Persist the cultural composition if any entries exist. Each entry is
-            // serialized as { "cultureId": "id", "percentage": <float> } and
-            // collectively stored in an array on the top‑level property
-            // "culturalComposition". If the list is empty, omit the property.
-            if (culturalComposition != null && culturalComposition.Count > 0)
+            int armyTotal = armyRoot.Value<int?>("totalArmy") ?? 0;
+            if (armyTotal < 0) armyTotal = 0;
+            totalArmy += armyTotal;
+
+            // Men-at-arms IDs can be encoded either as strings (legacy) or as objects
+            // [{ menAtArmsId: "...", units|count: N }, ...]
+            // Support both "menAtArms" and "menAtArmsStacks" army schemas.
+            JToken menToken = armyRoot["menAtArms"] ?? armyRoot["menAtArmsStacks"];
+            if (menToken is JArray menArr)
             {
-                var arr = new Newtonsoft.Json.Linq.JArray();
-                foreach (var entry in culturalComposition)
+                foreach (JToken el in menArr)
                 {
-                    if (entry == null) continue;
-                    var o = new Newtonsoft.Json.Linq.JObject
+                    if (el is JObject menObj)
                     {
-                        ["cultureId"] = entry.cultureId,
-                        ["percentage"] = entry.percentage
-                    };
-                    arr.Add(o);
-                }
-                if (arr.Count > 0)
-                    j["culturalComposition"] = arr;
-            }
-
-            // Persist race distribution (fractions 0-1)
-            if (raceDistribution != null && raceDistribution.Count > 0)
-            {
-                var arr = new Newtonsoft.Json.Linq.JArray();
-                foreach (var entry in raceDistribution)
-                {
-                    if (entry == null) continue;
-                    if (string.IsNullOrWhiteSpace(entry.raceId)) continue;
-                    var o = new Newtonsoft.Json.Linq.JObject
-                    {
-                        ["raceId"] = entry.raceId,
-                        ["percentage"] = entry.percentage
-                    };
-                    arr.Add(o);
-                }
-                if (arr.Count > 0)
-                    j["raceDistribution"] = arr;
-            }
-
-            // Persist men-at-arms stacks with quantities inside the "army" object.
-            // Also keep legacy "menAtArms" id list in sync for compatibility.
-            if (menAtArmsStacks != null)
-            {
-                // Ensure army object exists in json
-                if (j["army"] is Newtonsoft.Json.Linq.JObject armyObj)
-                {
-                    var stacksArr = new Newtonsoft.Json.Linq.JArray();
-                    var legacyIds = new System.Collections.Generic.List<string>();
-
-                    foreach (var entry in menAtArmsStacks)
-                    {
-                        if (entry == null) continue;
-                        if (string.IsNullOrWhiteSpace(entry.menAtArmsId)) continue;
-                        int units = entry.units;
-                        if (units < 0) units = 0;
-                        stacksArr.Add(new Newtonsoft.Json.Linq.JObject
-                        {
-                            ["menAtArmsId"] = entry.menAtArmsId,
-                            ["units"] = units
-                        });
-                        legacyIds.Add(entry.menAtArmsId);
+                        string menId = menObj.Value<string>("menAtArmsId")
+                                       ?? menObj.Value<string>("id");
+                        if (!string.IsNullOrWhiteSpace(menId))
+                            menAtArmsIds.Add(menId.Trim());
                     }
-
-                    if (stacksArr.Count > 0)
-                        armyObj["menAtArmsStacks"] = stacksArr;
-                    // Keep legacy list updated in the JSON too (if your core schema uses it)
-                    if (legacyIds.Count > 0)
-                        armyObj["menAtArms"] = new Newtonsoft.Json.Linq.JArray(legacyIds);
+                    else if (el.Type == JTokenType.String)
+                    {
+                        string menId = el.ToString();
+                        if (!string.IsNullOrWhiteSpace(menId))
+                            menAtArmsIds.Add(menId.Trim());
+                    }
                 }
             }
 
-
-            return j.ToString(Newtonsoft.Json.Formatting.Indented);
-
+            // Primary commander: use the commander from the largest referenced army.
+            if (armyTotal > bestArmyTotal)
+            {
+                bestArmyTotal = armyTotal;
+                commanderId = armyRoot.Value<string>("primaryCommanderCharacterId");
+                commanderName = armyRoot.Value<string>("primaryCommanderDisplayName");
+            }
         }
 
-        public override void ApplyJson(string json)
+        data.army.totalArmy = totalArmy;
+        data.army.menAtArms = menAtArmsIds.OrderBy(x => x, StringComparer.Ordinal).ToArray();
+        data.army.primaryCommanderCharacterId = string.IsNullOrWhiteSpace(commanderId) ? null : commanderId;
+        data.army.primaryCommanderDisplayName = string.IsNullOrWhiteSpace(commanderName) ? null : commanderName;
+    }
+
+    private static bool TryLoadArmyRoot(string armyId, out JObject root)
+    {
+        root = null;
+        if (string.IsNullOrWhiteSpace(armyId))
+            return false;
+
+        string fileName = armyId.Trim();
+        if (!fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            fileName += ".json";
+
+        // Prefer the path that matches the current runtime/editor context.
+        string primaryDir = Application.isEditor ? DataPaths.Editor_ArmiesPath : DataPaths.Runtime_ArmiesPath;
+        string secondaryDir = Application.isEditor ? DataPaths.Runtime_ArmiesPath : DataPaths.Editor_ArmiesPath;
+
+        string primaryPath = Path.Combine(primaryDir, fileName);
+        string secondaryPath = Path.Combine(secondaryDir, fileName);
+
+        string json = null;
+        if (File.Exists(primaryPath))
+            json = File.ReadAllText(primaryPath);
+        else if (File.Exists(secondaryPath))
+            json = File.ReadAllText(secondaryPath);
+
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+
+        try
         {
-            var loaded = FromJson<SettlementInfoData>(json);
-            if (loaded != null) data = loaded;
-
-            // Parse the cultural composition from the JSON. If the property is
-            // absent or malformed, clear the current composition list.
-            culturalComposition.Clear();
-            raceDistribution.Clear();
-            menAtArmsStacks.Clear();
-            try
-            {
-                var jo = Newtonsoft.Json.Linq.JObject.Parse(json);
-                var arr = jo["culturalComposition"] as Newtonsoft.Json.Linq.JArray;
-                if (arr != null)
-                {
-                    foreach (var token in arr)
-                    {
-                        if (token is Newtonsoft.Json.Linq.JObject o)
-                        {
-                            string cid = (string)o["cultureId"];
-                            // Parse percentage using ToObject<T>() to avoid CS7036 error with Value<T>()
-                            float? pct = o["percentage"]?.ToObject<float?>();
-                            if (!string.IsNullOrWhiteSpace(cid) && pct.HasValue)
-                            {
-                                var entry = new CultureCompositionEntry
-                                {
-                                    cultureId = cid,
-                                    percentage = pct.Value
-                                };
-                                culturalComposition.Add(entry);
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // If parsing fails, leave the composition list empty.
-            }
-
-            // Parse race distribution
-            try
-            {
-                var jo = Newtonsoft.Json.Linq.JObject.Parse(json);
-                var arr = jo["raceDistribution"] as Newtonsoft.Json.Linq.JArray;
-                if (arr != null)
-                {
-                    foreach (var token in arr)
-                    {
-                        if (token is Newtonsoft.Json.Linq.JObject o)
-                        {
-                            string rid = (string)o["raceId"];
-                            float? pct = o["percentage"]?.ToObject<float?>();
-                            if (!string.IsNullOrWhiteSpace(rid) && pct.HasValue)
-                            {
-                                raceDistribution.Add(new RaceDistributionEntry
-                                {
-                                    raceId = rid,
-                                    percentage = pct.Value
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // ignore
-            }
-
-            // Parse men-at-arms stacks with quantities (preferred), fallback to legacy id list.
-            try
-            {
-                var jo = Newtonsoft.Json.Linq.JObject.Parse(json);
-                var armyObj = jo["army"] as Newtonsoft.Json.Linq.JObject;
-                if (armyObj != null)
-                {
-                    var stacksArr = armyObj["menAtArmsStacks"] as Newtonsoft.Json.Linq.JArray;
-                    if (stacksArr != null)
-                    {
-                        foreach (var token in stacksArr)
-                        {
-                            if (token is Newtonsoft.Json.Linq.JObject o)
-                            {
-                                string mid = (string)o["menAtArmsId"];
-                                int units = o["units"]?.ToObject<int?>() ?? 0;
-                                if (!string.IsNullOrWhiteSpace(mid))
-                                {
-                                    menAtArmsStacks.Add(new MenAtArmsQuantityEntry
-                                    {
-                                        menAtArmsId = mid,
-                                        units = units
-                                    });
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Legacy fallback
-                        var idsArr = armyObj["menAtArms"] as Newtonsoft.Json.Linq.JArray;
-                        if (idsArr != null)
-                        {
-                            foreach (var token in idsArr)
-                            {
-                                string mid = token?.ToObject<string>();
-                                if (!string.IsNullOrWhiteSpace(mid))
-                                {
-                                    menAtArmsStacks.Add(new MenAtArmsQuantityEntry
-                                    {
-                                        menAtArmsId = mid,
-                                        units = 1
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // ignore
-            }
+            root = JObject.Parse(json);
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 }

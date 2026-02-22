@@ -3,310 +3,97 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
+/// <summary>
+/// Backing JSON model for Settlement data.
+/// </summary>
 [Serializable]
 public class SettlementInfoData
 {
-    [JsonProperty("displayName")]
-    public string displayName;
+    [JsonProperty("settlementId")] public string settlementId;
+    [JsonProperty("displayName")] public string displayName;
+    [JsonProperty("rulerCharacterId")] public string rulerCharacterId;
+    [JsonProperty("liegeSettlementId")] public string liegeSettlementId;
+    [JsonProperty("mapUrlOrPath")] public string mapUrlOrPath;
 
-    [JsonProperty("mapUrlOrPath")]
-    public string mapUrlOrPath;
+    [JsonProperty("main")] public MainTab main = new MainTab();
+    [JsonProperty("army")] public ArmyTab army = new ArmyTab();
+    [JsonProperty("economy")] public EconomyTab economy = new EconomyTab();
+    [JsonProperty("cultural")] public CulturalTab cultural = new CulturalTab();
+    [JsonProperty("history")] public SettlementHistoryTab history = new SettlementHistoryTab();
+    [JsonProperty("feudal")] public SettlementFeudalData feudal = new SettlementFeudalData();
 
-    // Cross-linking
-    [JsonProperty("rulerCharacterId")]
-    public string rulerCharacterId;
+    #region Tabs
 
-    [JsonProperty("characterIds")]
-    public string[] characterIds = Array.Empty<string>();
-
-    // Tabs
-    [JsonProperty("main")]
-    public MainTab main = new MainTab();
-
-    [JsonProperty("army")]
-    public ArmyTab army = new ArmyTab();
-
-    [JsonProperty("economy")]
-    public EconomyTab economy = new EconomyTab();
-
-    [JsonProperty("cultural")]
-    public CulturalTab cultural = new CulturalTab();
-
-    [JsonProperty("history")]
-    public HistoryTab history = new HistoryTab();
-
-    // Source of truth for hierarchy metadata
-    [JsonProperty("feudal")]
-    public SettlementFeudalData feudal = new SettlementFeudalData();
-
-
-    [JsonIgnore]
-    public string settlementId
+    [Serializable]
+    public class MainTab
     {
-        get => feudal != null ? feudal.settlementId : null;
-        set { EnsureFeudal(); feudal.settlementId = value; }
+        [JsonProperty("description")] public string description;
+        [JsonProperty("notableFacts")] public List<string> notableFacts = new List<string>();
+        [JsonProperty("population")] public int population = 0;
+        [JsonProperty("rulerDisplayName")] public string rulerDisplayName;
+        [JsonProperty("vassals")] public string[] vassals = Array.Empty<string>();
+        [JsonProperty("characterIds")] public string[] characterIds = Array.Empty<string>();
     }
 
-    [JsonIgnore]
-    public MapLayer layer
+    [Serializable]
+    public class ArmyTab
     {
-        get => feudal != null ? feudal.layer : default;
-        set { EnsureFeudal(); feudal.layer = value; }
+        // List of armies attached to this settlement. All other army fields in this tab are derived.
+        [JsonProperty("armyIds")] public string[] armyIds = Array.Empty<string>();
+
+        [JsonProperty("totalArmy")] public int totalArmy = 0;
+        [JsonProperty("menAtArms")] public string[] menAtArms = Array.Empty<string>();
+        [JsonProperty("primaryCommanderDisplayName")] public string primaryCommanderDisplayName;
+        [JsonProperty("primaryCommanderCharacterId")] public string primaryCommanderCharacterId;
     }
 
-    [JsonIgnore]
-    public bool isPopulated
+    [Serializable]
+    public class EconomyTab
     {
-        get => feudal == null || feudal.isPopulated;
-        set { EnsureFeudal(); feudal.isPopulated = value; }
+        [JsonProperty("mainExports")] public string mainExports;
+        [JsonProperty("mainImports")] public string mainImports;
+        [JsonProperty("mainIndustries")] public string mainIndustries;
+        [JsonProperty("notes")] public string notes;
     }
 
-    [JsonIgnore]
-    public string capitalSettlementId
+    [Serializable]
+    public class CulturalTab
     {
-        get => feudal != null ? feudal.capitalSettlementId : null;
-        set { EnsureFeudal(); feudal.capitalSettlementId = value; }
+        [JsonProperty("culture")] public string culture;
+        [JsonProperty("raceDistribution")] public List<PercentEntry> raceDistribution = new List<PercentEntry>();
+        [JsonProperty("religion")] public string religion;
+        [JsonProperty("traits")] public string[] traits = Array.Empty<string>();
+        [JsonProperty("languages")] public string[] languages = Array.Empty<string>();
+        [JsonProperty("customs")] public string[] customs = Array.Empty<string>();
     }
 
-    [JsonIgnore]
-    public string liegeSettlementId
+    [Serializable]
+    public class SettlementHistoryTab
     {
-        get => feudal != null ? feudal.liegeSettlementId : null;
-        set { EnsureFeudal(); feudal.liegeSettlementId = value; }
+        [JsonProperty("notes")] public string notes;
+        [JsonProperty("timelineEntries")] public List<TimelineEntry> timelineEntries = new List<TimelineEntry>();
     }
 
-    [JsonIgnore]
-    public List<SettlementVassalContract> vassalContracts
+    [Serializable]
+    public class SettlementFeudalData
     {
-        get
-        {
-            _vassalContractsView ??= new List<SettlementVassalContract>();
-            _vassalContractsView.Clear();
-
-            if (feudal?.vassalContracts != null)
-            {
-                foreach (var c in feudal.vassalContracts)
-                {
-                    if (c == null) continue;
-                    _vassalContractsView.Add(new SettlementVassalContract
-                    {
-                        vassalSettlementId = c.vassalSettlementId,
-                        incomeTaxRate = c.incomeTaxRate,
-                        troopTaxRate = c.troopTaxRate,
-                        terms = c.terms
-                    });
-                }
-            }
-
-            return _vassalContractsView;
-        }
-        set
-        {
-            EnsureFeudal();
-            feudal.vassalContracts.Clear();
-
-            if (value == null) return;
-
-            foreach (var c in value)
-            {
-                if (c == null) continue;
-                feudal.vassalContracts.Add(new VassalContractData
-                {
-                    vassalSettlementId = c.vassalSettlementId,
-                    incomeTaxRate = c.incomeTaxRate,
-                    troopTaxRate = c.troopTaxRate,
-                    terms = c.terms
-                });
-            }
-        }
+        [JsonProperty("castellanCharacterId")] public string castellanCharacterId;
+        [JsonProperty("marshallCharacterId")] public string marshallCharacterId;
+        [JsonProperty("stewardCharacterId")] public string stewardCharacterId;
+        [JsonProperty("diplomatCharacterId")] public string diplomatCharacterId;
+        [JsonProperty("spymasterCharacterId")] public string spymasterCharacterId;
+        [JsonProperty("headPriestCharacterId")] public string headPriestCharacterId;
+        [JsonProperty("vassalContracts")] public List<VassalContractData> vassalContracts = new List<VassalContractData>();
     }
 
-    [NonSerialized] private List<SettlementVassalContract> _vassalContractsView;
-
-    private void EnsureFeudal()
+    [Serializable]
+    public class VassalContractData
     {
-        feudal ??= new SettlementFeudalData();
-    }
-}
-
-#region Tabs
-
-[Serializable]
-public class MainTab
-{
-    [JsonProperty("description")]
-    [TextArea(3, 12)]
-    public string description;
-
-    [JsonProperty("population")]
-    public int population;
-
-    [JsonProperty("rulerDisplayName")]
-    public string rulerDisplayName;
-
-    [JsonIgnore]
-    public string rulerName
-    {
-        get => rulerDisplayName;
-        set => rulerDisplayName = value;
+        [JsonProperty("vassalSettlementId")] public string vassalSettlementId;
+        [JsonProperty("incomeTaxRate")] public float incomeTaxRate;
+        [JsonProperty("troopTaxRate")] public float troopTaxRate;
+        [JsonProperty("terms")] public string terms;
     }
 
-    [JsonProperty("vassals")]
-    public string[] vassals = Array.Empty<string>();
+    #endregion
 }
-
-[Serializable]
-public class ArmyTab
-{
-    [JsonProperty("totalArmy")]
-    public int totalArmy;
-
-    [JsonProperty("menAtArms")]
-    public string[] menAtArms = Array.Empty<string>();
-
-    [JsonProperty("primaryCommanderDisplayName")]
-    public string primaryCommanderDisplayName;
-
-    [JsonProperty("primaryCommanderCharacterId")]
-    public string primaryCommanderCharacterId;
-}
-
-[Serializable]
-public class EconomyTab
-{
-    [JsonProperty("totalIncomePerMonth")]
-    public float totalIncomePerMonth;
-
-    [JsonProperty("totalTreasury")]
-    public float totalTreasury;
-
-    [JsonProperty("courtExpenses")]
-    public string courtExpenses;
-
-    [JsonProperty("armyExpenses")]
-    public string armyExpenses;
-
-    [JsonProperty("currentlyConstructing")]
-    public string[] currentlyConstructing = Array.Empty<string>();
-}
-
-[Serializable]
-public class CulturalTab
-{
-    [JsonProperty("culture")]
-    public string culture;
-
-    [JsonProperty("populationDistribution")]
-    public string populationDistribution;
-
-    [JsonProperty("primaryTraits")]
-    public string[] primaryTraits = Array.Empty<string>();
-
-    [JsonProperty("raceDistribution")]
-    public List<PercentEntry> raceDistribution = new List<PercentEntry>();
-
-    [JsonProperty("cultureDistribution")]
-    public List<PercentEntry> cultureDistribution = new List<PercentEntry>();
-}
-
-[Serializable]
-public class HistoryTab
-{
-    [JsonProperty("timelineEntries")]
-    public string[] timelineEntries = Array.Empty<string>();
-
-    [JsonProperty("rulingFamilyMembers")]
-    public string[] rulingFamilyMembers = Array.Empty<string>();
-}
-
-#endregion
-
-#region Feudal + Contracts
-
-[Serializable]
-public class SettlementFeudalData
-{
-    [JsonProperty("settlementId")]
-    public string settlementId;
-
-    [JsonProperty("layer")]
-    public MapLayer layer;
-
-    [JsonProperty("laws")]
-    [TextArea(3, 12)]
-    public string laws = "";
-
-    [JsonProperty("isPopulated")]
-    public bool isPopulated = true;
-
-    [JsonProperty("capitalSettlementId")]
-    public string capitalSettlementId;
-
-    [JsonProperty("liegeSettlementId")]
-    public string liegeSettlementId;
-
-    // Council Members (new fields)
-    [JsonProperty("castellanCharacterId")]
-    public string castellanCharacterId;
-
-    [JsonProperty("marshallCharacterId")]
-    public string marshallCharacterId;
-
-    [JsonProperty("stewardCharacterId")]
-    public string stewardCharacterId;
-
-    [JsonProperty("diplomatCharacterId")]
-    public string diplomatCharacterId;
-
-    [JsonProperty("spymasterCharacterId")]
-    public string spymasterCharacterId;
-
-    [JsonProperty("headPriestCharacterId")]
-    public string headPriestCharacterId;
-
-    // Source-of-truth storage for vassal contracts
-    [JsonProperty("vassalContracts")]
-    public List<VassalContractData> vassalContracts = new List<VassalContractData>();
-}
-
-[Serializable]
-public class VassalContractData
-{
-    [JsonProperty("vassalSettlementId")]
-    public string vassalSettlementId;
-
-    [JsonProperty("incomeTaxRate")]
-    public float incomeTaxRate;
-
-    [JsonProperty("troopTaxRate")]
-    public float troopTaxRate;
-
-    [JsonProperty("terms")]
-    public string terms;
-}
-
-// Alias type expected by some existing scripts
-[Serializable]
-public class SettlementVassalContract : VassalContractData { }
-
-[Serializable]
-public class PercentEntry
-{
-    [JsonProperty("key")]
-    public string key;
-
-    [JsonProperty("percent")]
-    public float percent;
-}
-
-#endregion
-
-#region Legacy type aliases (required by your current MapPoint fallback code)
-
-[Serializable] public class SettlementMainTab : MainTab { }
-[Serializable] public class SettlementArmyData : ArmyTab { }
-[Serializable] public class SettlementEconomyData : EconomyTab { }
-[Serializable] public class SettlementCulturalData : CulturalTab { }
-[Serializable] public class SettlementHistoryData : HistoryTab { }
-
-#endregion

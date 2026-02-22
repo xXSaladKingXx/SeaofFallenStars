@@ -7,7 +7,7 @@
       "name": "Cormyrean Lathanderism",
       "description": "Cormyrean Denomination of Lathanderism",
       "traditions": [],
-      "religiousLeaderCharacterId": null,
+      "religiousLeaderCharacterId": "char_azoun_matarys_iv",
       "traits": []
     },
     {
@@ -15,7 +15,7 @@
       "name": "The Cult of Blood",
       "description": "The Primary Religion of Tai",
       "traditions": [],
-      "religiousLeaderCharacterId": null,
+      "religiousLeaderCharacterId": "char_kinglovandayron",
       "traits": []
     }
   ],

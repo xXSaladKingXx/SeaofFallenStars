@@ -152,7 +152,9 @@ EditorGUILayout.Space(6);
                 EditorGUILayout.LabelField("Description");
                 f.description = EditorGUILayout.TextArea(f.description, GUILayout.MinHeight(50));
 
-                DrawTerrainIdList("Habitats", f.habitats, terrainIds, terrainNames, ref _addHabitatSelection[i]);
+                int habitatPick = _addHabitatSelection[i];
+                DrawTerrainIdList("Habitats", f.habitats, terrainIds, terrainNames, ref habitatPick);
+                _addHabitatSelection[i] = habitatPick;
                 DrawStringList("Seasons", f.seasons);
 
                 // isEdible (nullable) - show as tri-state

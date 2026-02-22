@@ -10,7 +10,7 @@
         "defendersofthepass"
       ],
       "languages": [
-        "cormyr_common"
+        "cormyrean"
       ],
       "religions": [
         "cormyr_lathanderism"
@@ -26,7 +26,7 @@
       ],
       "languages": [
         "tai",
-        "cormyr_common"
+        "cormyrean"
       ],
       "religions": [
         "cormyr_lathanderism"
@@ -37,15 +37,11 @@
       "id": "sembian",
       "displayName": "Sembian",
       "description": "Hailing from the Scarlands, this is the main cultural heart of Sembia.",
-      "traits": [
-        "defendersofthepass"
-      ],
+      "traits": [],
       "languages": [
-        "cormyr_common"
+        "sembian"
       ],
-      "religions": [
-        "cormyr_lathanderism"
-      ],
+      "religions": [],
       "notes": ""
     }
   ],
