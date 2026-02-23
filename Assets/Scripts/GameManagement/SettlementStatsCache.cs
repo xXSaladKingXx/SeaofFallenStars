@@ -89,7 +89,8 @@ public static class SettlementStatsCache
     {
         _dataById.Clear();
         _statsById.Clear();
-        var points = UnityEngine.Object.FindObjectsOfType<MapPoint>(true);
+        // Find all MapPoint objects without sorting; Unity recommends using FindObjectsByType instead of FindObjectsOfType (deprecated).
+        var points = UnityEngine.Object.FindObjectsByType<MapPoint>(FindObjectsSortMode.None);
         foreach (var p in points)
         {
             if (p == null) continue;

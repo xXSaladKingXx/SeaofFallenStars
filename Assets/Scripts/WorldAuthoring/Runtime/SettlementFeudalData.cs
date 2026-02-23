@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Zana.WorldAuthoring
@@ -19,18 +18,18 @@ namespace Zana.WorldAuthoring
         /// Unique identifier for the settlement.  Populated when seeding from a
         /// MapPoint (StableKey).
         /// </summary>
-        [JsonProperty("settlementId")] public string settlementId;
+        [JsonProperty("settlementId")] public new string settlementId;
 
         /// <summary>
         /// String representation of the map layer this settlement belongs to.
         /// When seeding from a MapPoint, this is copied from MapPoint.layer.
         /// </summary>
-        [JsonProperty("layer")] public string layer;
+        [JsonProperty("layer")] public new string layer;
 
         /// <summary>
         /// Indicates whether this settlement is populated.  Defaults to true
         /// when creating a new settlement via the editor.
         /// </summary>
-        [JsonProperty("isPopulated")] public bool isPopulated;
+        [JsonProperty("isPopulated")] public new bool isPopulated;
     }
 }

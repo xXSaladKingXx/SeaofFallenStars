@@ -49,11 +49,11 @@
         "percent": 96.1168747
       },
       {
-        "key": "human",
+        "key": "elf",
         "percent": 1.92233753
       },
       {
-        "key": "human",
+        "key": "halfelf",
         "percent": 1.96078432
       }
     ],
@@ -71,7 +71,7 @@
         "percent": 92.6440659
       },
       {
-        "key": "cormyrean",
+        "key": "cormyr-sembian",
         "percent": 7.355939
       }
     ]
