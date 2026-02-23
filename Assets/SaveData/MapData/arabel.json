@@ -4,15 +4,15 @@
   "settlementId": "arabel",
   "displayName": "Arabel",
   "rulerCharacterId": "char_azoun_matarys_iv",
-  "liegeSettlementId": null,
-  "mapUrlOrPath": null,
-  "capitalSettlementId": null,
+  "liegeSettlementId": "kingdom_cormyr",
+  "mapUrlOrPath": "",
+  "capitalSettlementId": "arabel",
   "main": {
-    "description": null,
+    "description": "",
     "notableFacts": [],
     "population": 0,
     "rulerDisplayName": "King Azoun Matarys IV",
-    "rulerName": null,
+    "rulerName": "",
     "vassals": [],
     "characterIds": []
   },
@@ -31,26 +31,39 @@
     "primaryCommanderCharacterId": "char_azoun_matarys_iv"
   },
   "economy": {
-    "mainExports": null,
-    "mainImports": null,
-    "mainIndustries": null,
-    "notes": null,
+    "mainExports": "",
+    "mainImports": "",
+    "mainIndustries": "",
+    "notes": "",
     "totalIncomePerMonth": 0.0,
     "totalTreasury": 0.0,
-    "courtExpenses": null,
-    "armyExpenses": null,
+    "courtExpenses": "",
+    "armyExpenses": "",
     "currentlyConstructing": []
   },
   "cultural": {
-    "culture": null,
-    "raceDistribution": [],
-    "religion": null,
+    "culture": "",
+    "raceDistribution": [
+      {
+        "key": "human",
+        "percent": 96.1168747
+      },
+      {
+        "key": "human",
+        "percent": 1.92233753
+      },
+      {
+        "key": "human",
+        "percent": 1.96078432
+      }
+    ],
+    "religion": "cormyr_lathanderism",
     "traits": [],
     "languages": [
       "cormyrean"
     ],
     "customs": [],
-    "populationDistribution": null,
+    "populationDistribution": "",
     "primaryTraits": [],
     "cultureDistribution": [
       {
@@ -64,7 +77,7 @@
     ]
   },
   "history": {
-    "notes": null,
+    "notes": "",
     "timelineEntries": [],
     "rulingFamilyMembers": []
   },
@@ -76,14 +89,17 @@
     "spymasterCharacterId": null,
     "headPriestCharacterId": null,
     "vassalContracts": [],
-    "settlementId": null,
-    "layer": null,
+    "settlementId": "",
+    "layer": "",
     "isPopulated": false,
-    "feudal": false,
-    "liegeSettlementId": null,
-    "notes": null,
-    "laws": null,
-    "capitalSettlementId": null
+    "feudal": true,
+    "liegeSettlementId": "kingdom_cormyr",
+    "notes": "",
+    "laws": "",
+    "capitalSettlementId": "arabel",
+    "incomeTaxRate": 0.0,
+    "troopTaxRate": 0.0,
+    "contractTerms": "capital"
   },
   "culturalComposition": [],
   "raceDistribution": []

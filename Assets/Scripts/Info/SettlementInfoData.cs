@@ -215,6 +215,17 @@ public class SettlementInfoData
         /// </summary>
         [JsonProperty("capitalSettlementId")]
         public string capitalSettlementId;
+
+        /// <summary>
+        /// Optional contract fields used when this settlement is a vassal with a liege. These values
+        /// represent the income and troop tax rates, as well as optional contract terms, that
+        /// govern the relationship with the liege. When <see cref="liegeSettlementId"/> is not empty,
+        /// the settlement editor may allow editing these fields directly in the Feudal section.
+        /// These fields default to zero or empty and are only meaningful for vassal settlements.
+        /// </summary>
+        [JsonProperty("incomeTaxRate")] public float incomeTaxRate;
+        [JsonProperty("troopTaxRate")] public float troopTaxRate;
+        [JsonProperty("contractTerms")] public string contractTerms;
     }
 
     [Serializable]

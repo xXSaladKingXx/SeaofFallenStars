@@ -158,7 +158,7 @@ public sealed class SettlementAuthoringSessionEditor : Editor
 
         // 'changed' is declared above; do not re-declare here.
 
-        WorldAuthoringEditorUI.DrawHelpersHeader("Feudal Hierarchy");
+        // Removed old "Feudal Hierarchy" header.  The Feudal section is now drawn below.
 
         // Ruler (allow blank)
         _rulerPick = WorldAuthoringEditorUI.GetIndexByIdWithNone(characters, s.data.rulerCharacterId, _rulerPick);
@@ -181,43 +181,58 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             changed = true;
         }
 
-        // Liege toggle and selection.  Present a checkbox to indicate whether
-        // this settlement has a liege.  When checked, a dropdown appears to
-        // choose the liege settlement.  Clearing the checkbox will remove
-        // both the root-level and feudal liege identifiers.  We avoid using
-        // disabled scopes so the toggle always remains interactive.
-        WorldAuthoringEditorUI.DrawHelpersHeader("Liege");
-        bool currentHasLiege = !string.IsNullOrWhiteSpace(s.data.liegeSettlementId);
-        bool newHasLiege = EditorGUILayout.Toggle("Has Liege", currentHasLiege);
-        if (newHasLiege != currentHasLiege)
+        // Feudal section.  Combine the former "Feudal Hierarchy" and "Liege" panels into one
+        // cohesive Feudal panel.  The liege settlement can always be chosen via a dropdown
+        // (default "(none)"), and if a liege is selected the contract fields become editable.
+        WorldAuthoringEditorUI.DrawHelpersHeader("Feudal");
+
+        // Liege selection: show a dropdown of settlements with a "(none)" option.
+        _liegePick = WorldAuthoringEditorUI.GetIndexByIdWithNone(settlements, s.data.liegeSettlementId, _liegePick);
+        var liegeSelection = WorldAuthoringEditorUI.PopupChoiceWithNone("Liege", settlements, ref _liegePick, "(none)");
+        string newLiegeId = liegeSelection?.id;
+        if (s.data.liegeSettlementId != newLiegeId)
         {
-            Undo.RecordObject(s, newHasLiege ? "Enable Liege" : "Disable Liege");
-            if (!newHasLiege)
+            Undo.RecordObject(s, "Set Liege");
+            s.data.liegeSettlementId = newLiegeId;
+            // Mirror on the feudal object for backwards compatibility
+            if (s.data.feudal != null)
             {
-                // Clearing the liege removes the IDs on both the root and feudal objects
-                s.data.liegeSettlementId = null;
-                if (s.data.feudal != null)
-                {
-                    s.data.feudal.liegeSettlementId = null;
-                }
+                s.data.feudal.liegeSettlementId = newLiegeId;
             }
             changed = true;
         }
-        if (newHasLiege)
+
+        // When a liege is selected, expose editable contract fields.  These fields
+        // (income tax rate, troop tax rate and optional contract terms) are stored on
+        // the settlement’s feudal tab.  The rates are expressed as 0–1 floats.  If
+        // the liege is cleared, the contract fields will remain but are hidden in
+        // the inspector.
+        if (!string.IsNullOrWhiteSpace(s.data.liegeSettlementId))
         {
-            // Present a dropdown of settlements with a "(none)" option to select the liege.
-            _liegePick = WorldAuthoringEditorUI.GetIndexByIdWithNone(settlements, s.data.liegeSettlementId, _liegePick);
-            var liegePick = WorldAuthoringEditorUI.PopupChoiceWithNone("Liege Settlement", settlements, ref _liegePick, "(none)");
-            string pickedId = liegePick?.id;
-            if (s.data.liegeSettlementId != pickedId)
+            float incomeRate = s.data.feudal?.incomeTaxRate ?? 0f;
+            float newIncomeRate = EditorGUILayout.Slider("Income Tax Rate", incomeRate, 0f, 1f);
+            if (!Mathf.Approximately(newIncomeRate, incomeRate))
             {
-                Undo.RecordObject(s, "Set Liege");
-                s.data.liegeSettlementId = pickedId;
-                // Mirror on the feudal object for backwards compatibility
-                if (s.data.feudal != null)
-                {
-                    s.data.feudal.liegeSettlementId = pickedId;
-                }
+                Undo.RecordObject(s, "Set Income Tax Rate");
+                s.data.feudal.incomeTaxRate = newIncomeRate;
+                changed = true;
+            }
+
+            float troopRate = s.data.feudal?.troopTaxRate ?? 0f;
+            float newTroopRate = EditorGUILayout.Slider("Troop Tax Rate", troopRate, 0f, 1f);
+            if (!Mathf.Approximately(newTroopRate, troopRate))
+            {
+                Undo.RecordObject(s, "Set Troop Tax Rate");
+                s.data.feudal.troopTaxRate = newTroopRate;
+                changed = true;
+            }
+
+            string terms = s.data.feudal?.contractTerms ?? string.Empty;
+            string newTerms = EditorGUILayout.TextField("Contract Terms", terms);
+            if (newTerms != terms)
+            {
+                Undo.RecordObject(s, "Set Contract Terms");
+                s.data.feudal.contractTerms = newTerms;
                 changed = true;
             }
         }
@@ -826,6 +841,9 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             ,"data.cultural.cultureDistribution"
             ,"data.cultural.religion"
             ,"data.feudal.liegeSettlementId"
+            ,"data.feudal.incomeTaxRate"
+            ,"data.feudal.troopTaxRate"
+            ,"data.feudal.contractTerms"
         };
         var prop = serializedObject.GetIterator();
         bool enterChildren = true;
