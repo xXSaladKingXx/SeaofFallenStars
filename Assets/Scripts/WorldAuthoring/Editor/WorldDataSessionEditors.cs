@@ -147,6 +147,25 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             changed = true;
         }
 
+        // Draw basic settlement identifiers (ID and display name) for editing.
+        EditorGUILayout.LabelField("Basic Info", EditorStyles.boldLabel);
+        string currentId = s.data.settlementId ?? string.Empty;
+        string newId = EditorGUILayout.TextField("Settlement ID", currentId);
+        if (newId != currentId)
+        {
+            Undo.RecordObject(s, "Set Settlement ID");
+            s.data.settlementId = newId;
+            changed = true;
+        }
+        string currentName = s.data.displayName ?? string.Empty;
+        string newName = EditorGUILayout.TextField("Display Name", currentName);
+        if (newName != currentName)
+        {
+            Undo.RecordObject(s, "Set Display Name");
+            s.data.displayName = newName;
+            changed = true;
+        }
+
         var characters = WorldDataChoicesCache.GetCharacters();
         var settlements = WorldDataChoicesCache.GetSettlements();
         var armies = WorldDataChoicesCache.GetArmies();
@@ -401,6 +420,20 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 s.data.cultural.cultureDistribution[i] = entry;
             }
 
+            // Before rendering the culture picker, ensure the cached index matches the current entry key.
+            if (!string.IsNullOrWhiteSpace(entry.key))
+            {
+                for (int j = 0; j < cultureEntries.Count; j++)
+                {
+                    var ce = cultureEntries[j];
+                    if (ce != null && string.Equals(ce.id, entry.key, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _culturePickIndices[i] = j;
+                        break;
+                    }
+                }
+            }
+
             EditorGUILayout.BeginHorizontal();
             // Copy the indexer value to a local variable. We cannot pass a list indexer directly to a ref parameter.
             int culturePickIdx = _culturePickIndices[i];
@@ -448,22 +481,8 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         }
         EditorGUILayout.EndHorizontal();
 
-        if (s.data.cultural.cultureDistribution.Count > 0)
-        {
-            float sum = s.data.cultural.cultureDistribution.Sum(e => Mathf.Max(0f, e?.percent ?? 0f));
-            if (sum > 0.0001f)
-            {
-                foreach (var e in s.data.cultural.cultureDistribution)
-                {
-                    float normalizedPct = Mathf.Max(0f, e?.percent ?? 0f) / sum * 100f;
-                    if (!Mathf.Approximately(normalizedPct, e.percent))
-                    {
-                        e.percent = normalizedPct;
-                        changed = true;
-                    }
-                }
-            }
-        }
+        // Remove automatic normalization of culture distribution percentages.  Users may enter
+        // percentages directly; we no longer adjust them automatically here.
 
         if (s.data.cultural.cultureDistribution.Count > 0)
         {
@@ -547,121 +566,124 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         // capital stats and display aggregated values below.
         bool hasVassals = s.data.main != null && s.data.main.vassals != null && s.data.main.vassals.Length > 0;
 
-        // Race distribution and religion can always be edited.  When the settlement
-        // has vassals, these fields represent the capital settlement's base stats.
-        // --- Race Distribution Editor ---
-        WorldAuthoringEditorUI.DrawHelpersHeader("Race Distribution");
-        if (s.data.cultural.raceDistribution == null)
-            s.data.cultural.raceDistribution = new List<PercentEntry>();
-
-        // Ensure the helper lists match the size of the distribution list.
-        while (_racePickIndices.Count < s.data.cultural.raceDistribution.Count)
-            _racePickIndices.Add(0);
-        while (_racePickIndices.Count > s.data.cultural.raceDistribution.Count)
-            _racePickIndices.RemoveAt(_racePickIndices.Count - 1);
-
-        var raceDefs = WorldDataChoicesCache.GetRaceDefinitions();
-        for (int i = 0; i < s.data.cultural.raceDistribution.Count; i++)
+        // Race distribution and religion editing are only available when this settlement has no vassals.
+        // When the settlement has vassals, these values are determined by the aggregated stats and
+        // should not be editable.  We therefore wrap the entire race and religion editing UI in
+        // a check and skip it if there are vassals.
+        if (!hasVassals)
         {
-            var entry = s.data.cultural.raceDistribution[i];
-            if (entry == null)
+            // --- Race Distribution Editor ---
+            WorldAuthoringEditorUI.DrawHelpersHeader("Race Distribution");
+            if (s.data.cultural.raceDistribution == null)
+                s.data.cultural.raceDistribution = new List<PercentEntry>();
+
+            // Ensure the helper lists match the size of the distribution list.
+            while (_racePickIndices.Count < s.data.cultural.raceDistribution.Count)
+                _racePickIndices.Add(0);
+            while (_racePickIndices.Count > s.data.cultural.raceDistribution.Count)
+                _racePickIndices.RemoveAt(_racePickIndices.Count - 1);
+
+            var raceDefs = WorldDataChoicesCache.GetRaceDefinitions();
+            for (int i = 0; i < s.data.cultural.raceDistribution.Count; i++)
             {
-                entry = new PercentEntry { key = null, percent = 0f };
-                s.data.cultural.raceDistribution[i] = entry;
+                var entry = s.data.cultural.raceDistribution[i];
+                if (entry == null)
+                {
+                    entry = new PercentEntry { key = null, percent = 0f };
+                    s.data.cultural.raceDistribution[i] = entry;
+                }
+
+                // Before rendering the race picker, ensure the cached index matches the current entry key.
+                if (!string.IsNullOrWhiteSpace(entry.key))
+                {
+                    for (int j = 0; j < raceDefs.Count; j++)
+                    {
+                        var rd = raceDefs[j];
+                        if (rd != null && string.Equals(rd.id, entry.key, StringComparison.OrdinalIgnoreCase))
+                        {
+                            _racePickIndices[i] = j;
+                            break;
+                        }
+                    }
+                }
+
+                EditorGUILayout.BeginHorizontal();
+                // Drop-down for race ID
+                // Copy the pick index to a local variable so we don't pass a list indexer as ref.
+                int racePick = _racePickIndices[i];
+                var selectedRace = WorldAuthoringEditorUI.PopupChoice("Race", raceDefs, ref racePick);
+                // Write the updated pick index back to our list.
+                if (racePick != _racePickIndices[i])
+                    _racePickIndices[i] = racePick;
+                var newRaceKey = selectedRace?.id;
+                if (entry.key != newRaceKey)
+                {
+                    Undo.RecordObject(s, "Change Race Entry");
+                    entry.key = newRaceKey;
+                    changed = true;
+                }
+                // Percentage field (0–100)
+                float racePercent = EditorGUILayout.FloatField(entry.percent);
+                racePercent = Mathf.Clamp(racePercent, 0f, 100f);
+                if (!Mathf.Approximately(racePercent, entry.percent))
+                {
+                    Undo.RecordObject(s, "Change Race Percent");
+                    entry.percent = racePercent;
+                    changed = true;
+                }
+                // Remove button
+                if (GUILayout.Button("Remove", GUILayout.Width(60)))
+                {
+                    Undo.RecordObject(s, "Remove Race Entry");
+                    s.data.cultural.raceDistribution.RemoveAt(i);
+                    _racePickIndices.RemoveAt(i);
+                    changed = true;
+                    i--;
+                }
+                EditorGUILayout.EndHorizontal();
             }
+            // Add race dropdown
+            _addRacePick = Mathf.Clamp(_addRacePick, 0, raceDefs.Count - 1);
             EditorGUILayout.BeginHorizontal();
-            // Drop-down for race ID
-            // Copy the pick index to a local variable so we don't pass a list indexer as ref.  
-            int racePick = _racePickIndices[i];
-            var selectedRace = WorldAuthoringEditorUI.PopupChoice("Race", raceDefs, ref racePick);
-            // Write the updated pick index back to our list.
-            if (racePick != _racePickIndices[i])
-                _racePickIndices[i] = racePick;
-            var newRaceKey = selectedRace?.id;
-            if (entry.key != newRaceKey)
+            var addRaceEntry = WorldAuthoringEditorUI.PopupChoice("Add race", raceDefs, ref _addRacePick);
+            if (addRaceEntry != null && GUILayout.Button("Add", GUILayout.Width(60)))
             {
-                Undo.RecordObject(s, "Change Race Entry");
-                entry.key = newRaceKey;
+                Undo.RecordObject(s, "Add Race Entry");
+                s.data.cultural.raceDistribution.Add(new PercentEntry { key = addRaceEntry.id, percent = 0f });
+                _racePickIndices.Add(_addRacePick);
                 changed = true;
-            }
-            // Percentage field (0–100)
-            float racePercent = EditorGUILayout.FloatField(entry.percent);
-            racePercent = Mathf.Clamp(racePercent, 0f, 100f);
-            if (!Mathf.Approximately(racePercent, entry.percent))
-            {
-                Undo.RecordObject(s, "Change Race Percent");
-                entry.percent = racePercent;
-                changed = true;
-            }
-            // Remove button
-            if (GUILayout.Button("Remove", GUILayout.Width(60)))
-            {
-                Undo.RecordObject(s, "Remove Race Entry");
-                s.data.cultural.raceDistribution.RemoveAt(i);
-                _racePickIndices.RemoveAt(i);
-                changed = true;
-                i--;
             }
             EditorGUILayout.EndHorizontal();
-        }
-        // Add race dropdown
-        _addRacePick = Mathf.Clamp(_addRacePick, 0, raceDefs.Count - 1);
-        EditorGUILayout.BeginHorizontal();
-        var addRaceEntry = WorldAuthoringEditorUI.PopupChoice("Add race", raceDefs, ref _addRacePick);
-        if (addRaceEntry != null && GUILayout.Button("Add", GUILayout.Width(60)))
-        {
-            Undo.RecordObject(s, "Add Race Entry");
-            s.data.cultural.raceDistribution.Add(new PercentEntry { key = addRaceEntry.id, percent = 0f });
-            _racePickIndices.Add(_addRacePick);
-            changed = true;
-        }
-        EditorGUILayout.EndHorizontal();
-        // Normalize race percentages to sum to 100
-        if (s.data.cultural.raceDistribution.Count > 0)
-        {
-            float raceSum = 0f;
-            foreach (var e in s.data.cultural.raceDistribution)
-                raceSum += Mathf.Max(0f, e?.percent ?? 0f);
-            if (raceSum > 0.0001f)
-            {
-                foreach (var e in s.data.cultural.raceDistribution)
-                {
-                    float norm = Mathf.Max(0f, e?.percent ?? 0f) / raceSum * 100f;
-                    if (!Mathf.Approximately(norm, e.percent))
-                    {
-                        e.percent = norm;
-                        changed = true;
-                    }
-                }
-            }
-        }
+            // Removed automatic normalization of race distribution percentages.  Users can enter
+            // percentages directly; we no longer adjust them automatically.
 
-        // --- Religion Selection Editor ---
-        WorldAuthoringEditorUI.DrawHelpersHeader("Religion");
-        var religionDefs = WorldDataChoicesCache.GetReligionDefinitions();
-        if (religionDefs != null && religionDefs.Count > 0)
-        {
-            // Determine current index based on the selected religion ID.
-            int currentRelIndex = 0;
-            if (!string.IsNullOrWhiteSpace(s.data.cultural.religion))
+            // --- Religion Selection Editor ---
+            WorldAuthoringEditorUI.DrawHelpersHeader("Religion");
+            var religionDefs = WorldDataChoicesCache.GetReligionDefinitions();
+            if (religionDefs != null && religionDefs.Count > 0)
             {
-                for (int i = 0; i < religionDefs.Count; i++)
+                // Determine current index based on the selected religion ID.
+                int currentRelIndex = 0;
+                if (!string.IsNullOrWhiteSpace(s.data.cultural.religion))
                 {
-                    if (string.Equals(religionDefs[i]?.id, s.data.cultural.religion, StringComparison.OrdinalIgnoreCase))
+                    for (int i = 0; i < religionDefs.Count; i++)
                     {
-                        currentRelIndex = i;
-                        break;
+                        if (string.Equals(religionDefs[i]?.id, s.data.cultural.religion, StringComparison.OrdinalIgnoreCase))
+                        {
+                            currentRelIndex = i;
+                            break;
+                        }
                     }
                 }
-            }
-            _religionPick = currentRelIndex;
-            var chosenRel = WorldAuthoringEditorUI.PopupChoice("Religion", religionDefs, ref _religionPick);
-            string newRelId = chosenRel?.id;
-            if (s.data.cultural.religion != newRelId)
-            {
-                Undo.RecordObject(s, "Change Religion");
-                s.data.cultural.religion = newRelId;
-                changed = true;
+                _religionPick = currentRelIndex;
+                var chosenRel = WorldAuthoringEditorUI.PopupChoice("Religion", religionDefs, ref _religionPick);
+                string newRelId = chosenRel?.id;
+                if (s.data.cultural.religion != newRelId)
+                {
+                    Undo.RecordObject(s, "Change Religion");
+                    s.data.cultural.religion = newRelId;
+                    changed = true;
+                }
             }
         }
         // End race and religion editing

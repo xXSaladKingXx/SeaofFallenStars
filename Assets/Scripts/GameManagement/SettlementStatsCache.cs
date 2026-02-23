@@ -199,8 +199,16 @@ public static class SettlementStatsCache
                     childIds.Add(v);
         }
         string capitalId = data.feudal != null ? data.feudal.capitalSettlementId : null;
-        if (!string.IsNullOrWhiteSpace(capitalId) && !childIds.Contains(capitalId, StringComparer.OrdinalIgnoreCase))
+        // Only add the capital as a child if it is not the same as this settlement.  Many settlements
+        // designate themselves as their own capital, and in those cases we should not recurse into
+        // ourselves (which would trigger cycle detection).  Additionally, avoid adding duplicate
+        // entries if the capital is already in the vassal list.
+        if (!string.IsNullOrWhiteSpace(capitalId) &&
+            !capitalId.Equals(id, StringComparison.OrdinalIgnoreCase) &&
+            !childIds.Contains(capitalId, StringComparer.OrdinalIgnoreCase))
+        {
             childIds.Add(capitalId);
+        }
         if (childIds.Count > 0)
         {
             foreach (var childId in childIds)
