@@ -181,10 +181,12 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             changed = true;
         }
 
-        // Liege (allow blank).  We first render a toggle to indicate whether this
-        // settlement has a liege.  Changing the toggle will clear or enable
-        // selection of a liege settlement.  We explicitly record undo for
-        // toggling to preserve undo/redo state.
+        // Liege toggle and selection.  Present a checkbox to indicate whether
+        // this settlement has a liege.  When checked, a dropdown appears to
+        // choose the liege settlement.  Clearing the checkbox will remove
+        // both the root-level and feudal liege identifiers.  We avoid using
+        // disabled scopes so the toggle always remains interactive.
+        WorldAuthoringEditorUI.DrawHelpersHeader("Liege");
         bool currentHasLiege = !string.IsNullOrWhiteSpace(s.data.liegeSettlementId);
         bool newHasLiege = EditorGUILayout.Toggle("Has Liege", currentHasLiege);
         if (newHasLiege != currentHasLiege)
@@ -192,23 +194,30 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             Undo.RecordObject(s, newHasLiege ? "Enable Liege" : "Disable Liege");
             if (!newHasLiege)
             {
-                // Clearing the toggle removes the liege ID.
+                // Clearing the liege removes the IDs on both the root and feudal objects
                 s.data.liegeSettlementId = null;
+                if (s.data.feudal != null)
+                {
+                    s.data.feudal.liegeSettlementId = null;
+                }
             }
             changed = true;
         }
         if (newHasLiege)
         {
-            // Show the settlement picker for selecting a liege.  Allow "(none)" to
-            // represent no liege.  Retrieve the index based on the current
-            // liegeSettlementId and assign the selection back to the data model.
+            // Present a dropdown of settlements with a "(none)" option to select the liege.
             _liegePick = WorldAuthoringEditorUI.GetIndexByIdWithNone(settlements, s.data.liegeSettlementId, _liegePick);
-            var liegeEntry = WorldAuthoringEditorUI.PopupChoiceWithNone("Liege Settlement", settlements, ref _liegePick, "(none)");
-            string newLiegeId = liegeEntry?.id;
-            if (s.data.liegeSettlementId != newLiegeId)
+            var liegePick = WorldAuthoringEditorUI.PopupChoiceWithNone("Liege Settlement", settlements, ref _liegePick, "(none)");
+            string pickedId = liegePick?.id;
+            if (s.data.liegeSettlementId != pickedId)
             {
                 Undo.RecordObject(s, "Set Liege");
-                s.data.liegeSettlementId = newLiegeId;
+                s.data.liegeSettlementId = pickedId;
+                // Mirror on the feudal object for backwards compatibility
+                if (s.data.feudal != null)
+                {
+                    s.data.feudal.liegeSettlementId = pickedId;
+                }
                 changed = true;
             }
         }
@@ -816,6 +825,7 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             ,"data.cultural.raceDistribution"
             ,"data.cultural.cultureDistribution"
             ,"data.cultural.religion"
+            ,"data.feudal.liegeSettlementId"
         };
         var prop = serializedObject.GetIterator();
         bool enterChildren = true;
