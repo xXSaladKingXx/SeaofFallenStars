@@ -84,11 +84,14 @@
     "settlementId": null,
     "layer": null,
     "isPopulated": false,
-    "feudal": false,
+    "feudal": true,
     "liegeSettlementId": null,
     "notes": null,
     "laws": null,
-    "capitalSettlementId": "arabel"
+    "capitalSettlementId": "arabel",
+    "incomeTaxRate": 0.0,
+    "troopTaxRate": 0.0,
+    "contractTerms": null
   },
   "culturalComposition": [],
   "raceDistribution": []
