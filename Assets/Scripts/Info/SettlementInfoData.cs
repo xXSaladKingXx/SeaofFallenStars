@@ -17,10 +17,12 @@ using UnityEngine;
 /// rate and supports councillor salaries.  A deprecated alias property for the
 /// old troop tax rate remains for backwards compatibility.
 /// </remarks>
-namespace Info
-{
-    [Serializable]
-    public class SettlementInfoData
+// Remove namespace so SettlementInfoData is in the global namespace.  This aligns with existing
+// project files where SettlementInfoData is referenced without a namespace.  The curly brace
+// following this comment remains to wrap only the class definitions.
+
+[Serializable]
+public class SettlementInfoData
     {
         /// <summary>
         /// Indicates whether this settlement is populated.  Some features in the UI and
@@ -377,4 +379,3 @@ namespace Info
         }
         #endregion
     }
-}

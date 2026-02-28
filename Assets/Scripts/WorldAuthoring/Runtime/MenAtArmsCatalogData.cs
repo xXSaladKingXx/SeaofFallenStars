@@ -7,9 +7,10 @@ using System.Collections.Generic;
 /// dependencies on the authoring assembly. Each entry defines the unit’s
 /// stats, descriptive fields and terrain bonuses.
 /// </summary>
-namespace Info
-{
-    public class MenAtArmsCatalogData
+// Remove namespace so MenAtArmsCatalogData and MenAtArmsEntry are at global scope.  This aligns
+// with existing project files that reference these types without a namespace.
+
+public class MenAtArmsCatalogData
     {
         public string catalogId = "men_at_arms_catalog";
         public string displayName = "Men-at-Arms Catalog";
@@ -64,4 +65,3 @@ namespace Info
         public string subtypeId;
         public int bonus;
     }
-}

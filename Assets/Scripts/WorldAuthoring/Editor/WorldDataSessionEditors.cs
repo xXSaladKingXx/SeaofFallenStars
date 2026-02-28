@@ -384,14 +384,14 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         {
             WorldAuthoringEditorUI.DrawHelpersHeader("Councillor Salaries");
             if (s.data.feudal.councillorSalaries == null)
-                s.data.feudal.councillorSalaries = new List<CouncillorSalaryEntry>();
+                s.data.feudal.councillorSalaries = new List<SettlementInfoData.CouncillorSalaryEntry>();
             var salaryList = s.data.feudal.councillorSalaries;
             for (int i = 0; i < salaryList.Count; i++)
             {
                 var entry = salaryList[i];
                 if (entry == null)
                 {
-                    entry = new CouncillorSalaryEntry();
+                    entry = new SettlementInfoData.CouncillorSalaryEntry();
                     salaryList[i] = entry;
                 }
                 EditorGUILayout.BeginHorizontal();
@@ -406,7 +406,8 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                     changed = true;
                 }
                 // Salary field
-                int sal = entry.salary;
+                // Councillor salary is stored as a float in the data model.  For editing convenience, use an integer field.
+                int sal = (int)entry.salary;
                 int newSal = EditorGUILayout.IntField("Salary", sal);
                 if (newSal != sal)
                 {
@@ -438,7 +439,7 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 if (!salaryList.Any(cs => string.Equals(cs?.characterId, newCouncillor.id, StringComparison.OrdinalIgnoreCase)))
                 {
                     Undo.RecordObject(s, "Add Councillor Salary");
-                    salaryList.Add(new CouncillorSalaryEntry { characterId = newCouncillor.id, salary = _addCouncillorSalary });
+                    salaryList.Add(new SettlementInfoData.CouncillorSalaryEntry { characterId = newCouncillor.id, salary = _addCouncillorSalary });
                     changed = true;
                     _addCouncillorPick = 0;
                     _addCouncillorSalary = 0;

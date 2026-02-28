@@ -5,6 +5,12 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
+// Import the Zana.WorldAuthoring namespace so that WorldDataAuthoringSessionBase and related
+// authoring classes are available without specifying a fully qualified name.  In the original
+// project, SettlementAuthoringSession derived from WorldDataAuthoringSessionBase which is
+// defined in the Zana.WorldAuthoring namespace.
+using Zana.WorldAuthoring;
+
 /// <summary>
 /// Authoring session wrapper for Settlement JSON.
 /// 
