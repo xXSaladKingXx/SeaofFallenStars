@@ -65,7 +65,16 @@
     "customs": [],
     "populationDistribution": null,
     "primaryTraits": [],
-    "cultureDistribution": []
+    "cultureDistribution": [
+      {
+        "key": "cormyrean",
+        "percent": 95.0
+      },
+      {
+        "key": "cormyr-sembian",
+        "percent": 5.0
+      }
+    ]
   },
   "history": {
     "notes": null,
