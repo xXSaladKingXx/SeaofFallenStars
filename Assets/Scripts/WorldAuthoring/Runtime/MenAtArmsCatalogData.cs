@@ -1,77 +1,67 @@
-using System;
+using UnityEngine;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
-namespace Zana.WorldAuthoring
+/// <summary>
+/// Runtime representation of a catalog of men‑at‑arms units. This mirrors the
+/// authoring-time catalog but is placed under the Info namespace to avoid
+/// dependencies on the authoring assembly. Each entry defines the unit’s
+/// stats, descriptive fields and terrain bonuses.
+/// </summary>
+namespace Info
 {
-    [Serializable]
-    public sealed class MenAtArmsCatalogData
+    public class MenAtArmsCatalogData
     {
-        [JsonProperty("catalogId")]
         public string catalogId = "men_at_arms_catalog";
-
-        [JsonProperty("displayName")]
         public string displayName = "Men-at-Arms Catalog";
-
-        [JsonProperty("entries")]
         public List<MenAtArmsEntry> entries = new List<MenAtArmsEntry>();
     }
 
-    [Serializable]
-    public sealed class MenAtArmsEntry
+    /// <summary>
+    /// Runtime representation of a single men‑at‑arms unit.  Updated to include
+    /// movement speed and maintenance costs in addition to combat stats.
+    /// </summary>
+    [System.Serializable]
+    public class MenAtArmsEntry
     {
-        [JsonProperty("id")]
         public string id;
-
-        [JsonProperty("displayName")]
         public string displayName;
-
-        [JsonProperty("notes")]
         public string notes;
-
-        [JsonProperty("attack")]
         public int attack;
-
-        [JsonProperty("defense")]
         public int defense;
-
-        [JsonProperty("size")]
         public int size;
-
-        /// <summary>
-        /// Role of this men‑at‑arms unit (e.g. Infantry, Archer, Cavalry, Siege). The role can
-        /// be used for UI grouping and combat resolution but does not carry any numeric
-        /// modifiers by itself. Use a fixed set of roles defined in your code to drive
-        /// drop‑down choices in the authoring UI.
-        /// </summary>
-        [JsonProperty("role")]
         public string role;
+        public string qualityTier;
+        public List<GeographyBonus> geographyBonuses = new List<GeographyBonus>();
 
         /// <summary>
-        /// A collection of geography bonuses that apply when this unit fights in specific
-        /// terrain or water subtypes. Each bonus entry defines the subtype ID and a flat
-        /// bonus value to apply to attack/defense rolls when in that environment. Use
-        /// drop‑downs in the authoring UI to select valid subtype IDs from your
-        /// terrain catalog. If no entry exists for a given subtype, the unit
-        /// receives no special bonus in that terrain.
+        /// Movement speed of this unit.  Defaults to 20.  If the unit is faster than 20 and no levies are present
+        /// in an army, the army’s speed may be raised to match this value.
         /// </summary>
-        [JsonProperty("geographyBonuses")]
-        public List<GeographyBonus> geographyBonuses = new List<GeographyBonus>();
+        public float speed = 20f;
+
+        /// <summary>
+        /// Monthly maintenance cost when the unit is raised for war.  This cost is
+        /// aggregated into the settlement’s raised maintenance expenses.
+        /// </summary>
+        public float raisedMaintenanceCost = 0f;
+
+        /// <summary>
+        /// Monthly maintenance cost when the unit is unraised.  This cost is
+        /// aggregated into the settlement’s unraised maintenance expenses.
+        /// </summary>
+        public float unraisedMaintenanceCost = 0f;
     }
 
     /// <summary>
-    /// Represents a bonus that a men‑at‑arms unit receives when fighting in a specific
-    /// geography subtype. For example, a naval unit might have a +2 bonus when in
-    /// "coastal" water and +1 in "open sea". The subtypeId field should reference an ID
-    /// defined in your Terrain catalog.
+    /// Defines a bonus applied to a men‑at‑arms unit when fighting in a specific
+    /// terrain or water subtype. Used to provide situational modifiers based on
+    /// geography. The subtypeId should match an identifier from your geography
+    /// catalog (e.g. "forest", "desert", "coastal").
     /// </summary>
-    [Serializable]
-    public sealed class GeographyBonus
+    [System.Serializable]
+    public class GeographyBonus
     {
-        [JsonProperty("subtypeId")]
         public string subtypeId;
-
-        [JsonProperty("bonus")]
         public int bonus;
     }
 }

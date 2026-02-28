@@ -8,6 +8,14 @@ using UnityEngine;
 
 /// <summary>
 /// Shared editor UI helpers and session custom inspectors.
+/// This file defines the editor UI for the world authoring tools.  It has been
+/// updated to support the expanded settlement model, including levy tax
+/// terminology, councillor salaries, additional economy resources, and
+/// aggregated army statistics.  The editor hides or exposes fields based on
+/// whether the current settlement has vassals and whether it has a liege or
+/// serves as a liege’s capital.  When vassals exist, certain fields become
+/// read‑only or are derived from the capital settlement.  New UI panels are
+/// provided for editing councillor salaries when there are no vassals.
 /// </summary>
 public static class WorldAuthoringEditorUI
 {
@@ -93,7 +101,8 @@ public static class WorldAuthoringEditorUI
 public sealed class SettlementAuthoringSessionEditor : Editor
 {
     // Editor for SettlementAuthoringSession.  Allows editing of settlement data including feudal hierarchy,
-    // culture and demographics, army and economy.
+    // culture and demographics, army and economy.  This editor has been extended to support levy tax,
+    // councillor salaries, new resource fields and derived army stats.
     private int _rulerPick;
     private int _liegePick;
     private int _addVassalPick;
@@ -103,20 +112,15 @@ public sealed class SettlementAuthoringSessionEditor : Editor
     private int _addCulturePick;
     private int _primaryLanguagePick;
     private readonly List<bool> _languageSelections = new List<bool>();
-
-    // Track race selection indices for the race distribution editor.  Mirrors the culture
-    // distribution state management.  Each element corresponds to one PercentEntry in
-    // s.data.cultural.raceDistribution.
+    // Race distribution state
     private readonly List<int> _racePickIndices = new List<int>();
-    // Index of the race to add when the user chooses from the "Add race" dropdown.
     private int _addRacePick;
-    // Track the currently selected religion.  We do not persist this index; instead,
-    // we look up the current religion id and compute the appropriate index on each
-    // inspector draw.
     private int _religionPick;
-
-    // Track selected capital index for capital dropdown
+    // Capital selection index
     private int _capitalPick;
+    // Additional fields for councillor salary editing
+    private int _addCouncillorPick;
+    private int _addCouncillorSalary;
 
     public override void OnInspectorGUI()
     {
@@ -194,9 +198,7 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             changed = true;
         }
 
-        // Feudal section.  Combine the former "Feudal Hierarchy" and "Liege" panels into one
-        // cohesive Feudal panel.  The liege settlement can always be chosen via a dropdown
-        // (default "(none)"), and if a liege is selected the contract fields become editable.
+        // Feudal section.  Combine the former "Feudal Hierarchy" and "Liege" panels into one cohesive Feudal panel.
         WorldAuthoringEditorUI.DrawHelpersHeader("Feudal");
 
         // Liege selection: show a dropdown of settlements with a "(none)" option.
@@ -259,12 +261,13 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 changed = true;
             }
 
-            float troopRate = s.data.feudal?.troopTaxRate ?? 0f;
-            float newTroopRate = EditorGUILayout.Slider("Troop Tax Rate", troopRate, 0f, 1f);
-            if (!Mathf.Approximately(newTroopRate, troopRate))
+            // Levy tax rate (formerly troop tax rate)
+            float levyRate = s.data.feudal?.levyTaxRate ?? 0f;
+            float newLevyRate = EditorGUILayout.Slider("Levy Tax Rate", levyRate, 0f, 1f);
+            if (!Mathf.Approximately(newLevyRate, levyRate))
             {
-                Undo.RecordObject(s, "Set Troop Tax Rate");
-                s.data.feudal.troopTaxRate = newTroopRate;
+                Undo.RecordObject(s, "Set Levy Tax Rate");
+                s.data.feudal.levyTaxRate = newLevyRate;
                 changed = true;
             }
 
@@ -281,13 +284,11 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         // Vassals (list)
         EditorGUILayout.Space(4);
         EditorGUILayout.LabelField("Vassals", EditorStyles.boldLabel);
-
         var vassals = new List<string>((s.data.main.vassals ?? Array.Empty<string>()).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()));
         for (int i = 0; i < vassals.Count; i++)
         {
             string id = vassals[i];
             string label = settlementNameById.TryGetValue(id, out var nm) ? $"{nm} ({id})" : id;
-
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(label);
             if (GUILayout.Button("Remove", GUILayout.Width(70)))
@@ -299,7 +300,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             }
             EditorGUILayout.EndHorizontal();
         }
-
         // Add vassal
         _addVassalPick = Mathf.Clamp(_addVassalPick, 0, Mathf.Max(0, settlements.Count));
         var addVassalEntry = WorldAuthoringEditorUI.PopupChoiceWithNone("Add Vassal", settlements, ref _addVassalPick, "(none)");
@@ -312,26 +312,17 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 changed = true;
             }
         }
-
         if (changed)
         {
             s.data.main.vassals = vassals.Distinct(StringComparer.Ordinal).ToArray();
         }
 
-        // After updating the vassal list, determine whether this settlement has any vassals.  This flag
-        // is used later to suppress editing of economy and cultural stats when vassals exist.
-        //
-        // The original implementation used the length of the vassals array to check for vassals.  However,
-        // this allowed whitespace or empty string entries to count as a vassal, which would incorrectly
-        // disable the economy and cultural editors for settlements that actually have no vassals.
-        // To fix this, check for any non‑blank vassal identifier instead of relying on the array length.
+        // Determine whether this settlement has any vassals.  Use non-blank check to avoid false positives.
         bool hasVassalsLocal = s.data.main != null && s.data.main.vassals != null &&
             s.data.main.vassals.Any(id => !string.IsNullOrWhiteSpace(id));
 
-        // Council
+        // Council: static council positions (castellan, marshall, steward, diplomat, spymaster, head priest)
         WorldAuthoringEditorUI.DrawHelpersHeader("Council");
-        // We cannot pass properties or indexers by ref directly, so copy values to local variables,
-        // invoke the helper, then assign back if changed.
         {
             string id = s.data.feudal.castellanCharacterId;
             bool c = DrawCharacterIdFieldWithNone(s, "Castellan", characters, ref id);
@@ -387,15 +378,82 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             }
         }
 
+        // Councillor salary editor: only when the settlement has no vassals.  If vassals exist, the councillors are
+        // inherited from the capital settlement and salaries cannot be edited directly.
+        if (!hasVassalsLocal)
+        {
+            WorldAuthoringEditorUI.DrawHelpersHeader("Councillor Salaries");
+            if (s.data.feudal.councillorSalaries == null)
+                s.data.feudal.councillorSalaries = new List<CouncillorSalaryEntry>();
+            var salaryList = s.data.feudal.councillorSalaries;
+            for (int i = 0; i < salaryList.Count; i++)
+            {
+                var entry = salaryList[i];
+                if (entry == null)
+                {
+                    entry = new CouncillorSalaryEntry();
+                    salaryList[i] = entry;
+                }
+                EditorGUILayout.BeginHorizontal();
+                // Select councillor character
+                int pickIdx = WorldAuthoringEditorUI.GetIndexByIdWithNone(characters, entry.characterId, 0);
+                var selectedChar = WorldAuthoringEditorUI.PopupChoiceWithNone("Councillor", characters, ref pickIdx, "(none)");
+                string newCid = selectedChar?.id;
+                if (newCid != entry.characterId)
+                {
+                    Undo.RecordObject(s, "Change Councillor");
+                    entry.characterId = newCid;
+                    changed = true;
+                }
+                // Salary field
+                int sal = entry.salary;
+                int newSal = EditorGUILayout.IntField("Salary", sal);
+                if (newSal != sal)
+                {
+                    Undo.RecordObject(s, "Change Councillor Salary");
+                    entry.salary = newSal;
+                    changed = true;
+                }
+                // Remove button
+                if (GUILayout.Button("Remove", GUILayout.Width(60)))
+                {
+                    Undo.RecordObject(s, "Remove Councillor Salary");
+                    salaryList.RemoveAt(i);
+                    changed = true;
+                    EditorGUILayout.EndHorizontal();
+                    i--;
+                    continue;
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+            // Add new councillor entry
+            EditorGUILayout.BeginHorizontal();
+            _addCouncillorPick = Mathf.Clamp(_addCouncillorPick, 0, characters.Count);
+            var newCouncillor = WorldAuthoringEditorUI.PopupChoiceWithNone("Add Councillor", characters, ref _addCouncillorPick, "(none)");
+            // Salary input for new councillor
+            _addCouncillorSalary = EditorGUILayout.IntField("Salary", _addCouncillorSalary);
+            if (newCouncillor != null && GUILayout.Button("Add", GUILayout.Width(60)))
+            {
+                // Only add if the character ID is not already present in the list to avoid duplicates
+                if (!salaryList.Any(cs => string.Equals(cs?.characterId, newCouncillor.id, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Undo.RecordObject(s, "Add Councillor Salary");
+                    salaryList.Add(new CouncillorSalaryEntry { characterId = newCouncillor.id, salary = _addCouncillorSalary });
+                    changed = true;
+                    _addCouncillorPick = 0;
+                    _addCouncillorSalary = 0;
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
         // Armies
         WorldAuthoringEditorUI.DrawHelpersHeader("Armies");
-
         var armyIds = new List<string>((s.data.army.armyIds ?? Array.Empty<string>()).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()));
         for (int i = 0; i < armyIds.Count; i++)
         {
             string id = armyIds[i];
             string label = armyNameById.TryGetValue(id, out var nm) ? $"{nm} ({id})" : id;
-
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(label);
             if (GUILayout.Button("Remove", GUILayout.Width(70)))
@@ -407,7 +465,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             }
             EditorGUILayout.EndHorizontal();
         }
-
         _addArmyPick = Mathf.Clamp(_addArmyPick, 0, Mathf.Max(0, armies.Count));
         var addArmyEntry = WorldAuthoringEditorUI.PopupChoiceWithNone("Add Army", armies, ref _addArmyPick, "(none)");
         if (addArmyEntry != null)
@@ -419,7 +476,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 changed = true;
             }
         }
-
         // Normalize army list and update summary
         var normalizedArmies = armyIds.Distinct(StringComparer.Ordinal).ToArray();
         if (!Enumerable.SequenceEqual(normalizedArmies, s.data.army.armyIds ?? Array.Empty<string>(), StringComparer.Ordinal))
@@ -433,17 +489,14 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         if (!hasVassalsLocal)
         {
             WorldAuthoringEditorUI.DrawHelpersHeader("Culture Distribution");
-
             if (s.data.cultural.cultureDistribution == null)
                 s.data.cultural.cultureDistribution = new List<PercentEntry>();
             if (s.data.cultural.languages == null)
                 s.data.cultural.languages = Array.Empty<string>();
-
             while (_culturePickIndices.Count < s.data.cultural.cultureDistribution.Count)
                 _culturePickIndices.Add(0);
             while (_culturePickIndices.Count > s.data.cultural.cultureDistribution.Count)
                 _culturePickIndices.RemoveAt(_culturePickIndices.Count - 1);
-
             var cultureEntries = WorldDataChoicesCache.GetCultureEntries();
             for (int i = 0; i < s.data.cultural.cultureDistribution.Count; i++)
             {
@@ -453,7 +506,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                     entry = new PercentEntry { key = null, percent = 0f };
                     s.data.cultural.cultureDistribution[i] = entry;
                 }
-
                 // Before rendering the culture picker, ensure the cached index matches the current entry key.
                 if (!string.IsNullOrWhiteSpace(entry.key))
                 {
@@ -467,12 +519,9 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                         }
                     }
                 }
-
                 EditorGUILayout.BeginHorizontal();
-                // Copy the indexer value to a local variable. We cannot pass a list indexer directly to a ref parameter.
                 int culturePickIdx = _culturePickIndices[i];
                 var selectedCulture = WorldAuthoringEditorUI.PopupChoice("Culture", cultureEntries, ref culturePickIdx);
-                // Update the stored index if it changed
                 if (culturePickIdx != _culturePickIndices[i])
                 {
                     _culturePickIndices[i] = culturePickIdx;
@@ -502,7 +551,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 }
                 EditorGUILayout.EndHorizontal();
             }
-
             _addCulturePick = Mathf.Clamp(_addCulturePick, 0, cultureEntries.Count - 1);
             EditorGUILayout.BeginHorizontal();
             var addCultureEntry = WorldAuthoringEditorUI.PopupChoice("Add culture", cultureEntries, ref _addCulturePick);
@@ -514,10 +562,7 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 changed = true;
             }
             EditorGUILayout.EndHorizontal();
-
-            // Remove automatic normalization of culture distribution percentages.  Users may enter
-            // percentages directly; we no longer adjust them automatically here.
-
+            // Remove automatic normalization of culture distribution percentages.  Users may enter percentages directly.
             if (s.data.cultural.cultureDistribution.Count > 0)
             {
                 var topEntry = s.data.cultural.cultureDistribution.OrderByDescending(e => e.percent).FirstOrDefault();
@@ -542,7 +587,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                     changed = true;
                 }
             }
-
             WorldAuthoringEditorUI.DrawHelpersHeader("Languages");
             var languageDefs = WorldDataChoicesCache.GetLanguageDefinitions();
             while (_languageSelections.Count < languageDefs.Count) _languageSelections.Add(false);
@@ -587,37 +631,18 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 }
             }
             s.data.cultural.languages = selectedLangs.ToArray();
-        } // end of culture and language editing when no vassals
+        }
 
-        // -------------------------------------------------------------------------
-        // Race distribution and religion selection.  For settlements without
-        // vassals we expose full editing controls.  For settlements with vassals
-        // these values are determined by the aggregated stats and are displayed
-        // separately in the Aggregated Stats section.
-        // -------------------------------------------------------------------------
-
-        // Build a quick lookup for whether this settlement has direct vassals.  If
-        // there are any vassals, we treat the local cultural demographics as the
-        // capital stats and display aggregated values below.  Reuse hasVassalsLocal.
-        bool hasVassals = hasVassalsLocal;
-
-        // Race distribution and religion editing are only available when this settlement has no vassals.
-        // When the settlement has vassals, these values are determined by the aggregated stats and
-        // should not be editable.  We therefore wrap the entire race and religion editing UI in
-        // a check and skip it if there are vassals.
+        // Race distribution and religion selection: only available when there are no vassals.
         if (!hasVassalsLocal)
         {
-            // --- Race Distribution Editor ---
             WorldAuthoringEditorUI.DrawHelpersHeader("Race Distribution");
             if (s.data.cultural.raceDistribution == null)
                 s.data.cultural.raceDistribution = new List<PercentEntry>();
-
-            // Ensure the helper lists match the size of the distribution list.
             while (_racePickIndices.Count < s.data.cultural.raceDistribution.Count)
                 _racePickIndices.Add(0);
             while (_racePickIndices.Count > s.data.cultural.raceDistribution.Count)
                 _racePickIndices.RemoveAt(_racePickIndices.Count - 1);
-
             var raceDefs = WorldDataChoicesCache.GetRaceDefinitions();
             for (int i = 0; i < s.data.cultural.raceDistribution.Count; i++)
             {
@@ -627,8 +652,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                     entry = new PercentEntry { key = null, percent = 0f };
                     s.data.cultural.raceDistribution[i] = entry;
                 }
-
-                // Determine the pick index for this entry.  Index 0 represents "none" (no race selected).
                 int currentPick = 0;
                 if (!string.IsNullOrWhiteSpace(entry.key))
                 {
@@ -637,23 +660,17 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                         var rd = raceDefs[j];
                         if (rd != null && string.Equals(rd.id, entry.key, StringComparison.OrdinalIgnoreCase))
                         {
-                            currentPick = j + 1; // shift by one because 0 == none
+                            currentPick = j + 1;
                             break;
                         }
                     }
                 }
-                // Store the computed index in our helper list
                 _racePickIndices[i] = currentPick;
-
                 EditorGUILayout.BeginHorizontal();
-                // Copy the pick index to a local variable for the popup call.
                 int pick = _racePickIndices[i];
-                // Use PopupChoiceWithNone so there is an explicit "none" option at index 0
                 var raceEntry = WorldAuthoringEditorUI.PopupChoiceWithNone("Race", raceDefs, ref pick, "(none)");
-                // Update the helper index if it changed
                 if (pick != _racePickIndices[i])
                     _racePickIndices[i] = pick;
-                // Determine the new key based on the selection.  If pick <= 0 then no selection (null key)
                 string newRaceKey = null;
                 if (pick > 0 && pick - 1 < raceDefs.Count)
                 {
@@ -666,7 +683,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                     entry.key = newRaceKey;
                     changed = true;
                 }
-                // Percentage field (0–100)
                 float racePercent = EditorGUILayout.FloatField(entry.percent);
                 racePercent = Mathf.Clamp(racePercent, 0f, 100f);
                 if (!Mathf.Approximately(racePercent, entry.percent))
@@ -675,7 +691,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                     entry.percent = racePercent;
                     changed = true;
                 }
-                // Remove button
                 if (GUILayout.Button("Remove", GUILayout.Width(60)))
                 {
                     Undo.RecordObject(s, "Remove Race Entry");
@@ -686,7 +701,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 }
                 EditorGUILayout.EndHorizontal();
             }
-            // Add race dropdown.  Only actual race definitions are shown here (no none option).
             _addRacePick = Mathf.Clamp(_addRacePick, 0, raceDefs.Count - 1);
             EditorGUILayout.BeginHorizontal();
             var addRaceEntry = WorldAuthoringEditorUI.PopupChoice("Add race", raceDefs, ref _addRacePick);
@@ -694,20 +708,15 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             {
                 Undo.RecordObject(s, "Add Race Entry");
                 s.data.cultural.raceDistribution.Add(new PercentEntry { key = addRaceEntry.id, percent = 0f });
-                // Store pick index as the actual definition index plus one (because index 0 == none)
                 _racePickIndices.Add(_addRacePick + 1);
                 changed = true;
             }
             EditorGUILayout.EndHorizontal();
-            // Removed automatic normalization of race distribution percentages.  Users can enter
-            // percentages directly; we no longer adjust them automatically.
-
-            // --- Religion Selection Editor ---
+            // Religion selection
             WorldAuthoringEditorUI.DrawHelpersHeader("Religion");
             var religionDefs = WorldDataChoicesCache.GetReligionDefinitions();
             if (religionDefs != null && religionDefs.Count > 0)
             {
-                // Determine current index based on the selected religion ID.
                 int currentRelIndex = 0;
                 if (!string.IsNullOrWhiteSpace(s.data.cultural.religion))
                 {
@@ -731,21 +740,11 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 }
             }
         }
-        // End race and religion editing
 
-        // -------------------------------------------------------------------------
-        // Aggregated stats and capital selection for settlements with vassals.
-        // When a settlement has vassals, its economy, army and demographic stats
-        // are derived from the capital settlement and aggregated from its vassals.
-        // We therefore show non-editable totals along with editable base values from
-        // the designated capital.  If there are no vassals, no aggregated stats are
-        // shown.
-        // -------------------------------------------------------------------------
-
+        // Capital and aggregated stats display for settlements with vassals
         if (hasVassalsLocal)
         {
-            // Capital selection.  Build a list of vassal entries for the dropdown.  We
-            // rely on the settlement name lookup built earlier from the world data.
+            // Capital selection from among vassals
             var vassalEntries = new List<WorldDataIndexEntry>();
             foreach (var vid in s.data.main.vassals)
             {
@@ -755,8 +754,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             }
             if (vassalEntries.Count > 0)
             {
-                // Determine the current capital index.  If the existing capital ID is not
-                // among the vassal list, default to the first entry.
                 int capIndex = 0;
                 if (!string.IsNullOrWhiteSpace(s.data.feudal?.capitalSettlementId))
                 {
@@ -777,17 +774,11 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 {
                     Undo.RecordObject(s, "Set Capital");
                     s.data.feudal.capitalSettlementId = newCapId;
-                    // Mirror the root-level capital field for backwards compatibility.
                     s.data.capitalSettlementId = newCapId;
                     changed = true;
                 }
             }
-
-            // Recompute aggregated stats using the SettlementStatsCache.  We call
-            // Invalidate() before computing to ensure the cache is fresh; this
-            // operation is safe but can be expensive if called repeatedly.  In
-            // practice, authoring sessions are short-lived and the settlement tree
-            // small, so this performance cost is acceptable.
+            // Recompute aggregated stats using SettlementStatsCache
             SettlementStatsCache.Invalidate();
             var stats = SettlementStatsCache.GetStatsOrNull(s.data.settlementId);
             if (stats != null)
@@ -798,14 +789,13 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                 EditorGUILayout.LabelField("Income Tax Paid Up", stats.incomePaidUp.ToString("F1"));
                 EditorGUILayout.LabelField("Net Income", stats.netIncome.ToString("F1"));
                 EditorGUILayout.LabelField("Gross Troops", stats.grossTroops.ToString());
-                EditorGUILayout.LabelField("Troops Tax Paid Up", stats.troopsPaidUp.ToString());
+                // Label renamed to Levies Tax Paid Up to reflect levy terminology
+                EditorGUILayout.LabelField("Levies Tax Paid Up", stats.troopsPaidUp.ToString());
                 EditorGUILayout.LabelField("Net Troops", stats.netTroops.ToString());
-                // Display aggregated race distribution.
+                // Aggregated demographics
                 if (stats.totalPopulation > 0)
                 {
                     EditorGUILayout.LabelField("Races", EditorStyles.boldLabel);
-                    // Build display name lookup for races.  Use a distinct variable name to
-                    // avoid colliding with the raceDefs defined in the race editor above.
                     var allRaceDefs = WorldDataChoicesCache.GetRaceDefinitions();
                     var raceMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                     foreach (var def in allRaceDefs)
@@ -820,7 +810,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                         EditorGUILayout.LabelField($"- {rn} : {pct:F1}%");
                     }
                 }
-                // Display aggregated culture distribution.
                 if (stats.totalPopulation > 0)
                 {
                     EditorGUILayout.LabelField("Cultures", EditorStyles.boldLabel);
@@ -838,7 +827,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                         EditorGUILayout.LabelField($"- {cn} : {pct:F1}%");
                     }
                 }
-                // Display aggregated religions.
                 if (stats.totalPopulation > 0)
                 {
                     EditorGUILayout.LabelField("Religions", EditorStyles.boldLabel);
@@ -856,7 +844,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                         EditorGUILayout.LabelField($"- {rn} : {pct:F1}%");
                     }
                 }
-                // Display aggregated languages (unique list).
                 if (stats.populationByLanguage.Count > 0)
                 {
                     EditorGUILayout.LabelField("Languages", EditorStyles.boldLabel);
@@ -876,14 +863,33 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             }
         }
 
-        // Recalculate army summary after modifications
+        // Recalculate derived army summary after modifications
         RecalculateDerivedArmySummary(s);
         using (new EditorGUI.DisabledScope(true))
         {
             EditorGUILayout.IntField("Total Army (Derived)", s.data.army.totalArmy);
             EditorGUILayout.TextField("Primary Commander (Derived)", s.data.army.primaryCommanderDisplayName ?? string.Empty);
+            // Additional derived army fields
+            EditorGUILayout.IntField("Total Levies (Derived)", s.data.army.totalLevies);
+            EditorGUILayout.FloatField("Raised Maintenance Costs (Derived)", s.data.army.raisedMaintenanceCosts);
+            EditorGUILayout.FloatField("Unraised Maintenance Costs (Derived)", s.data.army.unraisedMaintenanceCosts);
+            EditorGUILayout.FloatField("Attack (Derived)", s.data.army.attack);
+            EditorGUILayout.FloatField("Defense (Derived)", s.data.army.defense);
+            EditorGUILayout.FloatField("Speed (Derived)", s.data.army.speed);
+            // Display derived knights as names
+            var knightLabels = new List<string>();
+            if (s.data.army.knightCharacterIds != null)
+            {
+                foreach (var kId in s.data.army.knightCharacterIds)
+                {
+                    if (string.IsNullOrWhiteSpace(kId)) continue;
+                    knightLabels.Add(characterNameById.TryGetValue(kId, out var dnm) ? dnm : kId);
+                }
+            }
+            EditorGUILayout.LabelField("Knights (Derived)", knightLabels.Count > 0 ? string.Join(", ", knightLabels) : "(none)");
         }
 
+        // Update serializedObject, skip fields accordingly.
         serializedObject.Update();
         HashSet<string> skip = new HashSet<string>
         {
@@ -902,17 +908,26 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             "data.army.totalArmy",
             "data.army.menAtArms",
             "data.army.primaryCommanderDisplayName",
-            "data.army.primaryCommanderCharacterId"
-            ,"data.cultural.languages"
-            ,"data.cultural.raceDistribution"
-            ,"data.cultural.cultureDistribution"
-            ,"data.cultural.religion"
-            ,"data.feudal.liegeSettlementId"
-            ,"data.feudal.incomeTaxRate"
-            ,"data.feudal.troopTaxRate"
-            ,"data.feudal.contractTerms"
+            "data.army.primaryCommanderCharacterId",
+            "data.army.totalLevies",
+            "data.army.raisedMaintenanceCosts",
+            "data.army.unraisedMaintenanceCosts",
+            "data.army.attack",
+            "data.army.defense",
+            "data.army.speed",
+            "data.army.knightCharacterIds",
+            "data.cultural.languages",
+            "data.cultural.raceDistribution",
+            "data.cultural.cultureDistribution",
+            "data.cultural.religion",
+            "data.feudal.liegeSettlementId",
+            "data.feudal.incomeTaxRate",
+            // skip the old troop tax property (alias) to prevent editing it directly
+            "data.feudal.troopTaxRate",
+            "data.feudal.levyTaxRate",
+            "data.feudal.contractTerms",
+            "data.feudal.councillorSalaries"
         };
-
         // Hide economy fields when this settlement has vassals.  When vassals exist,
         // economy statistics are derived and should not be edited directly.  When
         // there are no vassals, these fields remain editable and are therefore not skipped.
@@ -924,8 +939,16 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             skip.Add("data.economy.notes");
             skip.Add("data.economy.totalIncomePerMonth");
             skip.Add("data.economy.totalTreasury");
+            skip.Add("data.economy.totalProfitPerMonth");
             skip.Add("data.economy.courtExpenses");
             skip.Add("data.economy.armyExpenses");
+            skip.Add("data.economy.wheat");
+            skip.Add("data.economy.bread");
+            skip.Add("data.economy.meat");
+            skip.Add("data.economy.wood");
+            skip.Add("data.economy.stone");
+            skip.Add("data.economy.iron");
+            skip.Add("data.economy.steel");
             skip.Add("data.economy.currentlyConstructing");
         }
         var prop = serializedObject.GetIterator();
@@ -964,6 +987,14 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         string[] armyIds = s.data.army.armyIds ?? Array.Empty<string>();
         int total = 0;
         HashSet<string> menAtArmsIds = new HashSet<string>(StringComparer.Ordinal);
+        HashSet<string> knightIdsAgg = new HashSet<string>(StringComparer.Ordinal);
+        int totalLevies = 0;
+        float raisedMaint = 0f;
+        float unraisedMaint = 0f;
+        float attackSum = 0f;
+        float defenseSum = 0f;
+        float speedSum = 0f;
+        int speedCount = 0;
         string chosenCommanderId = null;
         string chosenCommanderName = null;
         int bestTotal = int.MinValue;
@@ -976,6 +1007,7 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             int armyTotal = armyJson.Value<int?>("totalArmy") ?? 0;
             if (armyTotal < 0) armyTotal = 0;
             total += armyTotal;
+            // men-at-arms
             var menToken = armyJson["menAtArms"] ?? armyJson["menAtArmsStacks"];
             if (menToken is JArray menArray)
             {
@@ -993,6 +1025,30 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                     }
                 }
             }
+            // Knights list (from extra field)
+            if (armyJson["knightCharacterIds"] is JArray knightsArr)
+            {
+                foreach (var kid in knightsArr)
+                {
+                    if (kid == null) continue;
+                    string sKid = kid.ToString();
+                    if (!string.IsNullOrWhiteSpace(sKid)) knightIdsAgg.Add(sKid.Trim());
+                }
+            }
+            // Total levies
+            totalLevies += armyJson.Value<int?>("totalLevies") ?? 0;
+            // Maintenance costs and stats
+            raisedMaint += armyJson.Value<float?>("raisedMaintenanceCosts") ?? 0f;
+            unraisedMaint += armyJson.Value<float?>("unraisedMaintenanceCosts") ?? 0f;
+            attackSum += armyJson.Value<float?>("attack") ?? 0f;
+            defenseSum += armyJson.Value<float?>("defense") ?? 0f;
+            float spd = armyJson.Value<float?>("speed") ?? 0f;
+            if (spd > 0f)
+            {
+                speedSum += spd;
+                speedCount++;
+            }
+            // Primary commander selection
             if (armyTotal > bestTotal)
             {
                 bestTotal = armyTotal;
@@ -1004,6 +1060,14 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         s.data.army.menAtArms = menAtArmsIds.OrderBy(x => x, StringComparer.Ordinal).ToArray();
         s.data.army.primaryCommanderCharacterId = string.IsNullOrWhiteSpace(chosenCommanderId) ? null : chosenCommanderId;
         s.data.army.primaryCommanderDisplayName = string.IsNullOrWhiteSpace(chosenCommanderName) ? null : chosenCommanderName;
+        // Assign aggregated values to the settlement's ArmyTab
+        s.data.army.knightCharacterIds = knightIdsAgg.OrderBy(x => x, StringComparer.Ordinal).ToArray();
+        s.data.army.totalLevies = totalLevies;
+        s.data.army.raisedMaintenanceCosts = raisedMaint;
+        s.data.army.unraisedMaintenanceCosts = unraisedMaint;
+        s.data.army.attack = attackSum;
+        s.data.army.defense = defenseSum;
+        s.data.army.speed = speedCount > 0 ? speedSum / speedCount : 0f;
     }
 
     private static bool TryLoadArmyJson(string armyId, out JObject armyRoot)

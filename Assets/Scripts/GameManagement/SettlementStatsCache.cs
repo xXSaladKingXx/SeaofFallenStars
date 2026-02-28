@@ -5,11 +5,13 @@ using UnityEngine;
 
 /// <summary>
 /// Computes realm totals bottom-up using direct vassal lists + vassal contracts stored on the liege settlement JSON.
-/// - Income and Troops are taxed.
+/// - Income and Troops are taxed via the income and levy tax rates defined on vassal contracts.
 /// - Population is additive only (not taxed).
 /// - Country capital is included at 0% income/troop tax.
 ///
 /// This cache is safe to call from any UI panel; it rebuilds lazily.
+/// This file has been updated to use levy tax rates in place of the old troop tax rates and
+/// to compute local income from profit when available (income minus court and army expenses).
 /// </summary>
 public static class SettlementStatsCache
 {
@@ -18,7 +20,21 @@ public static class SettlementStatsCache
         public string vassalSettlementId;
         public string vassalDisplayName;
         public float incomeTaxRate;
-        public float troopTaxRate;
+        /// <summary>
+        /// Levy tax rate applied to troops contributed by this vassal.  Replaces the old troop tax rate.
+        /// </summary>
+        public float levyTaxRate;
+        /// <summary>
+        /// Deprecated property preserved for backwards compatibility.  This alias forwards
+        /// reads and writes to <see cref="levyTaxRate"/>.  Authoring tools should migrate
+        /// entirely to <see cref="levyTaxRate"/>.
+        /// </summary>
+        [Obsolete("Use levyTaxRate instead")]
+        public float troopTaxRate
+        {
+            get => levyTaxRate;
+            set => levyTaxRate = value;
+        }
         public string terms;
         public double vassalGrossIncome;
         public double incomePaidUp;
@@ -186,7 +202,22 @@ public static class SettlementStatsCache
         var stats = new SettlementComputedStats();
         stats.settlementId = id;
         stats.localPopulation = Mathf.Max(0, data.main != null ? data.main.population : 0);
-        stats.localIncome = data.economy != null ? data.economy.totalIncomePerMonth : 0.0;
+        // Compute local income from profit if available; otherwise derive from income minus expenses.
+        if (data.economy != null)
+        {
+            float profit = data.economy.totalProfitPerMonth;
+            if (Mathf.Approximately(profit, 0f))
+            {
+                // Fall back to income minus expenses.  Expenses may be zero if unset.
+                profit = data.economy.totalIncomePerMonth - (data.economy.courtExpenses + data.economy.armyExpenses);
+            }
+            // Clamp negative values to zero to avoid propagating losses up the hierarchy.
+            stats.localIncome = Mathf.Max(0f, profit);
+        }
+        else
+        {
+            stats.localIncome = 0.0;
+        }
         stats.localTroops = Mathf.Max(0, data.army != null ? data.army.totalArmy : 0);
         stats.totalPopulation = stats.localPopulation;
         stats.grossIncome = stats.localIncome;
@@ -230,7 +261,7 @@ public static class SettlementStatsCache
                     if (c != null)
                     {
                         incomeTax = Mathf.Clamp01(c.incomeTaxRate);
-                        troopTax = Mathf.Clamp01(c.troopTaxRate);
+                        troopTax = Mathf.Clamp01(c.levyTaxRate);
                         terms = c.terms;
                     }
                     else
@@ -243,8 +274,8 @@ public static class SettlementStatsCache
                 var childStats = ComputeGrossRecursive(childId, id, incomeTax, troopTax, childIsCapital, terms);
                 if (childStats == null) continue;
                 // Determine how much of the child's contributions flow up to the liege.
-                // For normal vassals, only the paid‐up taxes are added to the liege's gross values.
-                // For the designated capital, treat the child's net (post‐tax) values as the base stats for the liege.
+                // For normal vassals, only the paid‑up taxes are added to the liege's gross values.
+                // For the designated capital, treat the child's net (post‑tax) values as the base stats for the liege.
                 double incomeContribution;
                 int troopContribution;
                 if (childIsCapital)
@@ -272,11 +303,11 @@ public static class SettlementStatsCache
                     vassalSettlementId = childId,
                     vassalDisplayName = SettlementNameResolver.Resolve(childId),
                     incomeTaxRate = incomeTax,
-                    troopTaxRate = troopTax,
+                    levyTaxRate = troopTax,
                     terms = terms,
                     vassalGrossIncome = childStats.grossIncome,
                     // Record how much this vassal contributes to the liege.  For capitals, this is the net income
-                    // and net troops; for normal vassals, it is the paid‐up tax.
+                    // and net troops; for normal vassals, it is the paid‑up tax.
                     incomePaidUp = incomeContribution,
                     vassalNetIncome = childStats.netIncome,
                     vassalGrossTroops = childStats.grossTroops,
@@ -310,7 +341,18 @@ public static class SettlementStatsCache
         var stats = new SettlementComputedStats();
         stats.settlementId = id;
         stats.localPopulation = Mathf.Max(0, data.main != null ? data.main.population : 0);
-        stats.localIncome = data.economy != null ? data.economy.totalIncomePerMonth : 0.0;
+        // Use profit for local income on leaf settlements.
+        if (data.economy != null)
+        {
+            float profit = data.economy.totalProfitPerMonth;
+            if (Mathf.Approximately(profit, 0f))
+                profit = data.economy.totalIncomePerMonth - (data.economy.courtExpenses + data.economy.armyExpenses);
+            stats.localIncome = Mathf.Max(0f, profit);
+        }
+        else
+        {
+            stats.localIncome = 0.0;
+        }
         stats.localTroops = Mathf.Max(0, data.army != null ? data.army.totalArmy : 0);
         stats.totalPopulation = stats.localPopulation;
         stats.grossIncome = stats.localIncome;
