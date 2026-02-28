@@ -922,12 +922,14 @@ public class InfoWindowManager : MonoBehaviour
             PopulateCultureDropdown(cultureDropdown, cul.cultureDistribution);
             PopulateRaceDropdown(raceDropdown, cul.raceDistribution);
 
-            List<string> languages = TryGetValueByPath(_data, "cultural.languages", out var lvalue) && lvalue is IEnumerable<string> llist
-                ? llist.ToList()
-                : null;
-            List<string> religions = TryGetValueByPath(_data, "cultural.religions", out var rvalue) && rvalue is IEnumerable<string> rlist
-                ? rlist.ToList()
-                : null;
+            // Fetch languages as a list from the cultural.languages array.  If not present, leave null.
+            List<string> languages = null;
+            if (TryGetValueByPath(_data, "cultural.languages", out var lvalue) && lvalue is IEnumerable<string> llist)
+                languages = llist.ToList();
+            // Fetch religions.  The SettlementInfoData model defines a single religion string rather than an array.
+            List<string> religions = null;
+            if (TryGetValueByPath(_data, "cultural.religion", out var rvalue) && rvalue is string relStr && !string.IsNullOrWhiteSpace(relStr))
+                religions = new List<string> { relStr };
             LogValue("cultural.languages", languages == null ? "null" : string.Join(",", languages));
             LogValue("cultural.religions", religions == null ? "null" : string.Join(",", religions));
 

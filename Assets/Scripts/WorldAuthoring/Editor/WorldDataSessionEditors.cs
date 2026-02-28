@@ -928,30 +928,40 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             "data.feudal.levyTaxRate",
             "data.feudal.contractTerms",
             "data.feudal.councillorSalaries"
+            ,
+            // Skip economy fields here.  They will be rendered manually by DrawEconomySection.
+            "data.economy.totalIncomePerMonth",
+            "data.economy.totalProfitPerMonth",
+            "data.economy.totalTreasury",
+            "data.economy.courtExpenses",
+            "data.economy.armyExpenses",
+            "data.economy.wheat",
+            "data.economy.bread",
+            "data.economy.meat",
+            "data.economy.wood",
+            "data.economy.stone",
+            "data.economy.iron",
+            "data.economy.steel",
+            "data.economy.mainExports",
+            "data.economy.mainImports",
+            "data.economy.mainIndustries",
+            "data.economy.notes",
+            "data.economy.currentlyConstructing"
         };
-        // Draw remaining properties.  Economy fields should always be visible.  When the settlement has vassals,
-        // economy values are derived and therefore should not be edited.  To achieve this, do not skip the
-        // economy properties entirely; instead, render them in a disabled scope when vassals exist.
+        // Draw the Economy section manually to ensure the fields are always visible.  When the settlement
+        // has vassals, the economy values are derived and therefore should not be edited.  The
+        // DrawEconomySection helper handles disabling the fields and writing back changes.
+        DrawEconomySection(s, hasVassalsLocal, ref changed, serializedObject);
+
+        // Draw remaining properties.  We skip any fields listed in the skip set (including the economy
+        // properties we have drawn manually).  All other fields are drawn via the default inspector.
         var prop = serializedObject.GetIterator();
         bool enterChildren = true;
         while (prop.NextVisible(enterChildren))
         {
             enterChildren = false;
-            // Skip internal script and other skipped fields
             if (skip.Contains(prop.propertyPath)) continue;
-            // Disable editing for economy fields when settlement has vassals
-            bool disableEconomy = hasVassalsLocal && prop.propertyPath.StartsWith("data.economy.");
-            if (disableEconomy)
-            {
-                using (new EditorGUI.DisabledScope(true))
-                {
-                    EditorGUILayout.PropertyField(prop, false);
-                }
-            }
-            else
-            {
-                EditorGUILayout.PropertyField(prop, false);
-            }
+            EditorGUILayout.PropertyField(prop, false);
         }
         serializedObject.ApplyModifiedProperties();
         if (changed)
@@ -1088,6 +1098,127 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         catch
         {
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Draws the economy fields for the settlement.  The economy values can be edited only
+    /// when the settlement has no vassals; otherwise they are shown in a disabled state.  This
+    /// helper renders the numeric economy fields (income, profit, treasury, expenses, and
+    /// resources) and delegates array and notes fields to the serialized object so they appear
+    /// in the inspector.  Any changes made here will set the session as dirty.
+    /// </summary>
+    private void DrawEconomySection(SettlementAuthoringSession s, bool hasVassals, ref bool changed, SerializedObject serializedObject)
+    {
+        if (s == null || s.data == null) return;
+        var econ = s.data.economy;
+        if (econ == null) return;
+
+        WorldAuthoringEditorUI.DrawHelpersHeader("Economy");
+        using (new EditorGUI.DisabledScope(hasVassals))
+        {
+            // Numeric fields
+            float newIncome = EditorGUILayout.FloatField("Total Income / Month", econ.totalIncomePerMonth);
+            if (!Mathf.Approximately(newIncome, econ.totalIncomePerMonth))
+            {
+                Undo.RecordObject(s, "Set Total Income Per Month");
+                econ.totalIncomePerMonth = newIncome;
+                changed = true;
+            }
+            float newProfit = EditorGUILayout.FloatField("Total Profit / Month", econ.totalProfitPerMonth);
+            if (!Mathf.Approximately(newProfit, econ.totalProfitPerMonth))
+            {
+                Undo.RecordObject(s, "Set Total Profit Per Month");
+                econ.totalProfitPerMonth = newProfit;
+                changed = true;
+            }
+            float newTreasury = EditorGUILayout.FloatField("Total Treasury", econ.totalTreasury);
+            if (!Mathf.Approximately(newTreasury, econ.totalTreasury))
+            {
+                Undo.RecordObject(s, "Set Total Treasury");
+                econ.totalTreasury = newTreasury;
+                changed = true;
+            }
+            float newCourt = EditorGUILayout.FloatField("Court Expenses", econ.courtExpenses);
+            if (!Mathf.Approximately(newCourt, econ.courtExpenses))
+            {
+                Undo.RecordObject(s, "Set Court Expenses");
+                econ.courtExpenses = newCourt;
+                changed = true;
+            }
+            float newArmyExp = EditorGUILayout.FloatField("Army Expenses", econ.armyExpenses);
+            if (!Mathf.Approximately(newArmyExp, econ.armyExpenses))
+            {
+                Undo.RecordObject(s, "Set Army Expenses");
+                econ.armyExpenses = newArmyExp;
+                changed = true;
+            }
+            // Resource stock fields
+            float newWheat = EditorGUILayout.FloatField("Wheat", econ.wheat);
+            if (!Mathf.Approximately(newWheat, econ.wheat))
+            {
+                Undo.RecordObject(s, "Set Wheat");
+                econ.wheat = newWheat;
+                changed = true;
+            }
+            float newBread = EditorGUILayout.FloatField("Bread", econ.bread);
+            if (!Mathf.Approximately(newBread, econ.bread))
+            {
+                Undo.RecordObject(s, "Set Bread");
+                econ.bread = newBread;
+                changed = true;
+            }
+            float newMeat = EditorGUILayout.FloatField("Meat", econ.meat);
+            if (!Mathf.Approximately(newMeat, econ.meat))
+            {
+                Undo.RecordObject(s, "Set Meat");
+                econ.meat = newMeat;
+                changed = true;
+            }
+            float newWood = EditorGUILayout.FloatField("Wood", econ.wood);
+            if (!Mathf.Approximately(newWood, econ.wood))
+            {
+                Undo.RecordObject(s, "Set Wood");
+                econ.wood = newWood;
+                changed = true;
+            }
+            float newStone = EditorGUILayout.FloatField("Stone", econ.stone);
+            if (!Mathf.Approximately(newStone, econ.stone))
+            {
+                Undo.RecordObject(s, "Set Stone");
+                econ.stone = newStone;
+                changed = true;
+            }
+            float newIron = EditorGUILayout.FloatField("Iron", econ.iron);
+            if (!Mathf.Approximately(newIron, econ.iron))
+            {
+                Undo.RecordObject(s, "Set Iron");
+                econ.iron = newIron;
+                changed = true;
+            }
+            float newSteel = EditorGUILayout.FloatField("Steel", econ.steel);
+            if (!Mathf.Approximately(newSteel, econ.steel))
+            {
+                Undo.RecordObject(s, "Set Steel");
+                econ.steel = newSteel;
+                changed = true;
+            }
+            // Array and notes fields: use serialized properties for nested editing
+            SerializedProperty exportsProp = serializedObject.FindProperty("data.economy.mainExports");
+            if (exportsProp != null)
+                EditorGUILayout.PropertyField(exportsProp, true);
+            SerializedProperty importsProp = serializedObject.FindProperty("data.economy.mainImports");
+            if (importsProp != null)
+                EditorGUILayout.PropertyField(importsProp, true);
+            SerializedProperty industriesProp = serializedObject.FindProperty("data.economy.mainIndustries");
+            if (industriesProp != null)
+                EditorGUILayout.PropertyField(industriesProp, true);
+            SerializedProperty notesProp = serializedObject.FindProperty("data.economy.notes");
+            if (notesProp != null)
+                EditorGUILayout.PropertyField(notesProp, true);
+            SerializedProperty constructingProp = serializedObject.FindProperty("data.economy.currentlyConstructing");
+            if (constructingProp != null)
+                EditorGUILayout.PropertyField(constructingProp, true);
         }
     }
 
