@@ -93,7 +93,7 @@ public static class WorldAuthoringEditorUI
 public sealed class SettlementAuthoringSessionEditor : Editor
 {
     // Editor for SettlementAuthoringSession.  Allows editing of settlement data including feudal hierarchy,
-    // culture and demographics, army and economy.  This comment was inserted by an automated patch.
+    // culture and demographics, army and economy.
     private int _rulerPick;
     private int _liegePick;
     private int _addVassalPick;
@@ -172,10 +172,6 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         var characterNameById = characters.ToDictionary(e => e.id, e => e.displayName);
         var settlementNameById = settlements.ToDictionary(e => e.id, e => e.displayName);
         var armyNameById = armies.ToDictionary(e => e.id, e => e.displayName);
-
-        // 'changed' is declared above; do not re-declare here.
-
-        // Removed old "Feudal Hierarchy" header.  The Feudal section is now drawn below.
 
         // Ruler (allow blank)
         _rulerPick = WorldAuthoringEditorUI.GetIndexByIdWithNone(characters, s.data.rulerCharacterId, _rulerPick);
@@ -324,7 +320,13 @@ public sealed class SettlementAuthoringSessionEditor : Editor
 
         // After updating the vassal list, determine whether this settlement has any vassals.  This flag
         // is used later to suppress editing of economy and cultural stats when vassals exist.
-        bool hasVassalsLocal = s.data.main != null && s.data.main.vassals != null && s.data.main.vassals.Length > 0;
+        //
+        // The original implementation used the length of the vassals array to check for vassals.  However,
+        // this allowed whitespace or empty string entries to count as a vassal, which would incorrectly
+        // disable the economy and cultural editors for settlements that actually have no vassals.
+        // To fix this, check for any non‑blank vassal identifier instead of relying on the array length.
+        bool hasVassalsLocal = s.data.main != null && s.data.main.vassals != null &&
+            s.data.main.vassals.Any(id => !string.IsNullOrWhiteSpace(id));
 
         // Council
         WorldAuthoringEditorUI.DrawHelpersHeader("Council");
@@ -432,96 +434,107 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         {
             WorldAuthoringEditorUI.DrawHelpersHeader("Culture Distribution");
 
-        if (s.data.cultural.cultureDistribution == null)
-            s.data.cultural.cultureDistribution = new List<PercentEntry>();
-        if (s.data.cultural.languages == null)
-            s.data.cultural.languages = Array.Empty<string>();
+            if (s.data.cultural.cultureDistribution == null)
+                s.data.cultural.cultureDistribution = new List<PercentEntry>();
+            if (s.data.cultural.languages == null)
+                s.data.cultural.languages = Array.Empty<string>();
 
-        while (_culturePickIndices.Count < s.data.cultural.cultureDistribution.Count)
-            _culturePickIndices.Add(0);
-        while (_culturePickIndices.Count > s.data.cultural.cultureDistribution.Count)
-            _culturePickIndices.RemoveAt(_culturePickIndices.Count - 1);
+            while (_culturePickIndices.Count < s.data.cultural.cultureDistribution.Count)
+                _culturePickIndices.Add(0);
+            while (_culturePickIndices.Count > s.data.cultural.cultureDistribution.Count)
+                _culturePickIndices.RemoveAt(_culturePickIndices.Count - 1);
 
-        var cultureEntries = WorldDataChoicesCache.GetCultureEntries();
-        for (int i = 0; i < s.data.cultural.cultureDistribution.Count; i++)
-        {
-            var entry = s.data.cultural.cultureDistribution[i];
-            if (entry == null)
+            var cultureEntries = WorldDataChoicesCache.GetCultureEntries();
+            for (int i = 0; i < s.data.cultural.cultureDistribution.Count; i++)
             {
-                entry = new PercentEntry { key = null, percent = 0f };
-                s.data.cultural.cultureDistribution[i] = entry;
+                var entry = s.data.cultural.cultureDistribution[i];
+                if (entry == null)
+                {
+                    entry = new PercentEntry { key = null, percent = 0f };
+                    s.data.cultural.cultureDistribution[i] = entry;
+                }
+
+                // Before rendering the culture picker, ensure the cached index matches the current entry key.
+                if (!string.IsNullOrWhiteSpace(entry.key))
+                {
+                    for (int j = 0; j < cultureEntries.Count; j++)
+                    {
+                        var ce = cultureEntries[j];
+                        if (ce != null && string.Equals(ce.id, entry.key, StringComparison.OrdinalIgnoreCase))
+                        {
+                            _culturePickIndices[i] = j;
+                            break;
+                        }
+                    }
+                }
+
+                EditorGUILayout.BeginHorizontal();
+                // Copy the indexer value to a local variable. We cannot pass a list indexer directly to a ref parameter.
+                int culturePickIdx = _culturePickIndices[i];
+                var selectedCulture = WorldAuthoringEditorUI.PopupChoice("Culture", cultureEntries, ref culturePickIdx);
+                // Update the stored index if it changed
+                if (culturePickIdx != _culturePickIndices[i])
+                {
+                    _culturePickIndices[i] = culturePickIdx;
+                }
+                var newKey = selectedCulture?.id;
+                if (entry.key != newKey)
+                {
+                    Undo.RecordObject(s, "Change Culture Entry");
+                    entry.key = newKey;
+                    changed = true;
+                }
+                float percent = EditorGUILayout.FloatField(entry.percent);
+                percent = Mathf.Clamp(percent, 0f, 100f);
+                if (!Mathf.Approximately(percent, entry.percent))
+                {
+                    Undo.RecordObject(s, "Change Culture Percent");
+                    entry.percent = percent;
+                    changed = true;
+                }
+                if (GUILayout.Button("Remove", GUILayout.Width(60)))
+                {
+                    Undo.RecordObject(s, "Remove Culture Entry");
+                    s.data.cultural.cultureDistribution.RemoveAt(i);
+                    _culturePickIndices.RemoveAt(i);
+                    changed = true;
+                    i--;
+                }
+                EditorGUILayout.EndHorizontal();
             }
 
-            // Before rendering the culture picker, ensure the cached index matches the current entry key.
-            if (!string.IsNullOrWhiteSpace(entry.key))
+            _addCulturePick = Mathf.Clamp(_addCulturePick, 0, cultureEntries.Count - 1);
+            EditorGUILayout.BeginHorizontal();
+            var addCultureEntry = WorldAuthoringEditorUI.PopupChoice("Add culture", cultureEntries, ref _addCulturePick);
+            if (addCultureEntry != null && GUILayout.Button("Add", GUILayout.Width(60)))
             {
-                for (int j = 0; j < cultureEntries.Count; j++)
+                Undo.RecordObject(s, "Add Culture Entry");
+                s.data.cultural.cultureDistribution.Add(new PercentEntry { key = addCultureEntry.id, percent = 0f });
+                _culturePickIndices.Add(_addCulturePick);
+                changed = true;
+            }
+            EditorGUILayout.EndHorizontal();
+
+            // Remove automatic normalization of culture distribution percentages.  Users may enter
+            // percentages directly; we no longer adjust them automatically here.
+
+            if (s.data.cultural.cultureDistribution.Count > 0)
+            {
+                var topEntry = s.data.cultural.cultureDistribution.OrderByDescending(e => e.percent).FirstOrDefault();
+                if (topEntry != null && !string.IsNullOrWhiteSpace(topEntry.key))
                 {
-                    var ce = cultureEntries[j];
-                    if (ce != null && string.Equals(ce.id, entry.key, StringComparison.OrdinalIgnoreCase))
+                    string derivedRel = DeriveReligionFromCulture(topEntry.key);
+                    if (!string.IsNullOrWhiteSpace(derivedRel) && s.data.cultural.religion != derivedRel)
                     {
-                        _culturePickIndices[i] = j;
-                        break;
+                        Undo.RecordObject(s, "Derive Religion");
+                        s.data.cultural.religion = derivedRel;
+                        changed = true;
                     }
                 }
             }
-
-            EditorGUILayout.BeginHorizontal();
-            // Copy the indexer value to a local variable. We cannot pass a list indexer directly to a ref parameter.
-            int culturePickIdx = _culturePickIndices[i];
-            var selectedCulture = WorldAuthoringEditorUI.PopupChoice("Culture", cultureEntries, ref culturePickIdx);
-            // Update the stored index if it changed
-            if (culturePickIdx != _culturePickIndices[i])
+            else if (!string.IsNullOrWhiteSpace(s.data.cultural.culture))
             {
-                _culturePickIndices[i] = culturePickIdx;
-            }
-            var newKey = selectedCulture?.id;
-            if (entry.key != newKey)
-            {
-                Undo.RecordObject(s, "Change Culture Entry");
-                entry.key = newKey;
-                changed = true;
-            }
-            float percent = EditorGUILayout.FloatField(entry.percent);
-            percent = Mathf.Clamp(percent, 0f, 100f);
-            if (!Mathf.Approximately(percent, entry.percent))
-            {
-                Undo.RecordObject(s, "Change Culture Percent");
-                entry.percent = percent;
-                changed = true;
-            }
-            if (GUILayout.Button("Remove", GUILayout.Width(60)))
-            {
-                Undo.RecordObject(s, "Remove Culture Entry");
-                s.data.cultural.cultureDistribution.RemoveAt(i);
-                _culturePickIndices.RemoveAt(i);
-                changed = true;
-                i--;
-            }
-            EditorGUILayout.EndHorizontal();
-        }
-
-        _addCulturePick = Mathf.Clamp(_addCulturePick, 0, cultureEntries.Count - 1);
-        EditorGUILayout.BeginHorizontal();
-        var addCultureEntry = WorldAuthoringEditorUI.PopupChoice("Add culture", cultureEntries, ref _addCulturePick);
-        if (addCultureEntry != null && GUILayout.Button("Add", GUILayout.Width(60)))
-        {
-            Undo.RecordObject(s, "Add Culture Entry");
-            s.data.cultural.cultureDistribution.Add(new PercentEntry { key = addCultureEntry.id, percent = 0f });
-            _culturePickIndices.Add(_addCulturePick);
-            changed = true;
-        }
-        EditorGUILayout.EndHorizontal();
-
-        // Remove automatic normalization of culture distribution percentages.  Users may enter
-        // percentages directly; we no longer adjust them automatically here.
-
-        if (s.data.cultural.cultureDistribution.Count > 0)
-        {
-            var topEntry = s.data.cultural.cultureDistribution.OrderByDescending(e => e.percent).FirstOrDefault();
-            if (topEntry != null && !string.IsNullOrWhiteSpace(topEntry.key))
-            {
-                string derivedRel = DeriveReligionFromCulture(topEntry.key);
+                string derivedRel = DeriveReligionFromCulture(s.data.cultural.culture);
                 if (!string.IsNullOrWhiteSpace(derivedRel) && s.data.cultural.religion != derivedRel)
                 {
                     Undo.RecordObject(s, "Derive Religion");
@@ -529,63 +542,51 @@ public sealed class SettlementAuthoringSessionEditor : Editor
                     changed = true;
                 }
             }
-        }
-        else if (!string.IsNullOrWhiteSpace(s.data.cultural.culture))
-        {
-            string derivedRel = DeriveReligionFromCulture(s.data.cultural.culture);
-            if (!string.IsNullOrWhiteSpace(derivedRel) && s.data.cultural.religion != derivedRel)
-            {
-                Undo.RecordObject(s, "Derive Religion");
-                s.data.cultural.religion = derivedRel;
-                changed = true;
-            }
-        }
 
-        WorldAuthoringEditorUI.DrawHelpersHeader("Languages");
-        var languageDefs = WorldDataChoicesCache.GetLanguageDefinitions();
-        while (_languageSelections.Count < languageDefs.Count) _languageSelections.Add(false);
-        while (_languageSelections.Count > languageDefs.Count) _languageSelections.RemoveAt(_languageSelections.Count - 1);
-        if (s.data.cultural.languages != null && s.data.cultural.languages.Length > 0)
-        {
-            string currentPrimaryId = s.data.cultural.languages[0];
-            int idx = 0;
+            WorldAuthoringEditorUI.DrawHelpersHeader("Languages");
+            var languageDefs = WorldDataChoicesCache.GetLanguageDefinitions();
+            while (_languageSelections.Count < languageDefs.Count) _languageSelections.Add(false);
+            while (_languageSelections.Count > languageDefs.Count) _languageSelections.RemoveAt(_languageSelections.Count - 1);
+            if (s.data.cultural.languages != null && s.data.cultural.languages.Length > 0)
+            {
+                string currentPrimaryId = s.data.cultural.languages[0];
+                int idx = 0;
+                for (int i = 0; i < languageDefs.Count; i++)
+                {
+                    if (string.Equals(languageDefs[i].id, currentPrimaryId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        idx = i;
+                        break;
+                    }
+                }
+                _primaryLanguagePick = idx;
+            }
+            var primaryLangEntry = WorldAuthoringEditorUI.PopupChoice("Primary Language", languageDefs, ref _primaryLanguagePick);
+            string newPrimaryId = primaryLangEntry?.id;
+            List<string> selectedLangs = new List<string>();
+            if (!string.IsNullOrWhiteSpace(newPrimaryId)) selectedLangs.Add(newPrimaryId);
+            EditorGUILayout.LabelField("Secondary Languages", EditorStyles.boldLabel);
             for (int i = 0; i < languageDefs.Count; i++)
             {
-                if (string.Equals(languageDefs[i].id, currentPrimaryId, StringComparison.OrdinalIgnoreCase))
+                if (i == _primaryLanguagePick) continue;
+                string langId = languageDefs[i].id;
+                bool curSel = s.data.cultural.languages != null && s.data.cultural.languages.Skip(1).Contains(langId);
+                bool newSel = EditorGUILayout.ToggleLeft(languageDefs[i].displayName ?? langId, curSel);
+                if (newSel != curSel)
                 {
-                    idx = i;
-                    break;
+                    changed = true;
+                }
+                _languageSelections[i] = newSel;
+            }
+            for (int i = 0; i < languageDefs.Count; i++)
+            {
+                if (i == _primaryLanguagePick) continue;
+                if (_languageSelections[i])
+                {
+                    selectedLangs.Add(languageDefs[i].id);
                 }
             }
-            _primaryLanguagePick = idx;
-        }
-        var primaryLangEntry = WorldAuthoringEditorUI.PopupChoice("Primary Language", languageDefs, ref _primaryLanguagePick);
-        string newPrimaryId = primaryLangEntry?.id;
-        List<string> selectedLangs = new List<string>();
-        if (!string.IsNullOrWhiteSpace(newPrimaryId)) selectedLangs.Add(newPrimaryId);
-        EditorGUILayout.LabelField("Secondary Languages", EditorStyles.boldLabel);
-        for (int i = 0; i < languageDefs.Count; i++)
-        {
-            if (i == _primaryLanguagePick) continue;
-            string langId = languageDefs[i].id;
-            bool curSel = s.data.cultural.languages != null && s.data.cultural.languages.Skip(1).Contains(langId);
-            bool newSel = EditorGUILayout.ToggleLeft(languageDefs[i].displayName ?? langId, curSel);
-            if (newSel != curSel)
-            {
-                changed = true;
-            }
-            _languageSelections[i] = newSel;
-        }
-        for (int i = 0; i < languageDefs.Count; i++)
-        {
-            if (i == _primaryLanguagePick) continue;
-            if (_languageSelections[i])
-            {
-                selectedLangs.Add(languageDefs[i].id);
-            }
-        }
-        s.data.cultural.languages = selectedLangs.ToArray();
-
+            s.data.cultural.languages = selectedLangs.ToArray();
         } // end of culture and language editing when no vassals
 
         // -------------------------------------------------------------------------

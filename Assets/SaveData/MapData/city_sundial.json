@@ -1,0 +1,91 @@
+{
+  "isPopulated": false,
+  "characterIds": [],
+  "settlementId": "city_sundial",
+  "displayName": "City of Sundial",
+  "rulerCharacterId": null,
+  "liegeSettlementId": "sundial",
+  "mapUrlOrPath": null,
+  "capitalSettlementId": null,
+  "main": {
+    "description": null,
+    "notableFacts": [],
+    "population": 0,
+    "rulerDisplayName": null,
+    "rulerName": null,
+    "vassals": [],
+    "characterIds": []
+  },
+  "army": {
+    "armyIds": [
+      "sundialarmy"
+    ],
+    "totalArmy": 2890,
+    "menAtArms": [
+      "light_infantry"
+    ],
+    "primaryCommanderDisplayName": "dukearickongardner",
+    "primaryCommanderCharacterId": "dukearickongardner"
+  },
+  "economy": {
+    "mainExports": null,
+    "mainImports": null,
+    "mainIndustries": null,
+    "notes": null,
+    "totalIncomePerMonth": 0.0,
+    "totalTreasury": 0.0,
+    "courtExpenses": null,
+    "armyExpenses": null,
+    "currentlyConstructing": []
+  },
+  "cultural": {
+    "culture": null,
+    "raceDistribution": [
+      {
+        "key": "human",
+        "percent": 100.0
+      }
+    ],
+    "religion": "cormyr_lathanderism",
+    "traits": [],
+    "languages": [
+      "cormyrean"
+    ],
+    "customs": [],
+    "populationDistribution": null,
+    "primaryTraits": [],
+    "cultureDistribution": [
+      {
+        "key": "cormyrean",
+        "percent": 100.0
+      }
+    ]
+  },
+  "history": {
+    "notes": null,
+    "timelineEntries": [],
+    "rulingFamilyMembers": []
+  },
+  "feudal": {
+    "castellanCharacterId": null,
+    "marshallCharacterId": null,
+    "stewardCharacterId": null,
+    "diplomatCharacterId": null,
+    "spymasterCharacterId": null,
+    "headPriestCharacterId": null,
+    "vassalContracts": [],
+    "settlementId": null,
+    "layer": null,
+    "isPopulated": false,
+    "feudal": true,
+    "liegeSettlementId": "sundial",
+    "notes": null,
+    "laws": null,
+    "capitalSettlementId": null,
+    "incomeTaxRate": 1.0,
+    "troopTaxRate": 1.0,
+    "contractTerms": "capital"
+  },
+  "culturalComposition": [],
+  "raceDistribution": []
+}
