@@ -929,36 +929,29 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             "data.feudal.contractTerms",
             "data.feudal.councillorSalaries"
         };
-        // Hide economy fields when this settlement has vassals.  When vassals exist,
-        // economy statistics are derived and should not be edited directly.  When
-        // there are no vassals, these fields remain editable and are therefore not skipped.
-        if (hasVassalsLocal)
-        {
-            skip.Add("data.economy.mainExports");
-            skip.Add("data.economy.mainImports");
-            skip.Add("data.economy.mainIndustries");
-            skip.Add("data.economy.notes");
-            skip.Add("data.economy.totalIncomePerMonth");
-            skip.Add("data.economy.totalTreasury");
-            skip.Add("data.economy.totalProfitPerMonth");
-            skip.Add("data.economy.courtExpenses");
-            skip.Add("data.economy.armyExpenses");
-            skip.Add("data.economy.wheat");
-            skip.Add("data.economy.bread");
-            skip.Add("data.economy.meat");
-            skip.Add("data.economy.wood");
-            skip.Add("data.economy.stone");
-            skip.Add("data.economy.iron");
-            skip.Add("data.economy.steel");
-            skip.Add("data.economy.currentlyConstructing");
-        }
+        // Draw remaining properties.  Economy fields should always be visible.  When the settlement has vassals,
+        // economy values are derived and therefore should not be edited.  To achieve this, do not skip the
+        // economy properties entirely; instead, render them in a disabled scope when vassals exist.
         var prop = serializedObject.GetIterator();
         bool enterChildren = true;
         while (prop.NextVisible(enterChildren))
         {
             enterChildren = false;
+            // Skip internal script and other skipped fields
             if (skip.Contains(prop.propertyPath)) continue;
-            EditorGUILayout.PropertyField(prop, false);
+            // Disable editing for economy fields when settlement has vassals
+            bool disableEconomy = hasVassalsLocal && prop.propertyPath.StartsWith("data.economy.");
+            if (disableEconomy)
+            {
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.PropertyField(prop, false);
+                }
+            }
+            else
+            {
+                EditorGUILayout.PropertyField(prop, false);
+            }
         }
         serializedObject.ApplyModifiedProperties();
         if (changed)
