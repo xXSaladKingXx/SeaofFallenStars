@@ -1066,8 +1066,9 @@ public sealed class SettlementAuthoringSessionEditor : Editor
         s.data.army.totalLevies = totalLevies;
         s.data.army.raisedMaintenanceCosts = raisedMaint;
         s.data.army.unraisedMaintenanceCosts = unraisedMaint;
-        s.data.army.attack = attackSum;
-        s.data.army.defense = defenseSum;
+        // Cast aggregated attack/defense sums to integers, since ArmyTab.attack/defense are ints
+        s.data.army.attack = (int)attackSum;
+        s.data.army.defense = (int)defenseSum;
         s.data.army.speed = speedCount > 0 ? speedSum / speedCount : 0f;
     }
 

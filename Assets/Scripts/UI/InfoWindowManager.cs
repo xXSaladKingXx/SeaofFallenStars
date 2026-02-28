@@ -9,9 +9,8 @@ using UnityEngine.UI;
 
 /// <summary>
 /// InfoWindowManager controls the UI window for settlement map points.
-/// It now supports displaying council members and liege contract details,
-/// shows the Realm Management tab if the settlement has any vassals or no liege,
-/// and logs every property access for debugging.
+/// Updated to support new settlement data model, including levy tax, profit,
+/// resources, and aggregated army stats with army selection dropdown.
 /// </summary>
 public class InfoWindowManager : MonoBehaviour
 {
@@ -78,6 +77,11 @@ public class InfoWindowManager : MonoBehaviour
     [SerializeField] private TMP_Text armyMenAtArmsListText;
     [SerializeField] private Button armyPopOutButton;
     [SerializeField] private Button armyCommanderButton;
+    // New UI elements for army dropdown and stats
+    [SerializeField] private TMP_Dropdown armyDropdown;
+    [SerializeField] private Transform armyStatsListContainer;
+    [SerializeField] private GameObject armyStatRowPrefab;
+    [SerializeField] private GameObject armyInfoWindowPrefab;
 
     // === Economy Tab ===
     [Header("Economy Tab UI")]
@@ -89,6 +93,7 @@ public class InfoWindowManager : MonoBehaviour
     [SerializeField] private TMP_Text economyTaxRateText;
     [SerializeField] private Button economyPopOutButton;
     [SerializeField] private TMP_Text economyTotalIncomePerMonthText;
+    [SerializeField] private TMP_Text economyTotalProfitPerMonthText;
     [SerializeField] private TMP_Text economyTotalTreasuryText;
     [SerializeField] private TMP_Text economyCourtExpensesText;
     [SerializeField] private TMP_Text economyArmyExpensesText;
@@ -181,6 +186,7 @@ public class InfoWindowManager : MonoBehaviour
     private readonly List<string> _realmVassalIds = new();
     private readonly List<string> _realmVassalDisplayNames = new();
     private readonly List<string> _characterIds = new();
+    private readonly List<Action> _armyDropdownActions = new();
 
     // Root canvas reference
     private Canvas _rootCanvas;
@@ -595,6 +601,7 @@ public class InfoWindowManager : MonoBehaviour
         {
             SetSimpleTabTitle(armyTitleText, "Army");
 
+            // Show description/notes
             if (armyBodyText != null)
             {
                 string val = TryGetStringByPaths(_data, "army.description", "army.notes");
@@ -602,11 +609,13 @@ public class InfoWindowManager : MonoBehaviour
                 armyBodyText.text = val;
             }
 
+            // Total army size
             int total = _data?.army?.totalArmy ?? 0;
             LogValue("army.totalArmy", total);
             if (armyTotalArmyCounterText != null)
                 armyTotalArmyCounterText.text = total > 0 ? total.ToString("N0") : "";
 
+            // Commander
             string commander = _data?.army?.primaryCommanderDisplayName;
             if (string.IsNullOrWhiteSpace(commander))
                 commander = _data?.main?.rulerDisplayName;
@@ -614,16 +623,172 @@ public class InfoWindowManager : MonoBehaviour
             if (armyCommanderNameText != null)
                 armyCommanderNameText.text = commander ?? "";
 
+            // Men-at-arms and knights list
             if (armyMenAtArmsListText != null)
             {
-                var list = _data?.army?.menAtArms;
-                LogValue("army.menAtArms", list == null ? "null" : string.Join(",", list));
-                armyMenAtArmsListText.text = (list != null && list.Length > 0)
-                    ? string.Join("\n", list.Select(x => $"• {x}"))
-                    : "";
+                var menList = _data?.army?.menAtArms;
+                var knightIds = _data?.army?.knightCharacterIds;
+                List<string> lines = new();
+                if (menList != null && menList.Length > 0)
+                {
+                    lines.Add("Men-at-Arms:");
+                    lines.AddRange(menList.Select(x => $"• {x}"));
+                }
+                if (knightIds != null && knightIds.Length > 0)
+                {
+                    lines.Add("Knights:");
+                    foreach (string kid in knightIds)
+                    {
+                        string name = ResolveCharacterDisplayName(kid);
+                        lines.Add($"• {name}");
+                    }
+                }
+                armyMenAtArmsListText.text = lines.Count > 0 ? string.Join("\n", lines) : "";
+            }
+
+            // Populate army dropdown with each assigned army
+            RefreshArmyDropdown();
+
+            // Display aggregated stats using stat rows
+            RefreshArmyStatsRows();
+        });
+    }
+
+    private void RefreshArmyDropdown()
+    {
+        if (armyDropdown == null) return;
+        armyDropdown.onValueChanged.RemoveAllListeners();
+        armyDropdown.options.Clear();
+        _armyDropdownActions.Clear();
+
+        // Add placeholder option
+        armyDropdown.options.Add(new TMP_Dropdown.OptionData("Select an army..."));
+        // Populate if there are armies
+        var armyIds = _data?.army?.armyIds;
+        if (armyIds != null)
+        {
+            foreach (string rawId in armyIds)
+            {
+                if (string.IsNullOrWhiteSpace(rawId)) continue;
+                string id = rawId.Trim();
+                // Attempt to resolve army display name and size via ArmyDataLoader
+                string displayName = id;
+                int size = 0;
+                try
+                {
+                    // Use reflection to call ArmyDataLoader.TryLoad(string, out var data)
+                    Type loaderType = FindTypeInLoadedAssemblies("ArmyDataLoader");
+                    if (loaderType != null)
+                    {
+                        MethodInfo tryLoad = loaderType.GetMethod("TryLoad", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                        if (tryLoad != null)
+                        {
+                            var parameters = tryLoad.GetParameters();
+                            if (parameters.Length == 2 && parameters[0].ParameterType == typeof(string))
+                            {
+                                object[] args = new object[] { id, null };
+                                bool ok = (bool)tryLoad.Invoke(null, args);
+                                if (ok && args[1] != null)
+                                {
+                                    var armyData = args[1];
+                                    // Try to get displayName and totalArmy from armyData
+                                    object dispObj;
+                                    if (TryGetMemberValue(armyData, "displayName", out dispObj) && dispObj != null)
+                                        displayName = dispObj.ToString();
+                                    object sizeObj;
+                                    if (TryGetMemberValue(armyData, "totalArmy", out sizeObj) && sizeObj != null)
+                                        size = Convert.ToInt32(sizeObj);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch { }
+                string optionLabel = size > 0 ? $"{displayName} ({size:N0})" : displayName;
+                armyDropdown.options.Add(new TMP_Dropdown.OptionData(optionLabel));
+                // Add action
+                _armyDropdownActions.Add(() => OpenArmyWindow(id));
+            }
+        }
+        armyDropdown.value = 0;
+        armyDropdown.interactable = armyDropdown.options.Count > 1;
+        armyDropdown.RefreshShownValue();
+        armyDropdown.onValueChanged.AddListener(idx =>
+        {
+            Safe("armyDropdown.onValueChanged", () =>
+            {
+                // idx 0 is placeholder
+                if (idx <= 0) return;
+                int index = idx - 1;
+                if (index < 0 || index >= _armyDropdownActions.Count) return;
+                var action = _armyDropdownActions[index];
+                action?.Invoke();
+                // Reset dropdown
+                armyDropdown.value = 0;
+                armyDropdown.RefreshShownValue();
+            });
+        });
+    }
+
+    private void RefreshArmyStatsRows()
+    {
+        if (armyStatsListContainer == null || armyStatRowPrefab == null) return;
+        // Clear existing rows
+        foreach (Transform child in armyStatsListContainer)
+            Destroy(child.gameObject);
+        // Build list of stat name/value pairs
+        var stats = new List<(string, string)>();
+        int totalLevies = _data?.army?.totalLevies ?? 0;
+        int totalArmy = _data?.army?.totalArmy ?? 0;
+        int totalMenAtArms = _data?.army?.menAtArms?.Length ?? 0;
+        float raisedCost = _data?.army?.raisedMaintenanceCosts ?? 0f;
+        float unraisedCost = _data?.army?.unraisedMaintenanceCosts ?? 0f;
+        float attack = _data?.army?.attack ?? 0f;
+        float defense = _data?.army?.defense ?? 0f;
+        float speed = _data?.army?.speed ?? 0f;
+        // Add stats
+        stats.Add(("Total Army", totalArmy.ToString("N0")));
+        stats.Add(("Total Levies", totalLevies.ToString("N0")));
+        stats.Add(("Total Men At Arms", totalMenAtArms.ToString("N0")));
+        stats.Add(("Raised Maintenance", raisedCost.ToString("0.##")));
+        stats.Add(("Unraised Maintenance", unraisedCost.ToString("0.##")));
+        stats.Add(("Attack", attack.ToString("0.##")));
+        stats.Add(("Defense", defense.ToString("0.##")));
+        stats.Add(("Speed", speed.ToString("0.##")));
+        foreach (var (name, value) in stats)
+        {
+            GameObject row = Instantiate(armyStatRowPrefab, armyStatsListContainer);
+            // Expect row prefab has two TMP_Text components: label and value
+            var texts = row.GetComponentsInChildren<TMP_Text>();
+            if (texts.Length >= 2)
+            {
+                texts[0].text = name;
+                texts[1].text = value;
+            }
+        }
+    }
+
+    private void OpenArmyWindow(string armyId)
+    {
+        Safe("OpenArmyWindow", () =>
+        {
+            if (string.IsNullOrWhiteSpace(armyId)) return;
+            if (armyInfoWindowPrefab == null) return;
+            Transform parent = _rootCanvas != null ? _rootCanvas.transform : transform.root;
+            GameObject go = Instantiate(armyInfoWindowPrefab, parent);
+            // Try to initialize the window
+            foreach (MonoBehaviour mb in go.GetComponentsInChildren<MonoBehaviour>(true))
+            {
+                if (mb == null) continue;
+                Type t = mb.GetType();
+                if (TryInvokeStringMethod(mb, t, "Initialize", armyId)) return;
+                if (TryInvokeStringMethod(mb, t, "Init", armyId)) return;
+                if (TryInvokeStringMethod(mb, t, "SetArmy", armyId)) return;
+                if (TryInvokeStringMethod(mb, t, "Show", armyId)) return;
             }
         });
     }
+
     private void RefreshEconomyTab()
     {
         Safe("RefreshEconomyTab", () =>
@@ -637,15 +802,27 @@ public class InfoWindowManager : MonoBehaviour
                 return;
             }
 
+            // Income, profit and treasury
             economyTotalIncomePerMonthText?.SetText($"{econ.totalIncomePerMonth:0.##}");
             LogValue("economy.totalIncomePerMonth", econ.totalIncomePerMonth);
+            economyTotalProfitPerMonthText?.SetText($"{econ.totalProfitPerMonth:0.##}");
+            LogValue("economy.totalProfitPerMonth", econ.totalProfitPerMonth);
             economyTotalTreasuryText?.SetText($"{econ.totalTreasury:0.##}");
             LogValue("economy.totalTreasury", econ.totalTreasury);
-            economyCourtExpensesText?.SetText(econ.courtExpenses ?? "");
-            LogValue("economy.courtExpenses", econ.courtExpenses);
-            economyArmyExpensesText?.SetText(econ.armyExpenses ?? "");
-            LogValue("economy.armyExpenses", econ.armyExpenses);
 
+            // Expenses (court and army) as floats
+            if (economyCourtExpensesText != null)
+            {
+                economyCourtExpensesText.text = econ.courtExpenses >= 0f ? econ.courtExpenses.ToString("0.##") : "";
+                LogValue("economy.courtExpenses", econ.courtExpenses);
+            }
+            if (economyArmyExpensesText != null)
+            {
+                economyArmyExpensesText.text = econ.armyExpenses >= 0f ? econ.armyExpenses.ToString("0.##") : "";
+                LogValue("economy.armyExpenses", econ.armyExpenses);
+            }
+
+            // Currently constructing
             if (economyCurrentlyConstructingText != null)
             {
                 var cc = econ.currentlyConstructing;
@@ -655,35 +832,39 @@ public class InfoWindowManager : MonoBehaviour
                     : "";
             }
 
+            // Summary texts
             economyIncomeText?.SetText($"{econ.totalIncomePerMonth:0.##}");
-            economyNetText?.SetText($"{econ.totalTreasury:0.##}");
-
+            economyNetText?.SetText($"{econ.totalProfitPerMonth:0.##}");
             if (economyExpensesText != null)
             {
-                string court = string.IsNullOrWhiteSpace(econ.courtExpenses) ? "" : $"Court: {econ.courtExpenses}";
-                string army = string.IsNullOrWhiteSpace(econ.armyExpenses) ? "" : $"Army: {econ.armyExpenses}";
+                string court = econ.courtExpenses > 0f ? $"Court: {econ.courtExpenses:0.##}" : "";
+                string army = econ.armyExpenses > 0f ? $"Army: {econ.armyExpenses:0.##}" : "";
                 economyExpensesText.text = string.Join("\n", new[] { court, army }.Where(s => !string.IsNullOrWhiteSpace(s)));
             }
-
             economyTaxRateText?.SetText("");
 
+            // Build body text with income, profit, treasury, expenses, resources, constructing
             if (economyBodyText != null)
             {
-                List<string> lines = new()
-                {
-                    $"Income / Month: {econ.totalIncomePerMonth:0.##}",
-                    $"Treasury: {econ.totalTreasury:0.##}",
-                };
-
-                if (!string.IsNullOrWhiteSpace(econ.courtExpenses)) lines.Add($"Court Expenses: {econ.courtExpenses}");
-                if (!string.IsNullOrWhiteSpace(econ.armyExpenses)) lines.Add($"Army Expenses: {econ.armyExpenses}");
-
+                List<string> lines = new();
+                lines.Add($"Income / Month: {econ.totalIncomePerMonth:0.##}");
+                lines.Add($"Profit / Month: {econ.totalProfitPerMonth:0.##}");
+                lines.Add($"Treasury: {econ.totalTreasury:0.##}");
+                if (econ.courtExpenses > 0f) lines.Add($"Court Expenses: {econ.courtExpenses:0.##}");
+                if (econ.armyExpenses > 0f) lines.Add($"Army Expenses: {econ.armyExpenses:0.##}");
+                // Resources
+                if (econ.wheat > 0f) lines.Add($"Wheat: {econ.wheat:0.##}");
+                if (econ.bread > 0f) lines.Add($"Bread: {econ.bread:0.##}");
+                if (econ.meat > 0f) lines.Add($"Meat: {econ.meat:0.##}");
+                if (econ.wood > 0f) lines.Add($"Wood: {econ.wood:0.##}");
+                if (econ.stone > 0f) lines.Add($"Stone: {econ.stone:0.##}");
+                if (econ.iron > 0f) lines.Add($"Iron: {econ.iron:0.##}");
+                if (econ.steel > 0f) lines.Add($"Steel: {econ.steel:0.##}");
                 if (econ.currentlyConstructing != null && econ.currentlyConstructing.Length > 0)
                 {
                     lines.Add("Currently Constructing:");
                     lines.AddRange(econ.currentlyConstructing.Select(x => $"• {x}"));
                 }
-
                 economyBodyText.text = string.Join("\n", lines);
             }
         });
@@ -697,6 +878,7 @@ public class InfoWindowManager : MonoBehaviour
             economyNetText?.SetText("");
             economyTaxRateText?.SetText("");
             economyTotalIncomePerMonthText?.SetText("");
+            economyTotalProfitPerMonthText?.SetText("");
             economyTotalTreasuryText?.SetText("");
             economyCourtExpensesText?.SetText("");
             economyArmyExpensesText?.SetText("");
@@ -1314,7 +1496,7 @@ public class InfoWindowManager : MonoBehaviour
             string rulerName = liegeData?.main?.rulerDisplayName ?? "Unknown";
 
             float incomeRate = 0f;
-            float troopRate = 0f;
+            float levyRate = 0f;
             string terms = "Default";
             bool found = false;
             if (liegeData?.feudal?.vassalContracts != null)
@@ -1325,7 +1507,7 @@ public class InfoWindowManager : MonoBehaviour
                     if (string.Equals(c.vassalSettlementId, _settlementId, StringComparison.OrdinalIgnoreCase))
                     {
                         incomeRate = Mathf.Clamp01(c.incomeTaxRate);
-                        troopRate = Mathf.Clamp01(c.troopTaxRate);
+                        levyRate = Mathf.Clamp01(c.levyTaxRate);
                         terms = string.IsNullOrWhiteSpace(c.terms) ? "Default" : c.terms;
                         found = true;
                         break;
@@ -1339,7 +1521,7 @@ public class InfoWindowManager : MonoBehaviour
                         if (string.Equals(c.vassalSettlementId, "main", StringComparison.OrdinalIgnoreCase))
                         {
                             incomeRate = Mathf.Clamp01(c.incomeTaxRate);
-                            troopRate = Mathf.Clamp01(c.troopTaxRate);
+                            levyRate = Mathf.Clamp01(c.levyTaxRate);
                             terms = string.IsNullOrWhiteSpace(c.terms) ? "Default" : c.terms;
                             found = true;
                             break;
@@ -1347,7 +1529,7 @@ public class InfoWindowManager : MonoBehaviour
                     }
                 }
             }
-            string levyPct = $"{troopRate * 100f:0.#}%";
+            string levyPct = $"{levyRate * 100f:0.#}%";
             string goldPct = $"{incomeRate * 100f:0.#}%";
 
             if (liegeSettlementNameText != null) liegeSettlementNameText.text = settlementName ?? "";
@@ -1359,7 +1541,7 @@ public class InfoWindowManager : MonoBehaviour
             LogValue("liege.settlementName", settlementName);
             LogValue("liege.rulerName", rulerName);
             LogValue("liege.terms", terms);
-            LogValue("liege.troopRate", troopRate);
+            LogValue("liege.levyRate", levyRate);
             LogValue("liege.incomeRate", incomeRate);
         });
     }
@@ -1379,7 +1561,7 @@ public class InfoWindowManager : MonoBehaviour
             string rulerName = vData?.main?.rulerDisplayName ?? "Unknown";
 
             float incomeRate = 0.125f;
-            float troopRate = 0.35f;
+            float levyRate = 0.35f;
             string terms = "Default";
             bool found = false;
 
@@ -1392,7 +1574,7 @@ public class InfoWindowManager : MonoBehaviour
                     if (string.Equals(c.vassalSettlementId, vassalSettlementId, StringComparison.OrdinalIgnoreCase))
                     {
                         incomeRate = Mathf.Clamp01(c.incomeTaxRate);
-                        troopRate = Mathf.Clamp01(c.troopTaxRate);
+                        levyRate = Mathf.Clamp01(c.levyTaxRate);
                         terms = string.IsNullOrWhiteSpace(c.terms) ? "Default" : c.terms;
                         found = true;
                         break;
@@ -1406,7 +1588,7 @@ public class InfoWindowManager : MonoBehaviour
                         if (string.Equals(c.vassalSettlementId, "main", StringComparison.OrdinalIgnoreCase))
                         {
                             incomeRate = Mathf.Clamp01(c.incomeTaxRate);
-                            troopRate = Mathf.Clamp01(c.troopTaxRate);
+                            levyRate = Mathf.Clamp01(c.levyTaxRate);
                             terms = string.IsNullOrWhiteSpace(c.terms) ? "Default" : c.terms;
                             found = true;
                             break;
@@ -1415,7 +1597,7 @@ public class InfoWindowManager : MonoBehaviour
                 }
             }
 
-            string levyPct = $"{troopRate * 100f:0.#}%";
+            string levyPct = $"{levyRate * 100f:0.#}%";
             string goldPct = $"{incomeRate * 100f:0.#}%";
 
             SetRealmDetailFields(settlementName, rulerName, terms, levyPct, goldPct);
@@ -1424,7 +1606,7 @@ public class InfoWindowManager : MonoBehaviour
             LogValue("vassal.rulerName", rulerName);
             LogValue("vassal.terms", terms);
             LogValue("vassal.incomeRate", incomeRate);
-            LogValue("vassal.troopRate", troopRate);
+            LogValue("vassal.levyRate", levyRate);
         });
     }
     #endregion
@@ -1468,14 +1650,14 @@ public class InfoWindowManager : MonoBehaviour
         }
         return string.Join("\n", lines);
     }
-    private void SetRealmDetailFields(string settlementName, string rulerName, string terms, string troopRate, string incomeRate)
+    private void SetRealmDetailFields(string settlementName, string rulerName, string terms, string levyRate, string incomeRate)
     {
         Safe("SetRealmDetailFields", () =>
         {
             if (realmVassalSettlementNameText != null) realmVassalSettlementNameText.text = settlementName ?? "";
             if (realmVassalRulerNameText != null) realmVassalRulerNameText.text = rulerName ?? "";
             if (realmVassalContractTermsText != null) realmVassalContractTermsText.text = terms ?? "";
-            if (realmVassalLevyContributionText != null) realmVassalLevyContributionText.text = troopRate ?? "";
+            if (realmVassalLevyContributionText != null) realmVassalLevyContributionText.text = levyRate ?? "";
             if (realmVassalGoldContributionText != null) realmVassalGoldContributionText.text = incomeRate ?? "";
         });
     }
@@ -1567,5 +1749,6 @@ public class InfoWindowManager : MonoBehaviour
         public void OnPointerExit(PointerEventData eventData) { }
     }
 
+    // Close the Helpers region
+    #endregion
 }
-#endregion
