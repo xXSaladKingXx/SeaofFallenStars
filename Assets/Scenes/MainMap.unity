@@ -11657,6 +11657,141 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ee97f708755fe4f81783a381f9b311, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapPoint
+--- !u!1 &814216823
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 814216825}
+  - component: {fileID: 814216824}
+  m_Layer: 0
+  m_Name: __AuthoringSession_Settlement
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &814216824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814216823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ea38c57cd2b884cbbf4f1be6577ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettlementAuthoringSession
+  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\MapData\arabel.json
+  data:
+    isPopulated: 0
+    characterIds: []
+    settlementId: arabel
+    displayName: Arabel
+    rulerCharacterId: char_azoun_matarys_iv
+    liegeSettlementId: kingdom_cormyr
+    mapUrlOrPath: 
+    capitalSettlementId: 
+    main:
+      description: 
+      notableFacts: []
+      population: 0
+      rulerDisplayName: King Azoun Matarys IV
+      rulerName: 
+      vassals: []
+      characterIds: []
+    army:
+      armyIds:
+      - cormyrarmy
+      totalArmy: 22
+      menAtArms:
+      - heavy_infantry
+      - light_cavalry
+      - light_infantry
+      - purple_dragons
+      primaryCommanderDisplayName: King Azoun Matarys IV
+      primaryCommanderCharacterId: char_azoun_matarys_iv
+    economy:
+      mainExports: 
+      mainImports: 
+      mainIndustries: 
+      notes: 
+      totalIncomePerMonth: 0
+      totalTreasury: 0
+      courtExpenses: 
+      armyExpenses: 
+      currentlyConstructing: []
+    cultural:
+      culture: 
+      raceDistribution:
+      - key: human
+        percent: 0.93
+      - key: elf
+        percent: 0.02
+      - key: halfelf
+        percent: 0.05
+      religion: cormyr_lathanderism
+      traits: []
+      languages:
+      - cormyrean
+      customs: []
+      populationDistribution: 
+      primaryTraits: []
+      cultureDistribution:
+      - key: cormyrean
+        percent: 95
+      - key: cormyr-sembian
+        percent: 5
+    history:
+      notes: 
+      timelineEntries: []
+      rulingFamilyMembers: []
+    feudal:
+      castellanCharacterId: 
+      marshallCharacterId: 
+      stewardCharacterId: 
+      diplomatCharacterId: 
+      spymasterCharacterId: 
+      headPriestCharacterId: 
+      vassalContracts: []
+      settlementId: 
+      layer: 
+      isPopulated: 0
+      isFeudal: 1
+      liegeSettlementId: kingdom_cormyr
+      notes: 
+      laws: 
+      capitalSettlementId: 
+      incomeTaxRate: 0
+      troopTaxRate: 0
+      contractTerms: 
+  culturalComposition: []
+  raceDistribution: []
+  castellanCharacterId: 
+  marshallCharacterId: 
+  stewardCharacterId: 
+  diplomatCharacterId: 
+  spymasterCharacterId: 
+  headPriestCharacterId: 
+--- !u!4 &814216825
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814216823}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1566514894}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &826391774
 GameObject:
   m_ObjectHideFlags: 0
@@ -15223,141 +15358,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ee97f708755fe4f81783a381f9b311, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapPoint
---- !u!1 &1311872280
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1311872282}
-  - component: {fileID: 1311872281}
-  m_Layer: 0
-  m_Name: __AuthoringSession_Settlement
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1311872281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1311872280}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ea38c57cd2b884cbbf4f1be6577ab2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SettlementAuthoringSession
-  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\MapData\arabel.json
-  data:
-    isPopulated: 0
-    characterIds: []
-    settlementId: arabel
-    displayName: Arabel
-    rulerCharacterId: char_azoun_matarys_iv
-    liegeSettlementId: kingdom_cormyr
-    mapUrlOrPath: 
-    capitalSettlementId: 
-    main:
-      description: 
-      notableFacts: []
-      population: 0
-      rulerDisplayName: King Azoun Matarys IV
-      rulerName: 
-      vassals: []
-      characterIds: []
-    army:
-      armyIds:
-      - cormyrarmy
-      totalArmy: 22
-      menAtArms:
-      - heavy_infantry
-      - light_cavalry
-      - light_infantry
-      - purple_dragons
-      primaryCommanderDisplayName: King Azoun Matarys IV
-      primaryCommanderCharacterId: char_azoun_matarys_iv
-    economy:
-      mainExports: 
-      mainImports: 
-      mainIndustries: 
-      notes: 
-      totalIncomePerMonth: 0
-      totalTreasury: 0
-      courtExpenses: 
-      armyExpenses: 
-      currentlyConstructing: []
-    cultural:
-      culture: 
-      raceDistribution:
-      - key: human
-        percent: 0.93
-      - key: elf
-        percent: 0.02
-      - key: halfelf
-        percent: 0.05
-      religion: cormyr_lathanderism
-      traits: []
-      languages:
-      - cormyrean
-      customs: []
-      populationDistribution: 
-      primaryTraits: []
-      cultureDistribution:
-      - key: cormyrean
-        percent: 95
-      - key: cormyr-sembian
-        percent: 5
-    history:
-      notes: 
-      timelineEntries: []
-      rulingFamilyMembers: []
-    feudal:
-      castellanCharacterId: 
-      marshallCharacterId: 
-      stewardCharacterId: 
-      diplomatCharacterId: 
-      spymasterCharacterId: 
-      headPriestCharacterId: 
-      vassalContracts: []
-      settlementId: 
-      layer: 
-      isPopulated: 0
-      isFeudal: 1
-      liegeSettlementId: kingdom_cormyr
-      notes: 
-      laws: 
-      capitalSettlementId: 
-      incomeTaxRate: 0
-      troopTaxRate: 0
-      contractTerms: 
-  culturalComposition: []
-  raceDistribution: []
-  castellanCharacterId: 
-  marshallCharacterId: 
-  stewardCharacterId: 
-  diplomatCharacterId: 
-  spymasterCharacterId: 
-  headPriestCharacterId: 
---- !u!4 &1311872282
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1311872280}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1312340144
 GameObject:
   m_ObjectHideFlags: 0
@@ -22472,7 +22472,7 @@ Transform:
   - {fileID: 1334595414}
   - {fileID: 480487642}
   - {fileID: 434817852}
-  - {fileID: 1311872282}
+  - {fileID: 814216825}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1566514895
@@ -22488,7 +22488,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.WorldDataMasterAuthoring
   activeCategory: 2
-  activeSession: {fileID: 1311872281}
+  activeSession: {fileID: 814216824}
 --- !u!1001 &1581299612
 PrefabInstance:
   m_ObjectHideFlags: 0

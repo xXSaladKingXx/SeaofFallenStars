@@ -5,17 +5,16 @@ namespace Zana.WorldAuthoring
 {
     /// <summary>
     /// Standalone feudal data model used by editor tooling when seeding a
-    /// settlement from a MapPoint.  This class extends the nested
+    /// settlement from a MapPoint. This class extends the nested
     /// <see cref="SettlementInfoData.SettlementFeudalData"/> to reuse the
     /// council and vassal contract fields, and adds additional fields such as
-    /// settlementId, layer and isPopulated which are used by MapPoint
-    /// authoring.
+    /// settlementId, layer and isPopulated which are used by MapPoint authoring.
     /// </summary>
     [Serializable]
-    public class SettlementFeudalData : SettlementInfoData.SettlementFeudalData
+    public class SettlementFeudalAuthoringData : SettlementInfoData.SettlementFeudalData
     {
         /// <summary>
-        /// Unique identifier for the settlement.  Populated when seeding from a
+        /// Unique identifier for the settlement. Populated when seeding from a
         /// MapPoint (StableKey).
         /// </summary>
         [JsonProperty("settlementId")] public new string settlementId;
@@ -27,7 +26,7 @@ namespace Zana.WorldAuthoring
         [JsonProperty("layer")] public new string layer;
 
         /// <summary>
-        /// Indicates whether this settlement is populated.  Defaults to true
+        /// Indicates whether this settlement is populated. Defaults to true
         /// when creating a new settlement via the editor.
         /// </summary>
         [JsonProperty("isPopulated")] public new bool isPopulated;
