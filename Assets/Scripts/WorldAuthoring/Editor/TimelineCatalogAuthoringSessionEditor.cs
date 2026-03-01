@@ -324,98 +324,6 @@ namespace Zana.WorldAuthoring
                                     name = displayNameToken.ToString();
                                 }
                             }
-
-        // Flag used internally to signal when a participant row has been removed during drawing.
-        // Because the participants list can be modified while iterating, we cannot simply
-        // break out of the loop or modify the index in place without losing sync.  The
-        // DrawParticipantRow method sets this flag when it removes a participant so that
-        // the calling code can adjust indices accordingly.
-        private static bool _participantRemoved;
-
-        /// <summary>
-        /// Draw a single participant row with editable category, identifier and removal button.
-        /// This helper encapsulates the common UI for participants across both sides and
-        /// non‑directional events.  When the remove button is pressed, the participant
-        /// is removed from both the ids and categories lists, and the global
-        /// <see cref="_participantRemoved"/> flag is set to true.  The caller must
-        /// handle index adjustments when this flag is observed.
-        /// </summary>
-        private static void DrawParticipantRow(TimelineEventModel evt, int index,
-            List<string> charIds, List<string> charNames,
-            List<string> mapIds, List<string> mapNames,
-            string[] categoryLabels)
-        {
-            _participantRemoved = false;
-            if (evt == null) return;
-            // Ensure lists are valid
-            if (evt.participantIds == null) evt.participantIds = new List<string>();
-            if (evt.participantCategories == null) evt.participantCategories = new List<ParticipantCategory>();
-            while (evt.participantCategories.Count < evt.participantIds.Count)
-            {
-                evt.participantCategories.Add(ParticipantCategory.Character);
-            }
-            while (evt.participantCategories.Count > evt.participantIds.Count)
-            {
-                evt.participantCategories.RemoveAt(evt.participantCategories.Count - 1);
-            }
-            if (index < 0 || index >= evt.participantIds.Count) return;
-            EditorGUILayout.BeginHorizontal();
-            // Unique label for each row to avoid control id conflicts
-            int catIndex = (int)evt.participantCategories[index];
-            string label = $"Type {index + 1}";
-            int newCatIndex = EditorGUILayout.Popup(label, catIndex, categoryLabels);
-            if (newCatIndex != catIndex)
-            {
-                evt.participantCategories[index] = (ParticipantCategory)newCatIndex;
-                // Reset id when type changes
-                evt.participantIds[index] = string.Empty;
-            }
-            // Build dropdown options based on category
-            List<string> idList = null;
-            List<string> nameList = null;
-            switch (evt.participantCategories[index])
-            {
-                case ParticipantCategory.Character:
-                    idList = charIds;
-                    nameList = charNames;
-                    break;
-                case ParticipantCategory.Settlement:
-                case ParticipantCategory.Unpopulated:
-                    idList = mapIds;
-                    nameList = mapNames;
-                    break;
-                case ParticipantCategory.Army:
-                case ParticipantCategory.TravelGroup:
-                    // Currently unsupported; allow manual id entry
-                    idList = null;
-                    nameList = null;
-                    break;
-            }
-            if (idList != null && nameList != null && idList.Count > 0)
-            {
-                int currentIndex = idList.IndexOf(evt.participantIds[index]);
-                if (currentIndex < 0) currentIndex = 0;
-                int newIndex = EditorGUILayout.Popup(currentIndex, nameList.ToArray());
-                if (newIndex >= 0 && newIndex < idList.Count)
-                {
-                    evt.participantIds[index] = idList[newIndex];
-                }
-            }
-            else
-            {
-                evt.participantIds[index] = EditorGUILayout.TextField(evt.participantIds[index] ?? string.Empty);
-            }
-            if (GUILayout.Button("✕", GUILayout.Width(20)))
-            {
-                // Remove this participant
-                evt.participantIds.RemoveAt(index);
-                evt.participantCategories.RemoveAt(index);
-                _participantRemoved = true;
-                EditorGUILayout.EndHorizontal();
-                return;
-            }
-            EditorGUILayout.EndHorizontal();
-        }
                             catch { /* ignore parsing errors */ }
                             mapIds.Add(id);
                             // Show both id and name if they differ
@@ -698,6 +606,97 @@ namespace Zana.WorldAuthoring
                     }
                 }
             }
+        }
+        // Flag used internally to signal when a participant row has been removed during drawing.
+        // Because the participants list can be modified while iterating, we cannot simply
+        // break out of the loop or modify the index in place without losing sync.  The
+        // DrawParticipantRow method sets this flag when it removes a participant so that
+        // the calling code can adjust indices accordingly.
+        private static bool _participantRemoved;
+
+        /// <summary>
+        /// Draw a single participant row with editable category, identifier and removal button.
+        /// This helper encapsulates the common UI for participants across both sides and
+        /// non‑directional events.  When the remove button is pressed, the participant
+        /// is removed from both the ids and categories lists, and the global
+        /// <see cref="_participantRemoved"/> flag is set to true.  The caller must
+        /// handle index adjustments when this flag is observed.
+        /// </summary>
+        private static void DrawParticipantRow(TimelineEventModel evt, int index,
+            List<string> charIds, List<string> charNames,
+            List<string> mapIds, List<string> mapNames,
+            string[] categoryLabels)
+        {
+            _participantRemoved = false;
+            if (evt == null) return;
+            // Ensure lists are valid
+            if (evt.participantIds == null) evt.participantIds = new List<string>();
+            if (evt.participantCategories == null) evt.participantCategories = new List<ParticipantCategory>();
+            while (evt.participantCategories.Count < evt.participantIds.Count)
+            {
+                evt.participantCategories.Add(ParticipantCategory.Character);
+            }
+            while (evt.participantCategories.Count > evt.participantIds.Count)
+            {
+                evt.participantCategories.RemoveAt(evt.participantCategories.Count - 1);
+            }
+            if (index < 0 || index >= evt.participantIds.Count) return;
+            EditorGUILayout.BeginHorizontal();
+            // Unique label for each row to avoid control id conflicts
+            int catIndex = (int)evt.participantCategories[index];
+            string label = $"Type {index + 1}";
+            int newCatIndex = EditorGUILayout.Popup(label, catIndex, categoryLabels);
+            if (newCatIndex != catIndex)
+            {
+                evt.participantCategories[index] = (ParticipantCategory)newCatIndex;
+                // Reset id when type changes
+                evt.participantIds[index] = string.Empty;
+            }
+            // Build dropdown options based on category
+            List<string> idList = null;
+            List<string> nameList = null;
+            switch (evt.participantCategories[index])
+            {
+                case ParticipantCategory.Character:
+                    idList = charIds;
+                    nameList = charNames;
+                    break;
+                case ParticipantCategory.Settlement:
+                case ParticipantCategory.Unpopulated:
+                    idList = mapIds;
+                    nameList = mapNames;
+                    break;
+                case ParticipantCategory.Army:
+                case ParticipantCategory.TravelGroup:
+                    // Currently unsupported; allow manual id entry
+                    idList = null;
+                    nameList = null;
+                    break;
+            }
+            if (idList != null && nameList != null && idList.Count > 0)
+            {
+                int currentIndex = idList.IndexOf(evt.participantIds[index]);
+                if (currentIndex < 0) currentIndex = 0;
+                int newIndex = EditorGUILayout.Popup(currentIndex, nameList.ToArray());
+                if (newIndex >= 0 && newIndex < idList.Count)
+                {
+                    evt.participantIds[index] = idList[newIndex];
+                }
+            }
+            else
+            {
+                evt.participantIds[index] = EditorGUILayout.TextField(evt.participantIds[index] ?? string.Empty);
+            }
+            if (GUILayout.Button("✕", GUILayout.Width(20)))
+            {
+                // Remove this participant
+                evt.participantIds.RemoveAt(index);
+                evt.participantCategories.RemoveAt(index);
+                _participantRemoved = true;
+                EditorGUILayout.EndHorizontal();
+                return;
+            }
+            EditorGUILayout.EndHorizontal();
         }
     }
 }

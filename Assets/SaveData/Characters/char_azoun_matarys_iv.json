@@ -280,5 +280,8 @@
     "spellLevels": []
   },
   "notes": "Birthdate uses a placeholder day/month (1330 DR-01-01); only the year is established in source notes. Age may present as 57–58 depending on the exact campaign year used for the war chapter. Seat of rule is Arabel, but rulership/sovereignty is over the settlementId 'cormyr'.",
-  "homeSettlementId": "arabel"
+  "homeSettlementId": "arabel",
+  "timelineEntries": [
+    "timeline_80b61c718f5b42e8b880f46021ba165c"
+  ]
 }
