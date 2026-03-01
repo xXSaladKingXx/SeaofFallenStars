@@ -44,4 +44,7 @@ public enum WorldDataCategory
 
     // Catalog of terrain types (added).
     TerrainCatalog = 16,
+
+    // Catalog of timeline events.  Contains all historical events for the world.
+    TimelineCatalog = 17,
 }

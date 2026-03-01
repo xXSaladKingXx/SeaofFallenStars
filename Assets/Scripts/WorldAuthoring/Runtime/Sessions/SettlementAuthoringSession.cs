@@ -13,7 +13,7 @@ using Zana.WorldAuthoring;
 
 /// <summary>
 /// Authoring session wrapper for Settlement JSON.
-/// 
+///
 /// Key behavior:
 /// - Settlement's Army and Economy tabs are derived from referenced Army JSON objects and
 ///   internal councillor salary lists.  The settlement stores only armyIds and councillor salary
@@ -122,7 +122,7 @@ public sealed class SettlementAuthoringSession : WorldDataAuthoringSessionBase
         data.cultural.cultureDistribution ??= new List<PercentEntry>();
         data.cultural.primaryTraits ??= Array.Empty<string>();
         // timelineEntries is now an array rather than a List, so ensure an empty array instead of a List
-        data.history.timelineEntries ??= Array.Empty<TimelineEntry>();
+        data.history.timelineEntries ??= Array.Empty<string>();
         data.history.rulingFamilyMembers ??= Array.Empty<string>();
         data.feudal.vassalContracts ??= new List<SettlementInfoData.VassalContractData>();
         // Ensure currently constructing projects is an empty array

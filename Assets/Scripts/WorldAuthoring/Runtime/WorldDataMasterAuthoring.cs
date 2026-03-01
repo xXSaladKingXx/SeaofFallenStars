@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Zana.WorldAuthoring
 {
     /// <summary>
-    /// Attach this to a persistent editor object in your map systems. It is the ONLY authoring component you need in-scene.
+    /// Attach this to a persistent editor object in your map systems. It is the ONLY authoring component you need in‑scene.
     /// It spawns temporary session components as children when you create/load individual JSON authoring sessions.
     /// </summary>
     public sealed class WorldDataMasterAuthoring : MonoBehaviour
@@ -61,11 +61,9 @@ namespace Zana.WorldAuthoring
                 case WorldDataCategory.Unpopulated:
                     return go.AddComponent<UnpopulatedAuthoringSession>();
                 case WorldDataCategory.Culture:
-                    // Cultures are no longer edited via individual CultureAuthoringSession instances.  Instead
-                    // cultures are defined and maintained through the central Culture Catalog.  Redirect
-                    // requests for a Culture session to the CultureCatalogAuthoringSession so users cannot
-                    // create or modify cultures outside the catalog.  See WorldDataCategory.CultureCatalog
-                    // for more details.
+                    // Cultures are no longer edited via individual CultureAuthoringSession instances.
+                    // Redirect requests for a Culture session to the CultureCatalogAuthoringSession so users
+                    // cannot create or modify cultures outside the catalog.
                     return go.AddComponent<CultureCatalogAuthoringSession>();
                 case WorldDataCategory.MenAtArmsCatalog:
                     return go.AddComponent<MenAtArmsCatalogAuthoringSession>();
@@ -87,6 +85,10 @@ namespace Zana.WorldAuthoring
                     return go.AddComponent<ItemCatalogAuthoringSession>();
                 case WorldDataCategory.StatCatalog:
                     return go.AddComponent<StatCatalogAuthoringSession>();
+                case WorldDataCategory.TerrainCatalog:
+                    return go.AddComponent<TerrainCatalogAuthoringSession>();
+                case WorldDataCategory.TimelineCatalog:
+                    return go.AddComponent<TimelineCatalogAuthoringSession>();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(category), category, null);
             }

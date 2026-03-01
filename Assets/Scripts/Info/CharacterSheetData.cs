@@ -1,6 +1,13 @@
 using System;
 using System.Collections.Generic;
 
+// This file defines the data model for a character sheet.  It mirrors the
+// original CharacterSheetData from the upstream repository but adds support
+// for timeline entries.  Each character now stores a list of timeline
+// event identifiers rather than embedding event data directly.  When a
+// character participates in a timeline event, its id is added to the
+// timelineEntries array.
+
 [Serializable]
 public class CharacterSheetData
 {
@@ -51,6 +58,15 @@ public class CharacterSheetData
     public SpellcastingInfo spellcasting = new SpellcastingInfo();
 
     public string notes;
+
+    /// <summary>
+    /// List of timeline event identifiers associated with this character.  Each entry
+    /// references an event defined in the global TimelineCatalog.  Characters
+    /// should not embed full timeline entries in their JSON; instead they track
+    /// participation by storing the event id here.  This array is initialised
+    /// to an empty array to avoid null reference errors when saving or editing.
+    /// </summary>
+    public string[] timelineEntries = Array.Empty<string>();
 
     public string GetBestDisplayName()
     {
