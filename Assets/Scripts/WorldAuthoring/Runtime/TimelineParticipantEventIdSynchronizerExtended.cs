@@ -14,9 +14,98 @@ namespace Zana.WorldAuthoring
     /// Characters store their event references in the top‑level
     /// <c>timelineEntries</c> array, while settlements and unpopulated map
     /// points store references under <c>history.timelineEntries</c>.
+    /// This extended version is used instead of the built‑in synchronizer to
+    /// avoid duplicate class definitions across different runtime contexts.
     /// </summary>
-    public static class TimelineParticipantEventIdSynchronizer
+    public static class TimelineParticipantEventIdSynchronizerExtended
     {
+        /// <summary>
+        /// Audits all events in the provided catalogue and ensures the
+        /// participants' timeline entries are up to date.  This method is
+        /// provided for backwards compatibility with authoring scripts that
+        /// call AuditAndSync on the synchronizer.  Internally it
+        /// delegates to <see cref="Synchronize(TimelineCatalogDataModel)"/>.
+        /// </summary>
+        /// <param name="catalog">The timeline catalogue containing events and participants.</param>
+        public static void AuditAndSync(TimelineCatalogDataModel catalog)
+        {
+            Synchronize(catalog);
+        }
+
+        /// <summary>
+        /// Audits and synchronises a list of events rather than an entire
+        /// catalogue.  Wraps the provided events into a temporary catalogue
+        /// instance and synchronises participants.  Maintained for
+        /// backwards compatibility with legacy calls.
+        /// </summary>
+        /// <param name="events">A list of timeline events to synchronise.</param>
+        public static void AuditAndSync(List<TimelineEventModel> events)
+        {
+            if (events == null)
+                return;
+            var temp = new TimelineCatalogDataModel();
+            temp.events = events;
+            Synchronize(temp);
+        }
+
+        /// <summary>
+        /// Audits all events in the provided runtime timeline catalogue and ensures
+        /// the participants' timeline entries are up to date.  This overload
+        /// accepts the legacy <see cref="TimelineCatalogData"/> type used by
+        /// the built‑in timeline authoring session.  It iterates through
+        /// each <see cref="TimelineEventEntry"/> in the catalogue and adds
+        /// the entry's identifier to the appropriate participant JSON files.
+        /// Characters store their event references in the top‑level
+        /// <c>timelineEntries</c> array, while settlements and unpopulated map
+        /// points store references under <c>history.timelineEntries</c>.
+        /// Participants whose kind is Army, TravelGroup or Other cannot
+        /// currently record timeline entries and will be logged for
+        /// completeness.  Missing participant JSON files will generate
+        /// warnings but do not interrupt the audit process.
+        /// </summary>
+        /// <param name="catalog">The runtime timeline catalogue containing entries and participants.</param>
+        public static void AuditAndSync(TimelineCatalogData catalog)
+        {
+            if (catalog == null || catalog.entries == null)
+                return;
+            foreach (var entry in catalog.entries)
+            {
+                if (entry == null || string.IsNullOrWhiteSpace(entry.id))
+                    continue;
+                // Skip entries with no participants
+                if (entry.participants == null)
+                    continue;
+                foreach (var participant in entry.participants)
+                {
+                    if (participant == null || string.IsNullOrWhiteSpace(participant.id))
+                        continue;
+                    try
+                    {
+                        var category = GetParticipantCategory(participant.id);
+                        switch (category)
+                        {
+                            case ParticipantCategory.Character:
+                                UpdateCharacterTimeline(participant.id, entry.id);
+                                break;
+                            case ParticipantCategory.Settlement:
+                            case ParticipantCategory.Unpopulated:
+                                UpdateMapTimeline(participant.id, entry.id);
+                                break;
+                            default:
+                                // Currently, armies, travel groups and other types do not support timeline
+                                // participation tracking.  Log for completeness.
+                                Debug.Log($"[TimelineSynchronizer] Participant '{participant.id}' of category '{category}' cannot record timeline entries.");
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"[TimelineSynchronizer] Failed to synchronise event '{entry.id}' for participant '{participant.id}'. {ex.Message}");
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Legacy entry point maintained for backwards compatibility.  Redirects
         /// to <see cref="Synchronize(TimelineCatalogDataModel)"/> when called with
@@ -42,6 +131,7 @@ namespace Zana.WorldAuthoring
                 Synchronize(temp);
             }
         }
+
         /// <summary>
         /// Iterate over all events in the provided catalogue and add each
         /// event's identifier to the timeline entries of every listed
