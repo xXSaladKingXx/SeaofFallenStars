@@ -51,4 +51,11 @@ public enum WorldDataCategory
     // Catalog of relationship types.  Contains all defined relationship
     // semantics used by characters, settlements and other entities.
     RelationshipCatalog = 18,
+
+    /// <summary>
+    /// Catalog of building definitions.  Building entries define structures
+    /// that can be constructed on settlements to modify local or realm stats.
+    /// Each world should only contain a single building catalog.
+    /// </summary>
+    BuildingCatalog = 19,
 }

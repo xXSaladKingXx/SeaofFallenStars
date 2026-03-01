@@ -123,6 +123,9 @@ namespace Zana.WorldAuthoring
                 case WorldDataCategory.RelationshipCatalog:
                     // Relationship catalog has its own authoring session.  Add it directly.
                     return go.AddComponent<RelationshipCatalogAuthoringSession>();
+                case WorldDataCategory.BuildingCatalog:
+                    // Building catalog authoring session.
+                    return go.AddComponent<BuildingCatalogAuthoringSession>();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(category), category, null);
             }

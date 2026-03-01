@@ -4362,37 +4362,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ee97f708755fe4f81783a381f9b311, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapPoint
---- !u!1 &434817851
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 434817852}
-  m_Layer: 0
-  m_Name: __AuthoringSession_RaceCatalog
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &434817852
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 434817851}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &436314986
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5877,37 +5846,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.9000244, y: -0.001648}
   m_SizeDelta: {x: 1630.6, y: 920.04}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &480487641
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 480487642}
-  m_Layer: 0
-  m_Name: __AuthoringSession_ReligionCatalog
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &480487642
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 480487641}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &490699131
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14159,37 +14097,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ee97f708755fe4f81783a381f9b311, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapPoint
---- !u!1 &1101301901
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1101301902}
-  m_Layer: 0
-  m_Name: __AuthoringSession_TraitCatalog
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1101301902
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1101301901}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1138332446
 GameObject:
   m_ObjectHideFlags: 0
@@ -15266,68 +15173,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 834198996349769135, guid: 941687045533e6c4e80fb22904fbe850, type: 3}
   m_PrefabInstance: {fileID: 13025252}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1334595413
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1334595414}
-  m_Layer: 0
-  m_Name: __AuthoringSession_LanguageCatalog
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1334595414
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1334595413}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1357407911
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1357407912}
-  m_Layer: 0
-  m_Name: __AuthoringSession_Army
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1357407912
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1357407911}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1370801075 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -7772355183713304284, guid: b5c3556110fc5264c9f44d785ac276ab, type: 3}
@@ -22316,6 +22161,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1566514894}
   - component: {fileID: 1566514895}
+  - component: {fileID: 1566514896}
   m_Layer: 0
   m_Name: WorldAuthor
   m_TagString: Untagged
@@ -22335,12 +22181,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1357407912}
-  - {fileID: 1101301902}
-  - {fileID: 1334595414}
-  - {fileID: 480487642}
-  - {fileID: 434817852}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1566514895
@@ -22355,8 +22196,140 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddfd1b9cb89bab4185465c213e9a039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.WorldDataMasterAuthoring
-  activeCategory: 17
-  activeSession: {fileID: 0}
+  activeCategory: 2
+  activeSession: {fileID: 1566514896}
+--- !u!114 &1566514896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1566514893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ea38c57cd2b884cbbf4f1be6577ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettlementAuthoringSession
+  loadedFilePath: 
+  data:
+    isPopulated: 0
+    characterIds: []
+    settlementId: arabel
+    displayName: City of Arabel
+    rulerCharacterId: char_azoun_matarys_iv
+    liegeSettlementId: kingdom_cormyr
+    mapUrlOrPath: 
+    capitalSettlementId: 
+    main:
+      description: 
+      notableFacts: []
+      population: 27600
+      rulerDisplayName: King Azoun Matarys IV
+      rulerName: 
+      vassals: []
+      characterIds: []
+    army:
+      armyIds:
+      - cormyrarmy
+      totalArmy: 22
+      menAtArms:
+      - heavy_infantry
+      - light_cavalry
+      - light_infantry
+      - purple_dragons
+      primaryCommanderDisplayName: King Azoun Matarys IV
+      primaryCommanderCharacterId: char_azoun_matarys_iv
+      knightCharacterIds:
+      - baronetclanceevermillion
+      - baronetraymondgardner
+      - dukearickongardner
+      - lordaegorbittersteel
+      - lordalaricselgaunt
+      - lordmerricksicklestone
+      - lordperseussungardner
+      - lordtomasmellsen
+      - mastergeraltredstar
+      totalLevies: 0
+      raisedMaintenanceCosts: 0
+      unraisedMaintenanceCosts: 0
+      attack: 32
+      defense: 40
+      speed: 20
+    economy:
+      mainExports: 
+      mainImports: 
+      mainIndustries: 
+      notes: 
+      totalIncomePerMonth: 12860
+      totalProfitPerMonth: 8200
+      totalTreasury: 879000
+      courtExpenses: 800
+      armyExpenses: 1680
+      currentlyConstructing: []
+      buildings: []
+      modifiedIncomePerMonth: 0
+      modifiedTotalLevies: 0
+      wheat: 0
+      bread: 0
+      meat: 0
+      wood: 0
+      stone: 0
+      iron: 0
+      steel: 0
+    cultural:
+      culture: 
+      raceDistribution:
+      - key: human
+        percent: 97
+      - key: elf
+        percent: 2
+      - key: halfelf
+        percent: 1
+      religion: cormyr_lathanderism
+      traits: []
+      languages:
+      - cormyrean
+      customs: []
+      populationDistribution: 
+      primaryTraits: []
+      cultureDistribution:
+      - key: cormyrean
+        percent: 92
+      - key: cormyr-sembian
+        percent: 8
+    history:
+      notes: 
+      timelineEntries:
+      - timeline_80b61c718f5b42e8b880f46021ba165c
+      rulingFamilyMembers: []
+    feudal:
+      castellanCharacterId: 
+      marshallCharacterId: char_tomasmellsen
+      stewardCharacterId: 
+      diplomatCharacterId: 
+      spymasterCharacterId: 
+      headPriestCharacterId: 
+      vassalContracts: []
+      settlementId: 
+      layer: 
+      isPopulated: 0
+      isFeudal: 1
+      liegeSettlementId: kingdom_cormyr
+      notes: 
+      laws: 
+      capitalSettlementId: 
+      incomeTaxRate: 0
+      levyTaxRate: 0
+      contractTerms: 
+      councillorSalaries: []
+  culturalComposition: []
+  raceDistribution: []
+  castellanCharacterId: 
+  marshallCharacterId: 
+  stewardCharacterId: 
+  diplomatCharacterId: 
+  spymasterCharacterId: 
+  headPriestCharacterId: 
 --- !u!1001 &1581299612
 PrefabInstance:
   m_ObjectHideFlags: 0

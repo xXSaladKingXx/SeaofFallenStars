@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using Zana.WorldAuthoring;
 
 // Import the Zana.WorldAuthoring namespace so that WorldDataAuthoringSessionBase and related
 // authoring classes are available without specifying a fully qualified name.  In the original
@@ -130,6 +132,15 @@ public sealed class SettlementAuthoringSession : WorldDataAuthoringSessionBase
         // Ensure councillor salary list exists
         if (data.feudal.councillorSalaries == null)
             data.feudal.councillorSalaries = new List<SettlementInfoData.CouncillorSalaryEntry>();
+
+        // Ensure new economy fields are initialised.  Buildings may be null
+        // when loading older files; initialise to an empty array.
+        data.economy.buildings ??= Array.Empty<string>();
+        // Initialise modified income and levies to the base values if unset.
+        if (data.economy.modifiedIncomePerMonth <= 0f)
+            data.economy.modifiedIncomePerMonth = data.economy.totalIncomePerMonth;
+        if (data.economy.modifiedTotalLevies <= 0)
+            data.economy.modifiedTotalLevies = data.army.totalLevies;
     }
 
     /// <summary>
@@ -300,7 +311,110 @@ public sealed class SettlementAuthoringSession : WorldDataAuthoringSessionBase
         // Compute profit: income minus expenses.  When totalIncomePerMonth is zero, profit can be negative.
         float income = data.economy.totalIncomePerMonth;
         data.economy.totalProfitPerMonth = income - (courtExpenses + armyExpenses);
+
+        // Compute modified income and levies based on buildings assigned to this settlement.
+        // Buildings apply only when the settlement does not have vassals (i.e. is at the bottom of the feudal chain).
+        // Each building modifies income and levies according to its definition in the building catalog.
+        float modifiedIncome = data.economy.totalIncomePerMonth;
+        int modifiedLevies = data.army.totalLevies;
+        try
+        {
+            if (!hasVassals && data.economy.buildings != null && data.economy.buildings.Length > 0)
+            {
+                // Load building catalog once.  Search for a file named 'building_catalog.json' in the editor or runtime SaveData roots.
+                var buildingLookup = LoadBuildingLookup();
+                foreach (var bId in data.economy.buildings)
+                {
+                    if (string.IsNullOrWhiteSpace(bId)) continue;
+                    var key = bId.Trim().ToLowerInvariant();
+                    if (buildingLookup.TryGetValue(key, out var entry))
+                    {
+                        // Income points -> +100 gp per point
+                        modifiedIncome += entry.income * 100f;
+                        // Levy points -> +80 soldiers per point
+                        modifiedLevies += entry.levies * 80;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning("[SettlementAuthoringSession] Failed to compute modified income/levies: " + ex.Message);
+        }
+        data.economy.modifiedIncomePerMonth = modifiedIncome;
+        data.economy.modifiedTotalLevies = modifiedLevies;
     }
+
+    /// <summary>
+    /// Load the building catalog and return a dictionary of entry definitions keyed by id.
+    /// This method attempts to load 'building_catalog.json' from the SaveData roots.
+    /// If no catalog file is found, an empty dictionary is returned.
+    /// </summary>
+    private static Dictionary<string, BuildingEntryModel> LoadBuildingLookup()
+    {
+        // Use caching to avoid repeated disk reads.
+        if (_cachedBuildingLookup != null)
+            return _cachedBuildingLookup;
+        var lookup = new Dictionary<string, BuildingEntryModel>(StringComparer.OrdinalIgnoreCase);
+        try
+        {
+            string[] candidateDirs = {
+                Application.isEditor ? DataPaths.Editor_SaveDataRoot : DataPaths.Runtime_SaveDataRoot,
+                Application.isEditor ? DataPaths.Runtime_SaveDataRoot : DataPaths.Editor_SaveDataRoot
+            };
+            foreach (var root in candidateDirs)
+            {
+                if (string.IsNullOrWhiteSpace(root)) continue;
+                // Look for a file named building_catalog.json in the root or in a Buildings folder
+                string[] patterns = { "building_catalog.json", "buildingcatalog.json" };
+                foreach (var pat in patterns)
+                {
+                    var path = Path.Combine(root, pat);
+                    if (File.Exists(path))
+                    {
+                        var json = File.ReadAllText(path);
+                        var catalog = JsonConvert.DeserializeObject<BuildingCatalogDataModel>(json);
+                        if (catalog?.entries != null)
+                        {
+                            foreach (var e in catalog.entries)
+                            {
+                                if (!string.IsNullOrWhiteSpace(e.id) && !lookup.ContainsKey(e.id))
+                                    lookup[e.id] = e;
+                            }
+                        }
+                        _cachedBuildingLookup = lookup;
+                        return lookup;
+                    }
+                    // Check in subfolder 'Buildings'
+                    var sub1 = Path.Combine(root, "Buildings", pat);
+                    if (File.Exists(sub1))
+                    {
+                        var json = File.ReadAllText(sub1);
+                        var catalog = JsonConvert.DeserializeObject<BuildingCatalogDataModel>(json);
+                        if (catalog?.entries != null)
+                        {
+                            foreach (var e in catalog.entries)
+                            {
+                                if (!string.IsNullOrWhiteSpace(e.id) && !lookup.ContainsKey(e.id))
+                                    lookup[e.id] = e;
+                            }
+                        }
+                        _cachedBuildingLookup = lookup;
+                        return lookup;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning("[SettlementAuthoringSession] Failed to load building catalog: " + ex.Message);
+        }
+        _cachedBuildingLookup = lookup;
+        return lookup;
+    }
+
+    // Cached building lookup to avoid repeated file I/O.
+    private static Dictionary<string, BuildingEntryModel> _cachedBuildingLookup;
 
     private static bool TryLoadArmyRoot(string armyId, out JObject root)
     {
