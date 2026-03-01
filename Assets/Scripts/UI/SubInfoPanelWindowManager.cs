@@ -16,7 +16,13 @@ using UnityEngine.Networking;
 /// WorldDataChoicesCache to resolve data definitions by id and uses simple
 /// reflection to enumerate property values on the underlying entry.  Percent
 /// entries are displayed using a prefab row with a name and percent text.
+///
+/// This version adds a close button for dismissing the panel, implements
+/// play/pause toggling for the audio button, hides optional UI elements when
+/// not used, and forces layout rebuild and scaling to ensure proper sizing.
 /// </summary>
+using UnityEngine.UI;
+
 public class SubInfoPanelWindowManager : MonoBehaviour
 {
     [Header("UI References")]
@@ -37,6 +43,11 @@ public class SubInfoPanelWindowManager : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Image iconImage;
     [SerializeField] private UnityEngine.UI.Button audioPlayButton;
     [SerializeField] private AudioSource audioSource;
+
+    // A close button to dismiss the panel.  If assigned, it will be wired up
+    // to destroy this panel when clicked.
+    [Header("Close Button")]
+    [SerializeField] private UnityEngine.UI.Button closeButton;
 
     // Optional dropdown support.  Assign a dropdown prefab and a
     // container to hold it.  Currently unused, reserved for future
@@ -72,6 +83,7 @@ public class SubInfoPanelWindowManager : MonoBehaviour
             SetTexts("Unknown", "", "");
             ClearContainers();
             HideOptionalUI();
+            ShowCloseButton();
             return;
         }
 
@@ -80,6 +92,7 @@ public class SubInfoPanelWindowManager : MonoBehaviour
         {
             HandlePercentEntries(key, new List<PercentEntry> { singlePercent });
             HideOptionalUI();
+            ShowCloseButton();
             return;
         }
         // If subInfo is an enumerable of PercentEntry, treat as distribution.
@@ -87,6 +100,7 @@ public class SubInfoPanelWindowManager : MonoBehaviour
         {
             HandlePercentEntries(key, percentList.ToList());
             HideOptionalUI();
+            ShowCloseButton();
             return;
         }
 
@@ -180,12 +194,30 @@ public class SubInfoPanelWindowManager : MonoBehaviour
             bodyText.gameObject.SetActive(hasBody);
         }
 
+        // Show the close button and wire up its handler
+        ShowCloseButton();
+
         // Force a layout rebuild to ensure proper sizing after dynamic
-        // content additions or removals.
+        // content additions or removals.  Do not attempt to override the
+        // panel's width here; any parent DraggableWindow component will
+        // control the sizing.  We simply rebuild the layout so that
+        // text and buttons are sized correctly relative to the panel.
         var rect = GetComponent<RectTransform>();
         if (rect != null)
         {
-            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
+            // Rebuild layout to calculate preferred sizes
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
+            float prefW = LayoutUtility.GetPreferredSize(rect, 0);
+            float prefH = LayoutUtility.GetPreferredSize(rect, 1);
+            if (rect.parent is RectTransform parentRect)
+            {
+                float maxW = parentRect.rect.width * 0.8f;
+                float maxH = parentRect.rect.height * 0.8f;
+                float newW = Mathf.Min(prefW + 20f, maxW);
+                float newH = Mathf.Min(prefH + 20f, maxH);
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newW);
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newH);
+            }
         }
     }
 
@@ -234,6 +266,9 @@ public class SubInfoPanelWindowManager : MonoBehaviour
         {
             audioPlayButton.gameObject.SetActive(false);
             audioPlayButton.onClick.RemoveAllListeners();
+            // Reset button label if present
+            var txt = audioPlayButton.GetComponentInChildren<TMP_Text>(true);
+            if (txt != null) txt.text = string.Empty;
         }
         if (audioSource != null)
         {
@@ -295,7 +330,8 @@ public class SubInfoPanelWindowManager : MonoBehaviour
     /// Configure audio playback.  Use a provided AudioClip if available,
     /// otherwise attempt to load a clip from the specified JSON or subInfo
     /// path.  Supported formats: WAV, OGG, MP3.  If no clip is resolved,
-    /// the play button is hidden.
+    /// the play button is hidden.  When a clip is resolved, clicking the
+    /// button toggles between play and pause and updates its label.
     /// </summary>
     private void SetupAudio(AudioClip providedClip, string providedPath, string jsonPath)
     {
@@ -353,13 +389,46 @@ public class SubInfoPanelWindowManager : MonoBehaviour
             audioSource.clip = clip;
             audioPlayButton.gameObject.SetActive(true);
             audioPlayButton.onClick.RemoveAllListeners();
-            audioPlayButton.onClick.AddListener(() => { audioSource.Play(); });
+            // Get a reference to the label text on the play button if present.
+            TMP_Text btnText = audioPlayButton.GetComponentInChildren<TMP_Text>(true);
+            if (btnText != null)
+            {
+                btnText.text = "Play";
+            }
+            audioPlayButton.onClick.AddListener(() =>
+            {
+                if (audioSource.isPlaying)
+                {
+                    audioSource.Pause();
+                    if (btnText != null) btnText.text = "Play";
+                }
+                else
+                {
+                    audioSource.Play();
+                    if (btnText != null) btnText.text = "Pause";
+                }
+            });
         }
         else
         {
             audioSource.clip = null;
             audioPlayButton.gameObject.SetActive(false);
+            audioPlayButton.onClick.RemoveAllListeners();
         }
+    }
+
+    /// <summary>
+    /// Display and wire up the close button if assigned.  This is called at
+    /// initialization and after clearing the panel.  The close button will
+    /// destroy this panel when clicked.  If no close button is assigned,
+    /// this method does nothing.
+    /// </summary>
+    private void ShowCloseButton()
+    {
+        if (closeButton == null) return;
+        closeButton.gameObject.SetActive(true);
+        closeButton.onClick.RemoveAllListeners();
+        closeButton.onClick.AddListener(() => { Destroy(gameObject); });
     }
 
     /// <summary>
@@ -408,6 +477,28 @@ public class SubInfoPanelWindowManager : MonoBehaviour
                 string entryName = ResolveName(pe.key) ?? pe.key;
                 texts[0].text = entryName;
                 texts[1].text = string.Format("{0:0.#}%", pe.percent);
+            }
+        }
+        // Ensure close button appears
+        ShowCloseButton();
+        // Rebuild layout for proper sizing.  Do not modify the panel's width here because
+        // the parent DraggableWindow (if any) will control sizing.  Simply rebuild
+        // the layout so the text and buttons have correct sizes relative to the panel.
+        var rect = GetComponent<RectTransform>();
+        if (rect != null)
+        {
+            // Rebuild layout to calculate preferred sizes
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
+            float prefW = LayoutUtility.GetPreferredSize(rect, 0);
+            float prefH = LayoutUtility.GetPreferredSize(rect, 1);
+            if (rect.parent is RectTransform parentRect)
+            {
+                float maxW = parentRect.rect.width * 0.8f;
+                float maxH = parentRect.rect.height * 0.8f;
+                float newW = Mathf.Min(prefW + 20f, maxW);
+                float newH = Mathf.Min(prefH + 20f, maxH);
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newW);
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newH);
             }
         }
     }
@@ -525,7 +616,6 @@ public class SubInfoPanelWindowManager : MonoBehaviour
         }
         return string.Join(" ", words);
     }
-
 
     // PopulateCaches is no longer used.  All data is resolved on demand via JSON files.
     private static void PopulateCaches() { }

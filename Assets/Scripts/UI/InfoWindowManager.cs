@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.IO;
+using Newtonsoft.Json.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,7 +12,9 @@ using UnityEngine.UI;
 /// <summary>
 /// InfoWindowManager controls the UI window for settlement map points.
 /// Updated to support new settlement data model, including levy tax, profit,
-/// resources, and aggregated army stats with army selection dropdown.
+/// resources, aggregated army stats with army selection dropdown, population,
+/// resources and council information on the main tab, and a reworked history tab
+/// that reads timeline events from the global timeline catalogue.
 /// </summary>
 public class InfoWindowManager : MonoBehaviour
 {
@@ -310,8 +314,7 @@ public class InfoWindowManager : MonoBehaviour
 
             if (descriptionText != null)
             {
-                string val = _data?.main?.description ?? "";
-                LogValue("main.description", val);
+                string val = BuildMainTabDescription();
                 descriptionText.text = val;
             }
 
@@ -692,11 +695,9 @@ public class InfoWindowManager : MonoBehaviour
                                 {
                                     var armyData = args[1];
                                     // Try to get displayName and totalArmy from armyData
-                                    object dispObj;
-                                    if (TryGetMemberValue(armyData, "displayName", out dispObj) && dispObj != null)
+                                    if (TryGetMemberValue(armyData, "displayName", out object dispObj) && dispObj != null)
                                         displayName = dispObj.ToString();
-                                    object sizeObj;
-                                    if (TryGetMemberValue(armyData, "totalArmy", out sizeObj) && sizeObj != null)
+                                    if (TryGetMemberValue(armyData, "totalArmy", out object sizeObj) && sizeObj != null)
                                         size = Convert.ToInt32(sizeObj);
                                 }
                             }
@@ -913,6 +914,13 @@ public class InfoWindowManager : MonoBehaviour
                     ? string.Join("\n", traits.Select(x => $"• {x}"))
                     : "";
             }
+
+            // Fallback culture distribution if empty but primary culture exists
+            if ((cul.cultureDistribution == null || cul.cultureDistribution.Count == 0) && !string.IsNullOrWhiteSpace(cul.culture))
+            {
+                cul.cultureDistribution = new List<PercentEntry> { new PercentEntry { key = cul.culture, percent = 100f } };
+            }
+            // Fallback race distribution if empty but race is defined via primary traits? Use cul.raceDistribution if available; else skip fallback.
 
             culturalRaceDistributionText?.SetText(FormatPercentEntries(cul.raceDistribution));
             LogValue("cultural.raceDistribution", cul.raceDistribution == null ? "null" : FormatPercentEntries(cul.raceDistribution));
@@ -1195,46 +1203,34 @@ public class InfoWindowManager : MonoBehaviour
             SetSimpleTabTitle(historyTitleText, "History");
             var hist = _data?.history;
             LogValue("history.exists", hist != null);
-            if (hist == null)
-            {
-                SetHistoryFieldsEmpty();
-                return;
-            }
+            // Build event descriptions from the global timeline
+            List<string> eventLines = BuildSettlementHistoryLines();
+            string eventsText = eventLines.Count > 0 ? string.Join("\n", eventLines.Select(x => $"• {x}")) : "";
+            historyTimelineEntriesText?.SetText(eventsText);
+            historyTimelineEntriesText?.gameObject.SetActive(!string.IsNullOrEmpty(eventsText));
 
-            if (historyTimelineEntriesText != null)
-            {
-                string val = (hist.timelineEntries != null && hist.timelineEntries.Length > 0)
-                    ? string.Join("\n", hist.timelineEntries.Select(x => $"• {x}"))
-                    : "";
-                LogValue("history.timelineEntries", val);
-                historyTimelineEntriesText.text = val;
-            }
+            // Ruling family members
+            string familyText = (hist?.rulingFamilyMembers != null && hist.rulingFamilyMembers.Length > 0)
+                ? string.Join("\n", hist.rulingFamilyMembers.Select(x => $"• {x}"))
+                : "";
+            historyRulingFamilyMembersText?.SetText(familyText);
+            historyRulingFamilyMembersText?.gameObject.SetActive(!string.IsNullOrEmpty(familyText));
 
-            if (historyRulingFamilyMembersText != null)
-            {
-                string val = (hist.rulingFamilyMembers != null && hist.rulingFamilyMembers.Length > 0)
-                    ? string.Join("\n", hist.rulingFamilyMembers.Select(x => $"• {x}"))
-                    : "";
-                LogValue("history.rulingFamilyMembers", val);
-                historyRulingFamilyMembersText.text = val;
-            }
-
+            // Build body text
             if (historyBodyText != null)
             {
                 List<string> parts = new();
-                if (hist.timelineEntries != null && hist.timelineEntries.Length > 0)
+                if (!string.IsNullOrEmpty(eventsText))
                 {
-                    parts.Add("Timeline:");
-                    parts.Add(string.Join("\n", hist.timelineEntries.Select(x => $"• {x}")));
+                    parts.Add("Major Events:");
+                    parts.Add(eventsText);
                 }
-                if (hist.rulingFamilyMembers != null && hist.rulingFamilyMembers.Length > 0)
+                if (!string.IsNullOrEmpty(familyText))
                 {
                     parts.Add("Ruling Family:");
-                    parts.Add(string.Join("\n", hist.rulingFamilyMembers.Select(x => $"• {x}")));
+                    parts.Add(familyText);
                 }
-                string val = string.Join("\n", parts);
-                LogValue("history.body", val);
-                historyBodyText.text = val;
+                historyBodyText.text = string.Join("\n\n", parts);
             }
         });
     }
@@ -1744,13 +1740,250 @@ public class InfoWindowManager : MonoBehaviour
         Debug.Log($"[InfoWindowManager] Loaded {propertyPath}: {value}");
     }
 
+    /// <summary>
+    /// Builds the description text for the main tab, adding population, resources, and council information.
+    /// </summary>
+    private string BuildMainTabDescription()
+    {
+        List<string> parts = new();
+        string mainDesc = _data?.main?.description;
+        if (!string.IsNullOrWhiteSpace(mainDesc)) parts.Add(mainDesc);
+
+        // Population
+        if (TryGetValueByPath(_data, "main.population", out object popObj) && popObj != null)
+        {
+            string popStr = popObj.ToString();
+            if (!string.IsNullOrWhiteSpace(popStr)) parts.Add($"Population: {popStr}");
+        }
+
+        // Resources summary (economy fields)
+        var econ = _data?.economy;
+        if (econ != null)
+        {
+            List<string> resourceLines = new();
+            if (econ.wheat > 0f) resourceLines.Add($"Wheat: {econ.wheat:0.##}");
+            if (econ.bread > 0f) resourceLines.Add($"Bread: {econ.bread:0.##}");
+            if (econ.meat > 0f) resourceLines.Add($"Meat: {econ.meat:0.##}");
+            if (econ.wood > 0f) resourceLines.Add($"Wood: {econ.wood:0.##}");
+            if (econ.stone > 0f) resourceLines.Add($"Stone: {econ.stone:0.##}");
+            if (econ.iron > 0f) resourceLines.Add($"Iron: {econ.iron:0.##}");
+            if (econ.steel > 0f) resourceLines.Add($"Steel: {econ.steel:0.##}");
+            if (resourceLines.Count > 0)
+            {
+                parts.Add("Resources:");
+                parts.AddRange(resourceLines.Select(x => $"• {x}"));
+            }
+        }
+
+        // Council members: show capital's council if vassals exist, else local council
+        bool hasVassals = HasDirectNonCapitalVassals();
+        SettlementInfoData councilSource = _data;
+        if (hasVassals)
+        {
+            string capId = _data?.feudal?.capitalSettlementId ?? _data?.capitalSettlementId;
+            if (!string.IsNullOrWhiteSpace(capId) && !string.Equals(capId, _settlementId, StringComparison.OrdinalIgnoreCase))
+            {
+                councilSource = JsonDataLoader.TryLoadFromEitherPath<SettlementInfoData>(
+                    DataPaths.Runtime_MapDataPath,
+                    DataPaths.Editor_MapDataPath,
+                    capId
+                ) ?? _data;
+            }
+        }
+        List<string> councilLines = new();
+        foreach (var role in new[] { "castellan", "marshall", "steward", "diplomat", "spymaster", "headPriest" })
+        {
+            if (TryGetValueByPath(councilSource, $"feudal.{role}CharacterId", out object idObj) && idObj != null && !string.IsNullOrWhiteSpace(idObj.ToString()))
+            {
+                string name = ResolveCharacterDisplayName(idObj.ToString());
+                string roleName = char.ToUpper(role[0]) + role.Substring(1);
+                councilLines.Add($"{roleName}: {name}");
+            }
+        }
+        if (councilLines.Count > 0)
+        {
+            parts.Add(hasVassals ? "Capital Council:" : "Council Members:");
+            parts.AddRange(councilLines.Select(x => $"• {x}"));
+        }
+
+        return string.Join("\n", parts);
+    }
+
+    /// <summary>
+    /// Reads the global timeline and builds a list of history entries for this settlement.
+    /// </summary>
+    private List<string> BuildSettlementHistoryLines()
+    {
+        List<string> results = new();
+        try
+        {
+            // Determine path to the main timeline JSON
+            string path = null;
+            // Build editor timeline directory from the Editor_SaveDataRoot
+            try
+            {
+                string editorTimelineDir = null;
+                // DataPaths may not define a timeline directory, so derive it from SaveData root
+                if (!string.IsNullOrEmpty(DataPaths.Editor_SaveDataRoot))
+                {
+                    editorTimelineDir = Path.Combine(DataPaths.Editor_SaveDataRoot, "Timeline");
+                }
+                string editorPath = editorTimelineDir != null ? Path.Combine(editorTimelineDir, "main.timeline.json") : null;
+                if (editorPath != null && File.Exists(editorPath)) path = editorPath;
+            }
+            catch { }
+            if (path == null)
+            {
+                try
+                {
+                    // Derive runtime timeline directory from Runtime_SaveDataRoot
+                    string runtimeTimelineDir = null;
+                    if (!string.IsNullOrEmpty(DataPaths.Runtime_SaveDataRoot))
+                    {
+                        runtimeTimelineDir = Path.Combine(DataPaths.Runtime_SaveDataRoot, "Timeline");
+                    }
+                    string runtimePath = runtimeTimelineDir != null ? Path.Combine(runtimeTimelineDir, "main.timeline.json") : null;
+                    if (runtimePath != null && File.Exists(runtimePath)) path = runtimePath;
+                }
+                catch { }
+            }
+            if (path == null)
+            {
+                // Fallback to Assets/SaveData/Timeline/main.timeline.json
+                string fallback = Path.Combine(Application.dataPath, "SaveData/Timeline/main.timeline.json");
+                if (File.Exists(fallback)) path = fallback;
+            }
+            if (path == null || !File.Exists(path)) return results;
+            string json = File.ReadAllText(path);
+            var doc = JArray.Parse(json);
+
+            // Build events list from JSON
+            foreach (var evt in doc)
+            {
+                if (evt == null || evt.Type != JTokenType.Object) continue;
+                var obj = (JObject)evt;
+                string id = obj.Value<string>("id");
+                string name = obj.Value<string>("eventName");
+                int year = obj.Value<int?>("year") ?? 0;
+                int? month = obj.Value<int?>("month");
+                int? day = obj.Value<int?>("day");
+                string settingId = obj.Value<string>("settingId");
+                var participantIds = obj["participantIds"]?.ToObject<List<string>>() ?? new List<string>();
+                int splitIndex = obj.Value<int?>("participantSplitIndex") ?? 0;
+                string direction = obj.Value<string>("eventDirection");
+                string typeStr = obj.Value<string>("eventType");
+                string desc = obj.Value<string>("description") ?? "";
+
+                // Determine if this settlement is involved
+                bool participates = participantIds.Any(pid => string.Equals(pid, _settlementId, StringComparison.OrdinalIgnoreCase));
+                bool isSetting = !string.IsNullOrWhiteSpace(settingId) && string.Equals(settingId, _settlementId, StringComparison.OrdinalIgnoreCase);
+                if (!participates && !isSetting) continue;
+
+                // Format date and description
+                string dateStr = FormatDate(year, month, day);
+                string eventDesc = BuildEventDescriptionFromJObject(obj);
+                if (!string.IsNullOrWhiteSpace(eventDesc))
+                    results.Add($"{dateStr} {eventDesc}");
+                else if (!string.IsNullOrWhiteSpace(name))
+                    results.Add($"{dateStr} {name}");
+            }
+            // Sort chronologically by date
+            results.Sort((a, b) =>
+            {
+                // Extract date parts at start of strings
+                DateTime dtA = DateTime.MaxValue;
+                DateTime dtB = DateTime.MaxValue;
+                string dateA = a.Split(' ')[0];
+                string dateB = b.Split(' ')[0];
+                if (DateTime.TryParse(dateA.Replace("/", "-"), out DateTime parsedA)) dtA = parsedA;
+                if (DateTime.TryParse(dateB.Replace("/", "-"), out DateTime parsedB)) dtB = parsedB;
+                return dtA.CompareTo(dtB);
+            });
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[InfoWindowManager] BuildSettlementHistoryLines threw: {ex}");
+        }
+        return results;
+    }
+
+    /// <summary>
+    /// Format date with DR suffix. Uses 1 for missing month/day.
+    /// </summary>
+    private string FormatDate(int year, int? month, int? day)
+    {
+        int m = month ?? 1;
+        int d = day ?? 1;
+        return $"{m}/{d}/{year} DR";
+    }
+
+    /// <summary>
+    /// Build a descriptive line for an event, using participant names and direction if available.
+    /// </summary>
+    private string BuildEventDescriptionFromJObject(JObject obj)
+    {
+        if (obj == null) return null;
+        string typeStr = obj.Value<string>("eventType");
+        string name = obj.Value<string>("eventName");
+        int splitIndex = obj.Value<int?>("participantSplitIndex") ?? 0;
+        string directionStr = obj.Value<string>("eventDirection");
+        var participantIds = obj["participantIds"]?.ToObject<List<string>>() ?? new List<string>();
+        if (participantIds.Count == 0) return name;
+        // Determine sides
+        var sideA = participantIds.Take(splitIndex > 0 ? splitIndex : 1).ToList();
+        var sideB = participantIds.Skip(splitIndex > 0 ? splitIndex : 1).ToList();
+        // Resolve names
+        List<string> namesA = sideA.Select(pid => ResolveParticipantName(pid)).ToList();
+        List<string> namesB = sideB.Select(pid => ResolveParticipantName(pid)).ToList();
+        string left = string.Join(" and ", namesA);
+        string right = string.Join(" and ", namesB);
+        string action = name;
+        if (!string.IsNullOrWhiteSpace(typeStr))
+        {
+            // Provide default verbs for known types
+            if (string.Equals(typeStr, "Kill", StringComparison.OrdinalIgnoreCase)) action = "killed";
+            else if (string.Equals(typeStr, "Declare War", StringComparison.OrdinalIgnoreCase)) action = "declared war on";
+            else if (string.Equals(typeStr, "Marriage", StringComparison.OrdinalIgnoreCase)) action = "married";
+            else if (string.Equals(typeStr, "Betrothal", StringComparison.OrdinalIgnoreCase)) action = "was betrothed to";
+            else if (string.Equals(typeStr, "Coronation", StringComparison.OrdinalIgnoreCase)) action = "was crowned in";
+            else if (string.Equals(typeStr, "Visited", StringComparison.OrdinalIgnoreCase)) action = "visited";
+            else if (string.Equals(typeStr, "Began Traveling", StringComparison.OrdinalIgnoreCase)) action = "began traveling";
+            else if (string.Equals(typeStr, "End Traveling", StringComparison.OrdinalIgnoreCase)) action = "stopped traveling";
+            else if (string.Equals(typeStr, "Birth", StringComparison.OrdinalIgnoreCase)) action = "was born";
+            else if (string.Equals(typeStr, "Death", StringComparison.OrdinalIgnoreCase)) action = "died";
+            else if (string.Equals(typeStr, "Knighted", StringComparison.OrdinalIgnoreCase)) action = "knighted";
+            else if (string.Equals(typeStr, "Stripped of Title", StringComparison.OrdinalIgnoreCase)) action = "was stripped of title";
+            else if (string.Equals(typeStr, "Awarded Land", StringComparison.OrdinalIgnoreCase)) action = "awarded land";
+        }
+        if (sideB.Count > 0)
+        {
+            return $"{left} {action} {right}";
+        }
+        return $"{left} {action}";
+    }
+
+    private string ResolveParticipantName(string id)
+    {
+        if (string.IsNullOrWhiteSpace(id)) return "";
+        // Determine if id is a character or settlement or unpopulated
+        // Attempt to resolve as character
+        string name = ResolveCharacterDisplayName(id);
+        if (!string.IsNullOrWhiteSpace(name) && !string.Equals(name, id, StringComparison.OrdinalIgnoreCase)) return name;
+        // Settlement or unpopulated
+        try
+        {
+            string name2 = SettlementNameResolver.Resolve(id);
+            if (!string.IsNullOrWhiteSpace(name2)) return name2;
+        }
+        catch { }
+        return id;
+    }
+    #endregion
+
     private sealed class TooltipTarget : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         public void Bind(InfoWindowManager owner, string text) { }
         public void OnPointerEnter(PointerEventData eventData) { }
         public void OnPointerExit(PointerEventData eventData) { }
     }
-
-    // Close the Helpers region
-    #endregion
 }

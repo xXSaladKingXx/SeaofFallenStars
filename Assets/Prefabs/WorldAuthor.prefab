@@ -77,46 +77,99 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.SettlementAuthoringSession
   loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\MapData\eveningstar.json
   data:
-    displayName: Eveningstar
-    mapUrlOrPath: 
-    rulerCharacterId: 
+    isPopulated: 0
     characterIds: []
+    settlementId: 
+    displayName: Eveningstar
+    rulerCharacterId: 
+    liegeSettlementId: 
+    mapUrlOrPath: 
+    capitalSettlementId: 
     main:
       description: Eveningstar is a mid-sized mining town, one of the only 2 iron
         mines in Cormyr. They are home to house Stormsbane, founded by King Azoun
         IV when Frank of Eveningstar forged the sword Stormsbane, and the King elevated
         him to nobility after the war.
+      notableFacts: []
       population: 4017
       rulerDisplayName: 
+      rulerName: 
       vassals: []
+      characterIds: []
     army:
-      totalArmy: 1
+      armyIds: []
+      totalArmy: 0
       menAtArms: []
       primaryCommanderDisplayName: 
       primaryCommanderCharacterId: 
+      knightCharacterIds: []
+      totalLevies: 0
+      raisedMaintenanceCosts: 0
+      unraisedMaintenanceCosts: 0
+      attack: 0
+      defense: 0
+      speed: 0
     economy:
+      mainExports: 
+      mainImports: 
+      mainIndustries: 
+      notes: 
       totalIncomePerMonth: 0
+      totalProfitPerMonth: 0
       totalTreasury: 0
-      courtExpenses: 
-      armyExpenses: 
+      courtExpenses: 0
+      armyExpenses: 0
       currentlyConstructing: []
+      wheat: 0
+      bread: 0
+      meat: 0
+      wood: 0
+      stone: 0
+      iron: 0
+      steel: 0
     cultural:
       culture: cormyrean
+      raceDistribution: []
+      religion: cormyr_lathanderism
+      traits: []
+      languages:
+      - cormyrean
+      customs: []
       populationDistribution: 
       primaryTraits: []
-      raceDistribution: []
       cultureDistribution: []
     history:
+      notes: 
       timelineEntries: []
       rulingFamilyMembers: []
     feudal:
+      castellanCharacterId: 
+      marshallCharacterId: 
+      stewardCharacterId: 
+      diplomatCharacterId: 
+      spymasterCharacterId: 
+      headPriestCharacterId: 
+      vassalContracts: []
       settlementId: eveningstar
       layer: 0
-      laws: 
       isPopulated: 1
-      capitalSettlementId: 
+      isFeudal: 1
       liegeSettlementId: 
-      vassalContracts: []
+      notes: 
+      laws: 
+      capitalSettlementId: 
+      incomeTaxRate: 0
+      levyTaxRate: 0
+      contractTerms: 
+      councillorSalaries: []
+  culturalComposition: []
+  raceDistribution: []
+  castellanCharacterId: 
+  marshallCharacterId: 
+  stewardCharacterId: 
+  diplomatCharacterId: 
+  spymasterCharacterId: 
+  headPriestCharacterId: 
 --- !u!1 &6978910909069415577
 GameObject:
   m_ObjectHideFlags: 0
