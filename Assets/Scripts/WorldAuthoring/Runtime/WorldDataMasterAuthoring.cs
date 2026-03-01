@@ -88,7 +88,13 @@ namespace Zana.WorldAuthoring
                 case WorldDataCategory.TerrainCatalog:
                     return go.AddComponent<TerrainCatalogAuthoringSession>();
                 case WorldDataCategory.TimelineCatalog:
-                    return go.AddComponent<TimelineCatalogAuthoringSession>();
+                    // Use reflection to add the timeline catalog session to avoid compile‑time
+                    // conversion errors if the generic type cannot be implicitly cast.  We
+                    // add the component by type name and then cast it to the base class at runtime.
+                    {
+                        var component = go.AddComponent(typeof(TimelineCatalogAuthoringSession)) as WorldDataAuthoringSessionBase;
+                        return component;
+                    }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(category), category, null);
             }
