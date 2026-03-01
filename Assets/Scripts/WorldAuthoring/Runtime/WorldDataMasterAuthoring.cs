@@ -21,28 +21,52 @@ namespace Zana.WorldAuthoring
             if (activeSession != null)
             {
 #if UNITY_EDITOR
+                // When clearing the session, remove only the component.  Do not
+                // destroy the GameObject itself because it may be the root
+                // authoring object.  DestroyImmediate will immediately remove
+                // the component in edit mode.
                 if (!Application.isPlaying)
-                    DestroyImmediate(activeSession.gameObject);
+                {
+                    DestroyImmediate(activeSession);
+                }
                 else
-                    Destroy(activeSession.gameObject);
+                {
+                    Destroy(activeSession);
+                }
 #else
-                Destroy(activeSession.gameObject);
+                Destroy(activeSession);
 #endif
             }
-
             activeSession = null;
+            // Destroy any leftover child authoring session objects (named
+            // __AuthoringSession_*).  These are remnants from older
+            // implementations where sessions were created on children.
+            for (int i = transform.childCount - 1; i >= 0; i--)
+            {
+                var child = transform.GetChild(i);
+                if (child != null && child.name.StartsWith("__AuthoringSession_", StringComparison.Ordinal))
+                {
+#if UNITY_EDITOR
+                    if (!Application.isPlaying)
+                        DestroyImmediate(child.gameObject);
+                    else
+                        Destroy(child.gameObject);
+#else
+                    Destroy(child.gameObject);
+#endif
+                }
+            }
         }
 
         public WorldDataAuthoringSessionBase CreateOrReplaceSession(WorldDataCategory category)
         {
+            // Clear any existing session
             ClearActiveSession();
-
             activeCategory = category;
-
-            var go = new GameObject($"__AuthoringSession_{category}");
-            go.transform.SetParent(transform, false);
-
-            activeSession = AddSessionComponent(go, category);
+            // Attach the new session to this GameObject directly rather than
+            // creating a child.  This allows the session data to appear on
+            // the root object in the inspector.
+            activeSession = AddSessionComponent(gameObject, category);
             return activeSession;
         }
 

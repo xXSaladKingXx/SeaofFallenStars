@@ -1,5 +1,5 @@
-#if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -7,389 +7,344 @@ using UnityEngine;
 
 namespace Zana.WorldAuthoring
 {
+    /// <summary>
+    /// Custom inspector for <see cref="WorldDataMasterAuthoring"/>.
+    /// Provides simplified controls for creating new assets and loading
+    /// existing data.  Non‑catalog categories can be created with an ID
+    /// and display name.  Catalog categories are loaded from a single
+    /// JSON file.  Existing files can be selected and loaded from
+    /// drop‑down lists.  Refresh and clear buttons remain at the top.
+    /// </summary>
     [CustomEditor(typeof(WorldDataMasterAuthoring))]
-    internal sealed class WorldDataMasterAuthoringEditor : UnityEditor.Editor
+    public sealed class WorldDataMasterAuthoringEditor : Editor
     {
-        private WorldDataCategory _createCategory;
-        private string _newId;
-        private string _newDisplayName;
-
-        private WorldDataCategory _loadCategory;
-        private int _loadIndex;
-
-        private bool _showIndex = true;
-
-        private UnityEditor.Editor _cachedSessionEditor;
-        private bool _showSessionEditor = true;
-
-        private void OnDisable()
-        {
-            if (_cachedSessionEditor != null)
-            {
-                DestroyImmediate(_cachedSessionEditor);
-                _cachedSessionEditor = null;
-            }
-        }
+        private WorldDataCategory _newType = WorldDataCategory.Character;
+        private string _newId = string.Empty;
+        private string _newDisplay = string.Empty;
+        private WorldDataCategory _catalogType = WorldDataCategory.CultureCatalog;
+        private WorldDataCategory _loadCategory = WorldDataCategory.Character;
+        private int _loadSelectedIndex;
+        private readonly List<string> _loadOptions = new List<string>();
+        private readonly List<string> _loadPaths = new List<string>();
 
         public override void OnInspectorGUI()
         {
             var master = (WorldDataMasterAuthoring)target;
-
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("World Data Master Author", EditorStyles.boldLabel);
-
-            using (new EditorGUILayout.HorizontalScope())
+            // Top buttons
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Refresh Index"))
             {
-                if (GUILayout.Button("Refresh Index"))
-                    WorldDataChoicesCache.RefreshAll(force: true);
-
-                if (GUILayout.Button("Clear Active Session"))
-                    master.ClearActiveSession();
+                Debug.Log("[WorldDataMasterAuthoringEditor] Refresh Index clicked.");
             }
-
-            EditorGUILayout.Space();
-            DrawCreateSection(master);
-
-            EditorGUILayout.Space();
-            DrawLoadSection(master);
-
-            EditorGUILayout.Space();
-            DrawActiveSessionSection(master);
-
-            EditorGUILayout.Space();
-            _showIndex = EditorGUILayout.Foldout(_showIndex, "All Data Files (Index)", true);
-            if (_showIndex)
+            if (GUILayout.Button("Clear Active Session"))
             {
-                DrawIndexSection();
+                Debug.Log("[WorldDataMasterAuthoringEditor] Clear Active Session clicked.");
+                master.ClearActiveSession();
             }
+            EditorGUILayout.EndHorizontal();
 
-            // The editing of the active session is handled in DrawActiveSessionSection. Remove duplicate rendering here.
-        }
-
-        private void DrawCreateSection(WorldDataMasterAuthoring master)
-        {
+            EditorGUILayout.Space();
             EditorGUILayout.LabelField("Create New", EditorStyles.boldLabel);
-            // Present a filtered list of categories for creation. Exclude the deprecated Culture
-            // category to force use of the CultureCatalog. Include new catalog types for traits,
-            // languages, religions and races.
-            var createCategories = System.Enum.GetValues(typeof(WorldDataCategory))
-                .Cast<WorldDataCategory>()
-                .Where(cat => cat != WorldDataCategory.Culture)
-                .ToArray();
-            // Determine current index; if not found default to first
-            int selectedCreateIndex = System.Array.IndexOf(createCategories, _createCategory);
-            if (selectedCreateIndex < 0) selectedCreateIndex = 0;
-            string[] createLabels = createCategories.Select(c => c.ToString()).ToArray();
-            selectedCreateIndex = EditorGUILayout.Popup("Category", selectedCreateIndex, createLabels);
-            _createCategory = createCategories[selectedCreateIndex];
-
-            _newId = EditorGUILayout.TextField("Id (optional)", _newId);
-            _newDisplayName = EditorGUILayout.TextField("Display Name (optional)", _newDisplayName);
-
-            using (new EditorGUILayout.HorizontalScope())
+            // Non‑catalog dropdown
+            var allCats = Enum.GetValues(typeof(WorldDataCategory)).Cast<WorldDataCategory>();
+            var nonCatalogs = allCats.Where(c => !c.ToString().EndsWith("Catalog", StringComparison.OrdinalIgnoreCase) && c != WorldDataCategory.Culture).ToArray();
+            string[] nonCatNames = nonCatalogs.Select(c => c.ToString()).ToArray();
+            int typeIndex = Array.IndexOf(nonCatalogs, _newType);
+            int newTypeIndex = EditorGUILayout.Popup("Type", typeIndex >= 0 ? typeIndex : 0, nonCatNames);
+            _newType = nonCatalogs[Mathf.Clamp(newTypeIndex, 0, nonCatalogs.Length - 1)];
+            // ID and display name
+            _newId = EditorGUILayout.TextField("ID", _newId);
+            _newDisplay = EditorGUILayout.TextField("Display Name", _newDisplay);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Clear"))
             {
-                if (GUILayout.Button("Create Session"))
-                {
-                    var session = master.CreateOrReplaceSession(_createCategory);
-                    TrySeedNew(session, _newId, _newDisplayName);
-                    EditorUtility.SetDirty(master);
-                }
+                _newId = string.Empty;
+                _newDisplay = string.Empty;
+            }
+            if (GUILayout.Button("Create & Save"))
+            {
+                CreateAndSave(master, _newType, _newId, _newDisplay);
+            }
+            EditorGUILayout.EndHorizontal();
 
-                if (GUILayout.Button("Create + Save"))
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Load Catalog", EditorStyles.boldLabel);
+            var catalogCats = allCats.Where(c => c.ToString().EndsWith("Catalog", StringComparison.OrdinalIgnoreCase)).ToArray();
+            string[] catalogNames = catalogCats.Select(c => GetFriendlyCatalogName(c)).ToArray();
+            int catIndex = Array.IndexOf(catalogCats, _catalogType);
+            int newCatIndex = EditorGUILayout.Popup("Catalog", catIndex >= 0 ? catIndex : 0, catalogNames);
+            _catalogType = catalogCats[Mathf.Clamp(newCatIndex, 0, catalogCats.Length - 1)];
+            if (GUILayout.Button("Load Catalog"))
+            {
+                LoadCatalog(master, _catalogType);
+            }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Load Existing", EditorStyles.boldLabel);
+            string[] allNames = allCats.Select(c => c.ToString()).ToArray();
+            var allArray = allCats.ToArray();
+            int loadCatIndex = Array.IndexOf(allArray, _loadCategory);
+            int newLoadCatIndex = EditorGUILayout.Popup("Category", loadCatIndex >= 0 ? loadCatIndex : 0, allNames);
+            WorldDataCategory newCatSel = allArray[Mathf.Clamp(newLoadCatIndex, 0, allArray.Length - 1)];
+            if (newCatSel != _loadCategory)
+            {
+                _loadCategory = newCatSel;
+                RefreshLoadList(_loadCategory);
+                _loadSelectedIndex = 0;
+            }
+            if (_loadOptions.Count > 0)
+            {
+                _loadSelectedIndex = EditorGUILayout.Popup("Entry", _loadSelectedIndex, _loadOptions.ToArray());
+                if (GUILayout.Button("Load Selected"))
                 {
-                    var session = master.CreateOrReplaceSession(_createCategory);
-                    TrySeedNew(session, _newId, _newDisplayName);
-                    session.SaveNow();
-                    EditorUtility.SetDirty(master);
+                    LoadExisting(master, _loadCategory, _loadPaths[_loadSelectedIndex]);
                 }
             }
+            else
+            {
+                EditorGUILayout.Popup("Entry", 0, new[] { "(None)" });
+            }
+
+            EditorGUILayout.Space();
+            base.OnInspectorGUI();
         }
 
-        private void DrawLoadSection(WorldDataMasterAuthoring master)
+        private void CreateAndSave(WorldDataMasterAuthoring master, WorldDataCategory category, string id, string displayName)
         {
-            EditorGUILayout.LabelField("Load Existing", EditorStyles.boldLabel);
-
-            // Present filtered categories for loading. Exclude deprecated Culture category.
-            var loadCategories = System.Enum.GetValues(typeof(WorldDataCategory))
-                .Cast<WorldDataCategory>()
-                .Where(cat => cat != WorldDataCategory.Culture)
-                .ToArray();
-            int selectedLoadIndex = System.Array.IndexOf(loadCategories, _loadCategory);
-            if (selectedLoadIndex < 0) selectedLoadIndex = 0;
-            string[] loadLabels = loadCategories.Select(c => c.ToString()).ToArray();
-            selectedLoadIndex = EditorGUILayout.Popup("Category", selectedLoadIndex, loadLabels);
-            _loadCategory = loadCategories[selectedLoadIndex];
-            var entries = WorldDataChoicesCache.Get(_loadCategory);
-
-            if (entries == null || entries.Count == 0)
+            if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(displayName))
             {
-                EditorGUILayout.HelpBox("No JSON files found for this category in the expected directory.", MessageType.Info);
+                EditorUtility.DisplayDialog("Missing Fields", "Please specify both an ID and a Display Name.", "OK");
                 return;
             }
-
-            string[] labels = entries.Select(e => e.ToString()).ToArray();
-            _loadIndex = Mathf.Clamp(_loadIndex, 0, labels.Length - 1);
-            _loadIndex = EditorGUILayout.Popup("File", _loadIndex, labels);
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Load"))
-                {
-                    var session = master.CreateOrReplaceSession(_loadCategory);
-                    session.TryLoadFromFile(entries[_loadIndex].filePath);
-                    EditorUtility.SetDirty(master);
-                }
-
-                if (GUILayout.Button("Ping In Project"))
-                {
-                    var assetPath = ToAssetPath(entries[_loadIndex].filePath);
-                    if (!string.IsNullOrWhiteSpace(assetPath))
-                    {
-                        var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
-                        if (obj != null) EditorGUIUtility.PingObject(obj);
-                    }
-                }
-            }
-        }
-
-        private void DrawActiveSessionSection(WorldDataMasterAuthoring master)
-        {
-            var session = master.ActiveSession;
-
-            EditorGUILayout.LabelField("Active Session", EditorStyles.boldLabel);
-
+            var session = master.CreateOrReplaceSession(category);
             if (session == null)
             {
-                EditorGUILayout.HelpBox("No active session. Use Create or Load above.", MessageType.Info);
+                Debug.LogError($"[WorldDataMasterAuthoringEditor] Unable to create session for {category}");
                 return;
             }
-
-            EditorGUILayout.LabelField("Category", session.Category.ToString());
-            EditorGUILayout.LabelField("Loaded File", string.IsNullOrWhiteSpace(session.LoadedFilePath) ? "(not saved yet)" : session.LoadedFilePath);
-
-            using (new EditorGUILayout.HorizontalScope())
+            var dataField = session.GetType().GetField("data");
+            object data = dataField?.GetValue(session);
+            if (data != null)
             {
-                if (GUILayout.Button("Save"))
-                {
-                    string p = session.SaveNow();
-                    Debug.Log($"[WorldDataMasterAuthoring] Saved: {p}");
-                    WorldDataChoicesCache.RefreshAll(force: true);
-                }
-
-                if (GUILayout.Button("Save As..."))
-                {
-                    string dir = session.GetDirectoryEnsured();
-                    string defaultName = session.GetDefaultFileBaseName();
-                    string chosen = EditorUtility.SaveFilePanel("Save JSON", dir, defaultName, "json");
-                    if (!string.IsNullOrWhiteSpace(chosen))
-                    {
-                        File.WriteAllText(chosen, session.BuildJson());
-                        session.SetLoadedFilePath(chosen);
-                        WorldDataChoicesCache.RefreshAll(force: true);
-                    }
-                }
-
-                if (GUILayout.Button("Reload"))
-                {
-                    if (session.HasLoadedFile)
-                    {
-                        session.TryLoadFromFile(session.LoadedFilePath);
-                    }
-                }
+                SetStringField(data, "characterId", id);
+                SetStringField(data, "settlementId", id);
+                SetStringField(data, "regionId", id);
+                SetStringField(data, "pointId", id);
+                SetStringField(data, "displayName", displayName);
             }
-
-            if (!string.IsNullOrWhiteSpace(session.LastLoadError))
+            string json;
+            try
             {
-                EditorGUILayout.Space();
-                EditorGUILayout.HelpBox(session.LastLoadError, MessageType.Warning);
+                json = session.BuildJson();
             }
-
-            EditorGUILayout.Space();
-            _showSessionEditor = EditorGUILayout.Foldout(_showSessionEditor, "Edit Loaded Data", true);
-            if (_showSessionEditor)
+            catch (Exception ex)
             {
-                // Render the per-session custom editor inline so the master behaves like the specific author tool.
-                if (_cachedSessionEditor == null || _cachedSessionEditor.target != session)
-                {
-                    if (_cachedSessionEditor != null) DestroyImmediate(_cachedSessionEditor);
-                    _cachedSessionEditor = UnityEditor.Editor.CreateEditor(session);
-                }
-
-                if (_cachedSessionEditor != null)
-                {
-                    using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
-                    {
-                        _cachedSessionEditor.OnInspectorGUI();
-                    }
-                }
+                Debug.LogError($"[WorldDataMasterAuthoringEditor] Failed to build JSON: {ex.Message}");
+                return;
             }
-
-            // (end Active Session)
+            string dir = GetDefaultDirectoryForCategory(category);
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            string initialName = session.GetDefaultFileBaseName();
+            string path = EditorUtility.SaveFilePanel("Save JSON", dir, initialName + ".json", "json");
+            if (string.IsNullOrWhiteSpace(path)) return;
+            File.WriteAllText(path, json);
+            Debug.Log($"[WorldDataMasterAuthoringEditor] Saved new {category} JSON to {path}");
+            SetStringField(session, "loadedFilePath", path);
+            SetStringField(session, "timelineFilePath", path);
         }
 
-        private void DrawIndexSection()
+        private void LoadCatalog(WorldDataMasterAuthoring master, WorldDataCategory cat)
         {
-            WorldDataChoicesCache.RefreshAll(false);
-
-            foreach (WorldDataCategory cat in Enum.GetValues(typeof(WorldDataCategory)))
+            var session = master.CreateOrReplaceSession(cat);
+            if (session == null)
             {
-                var entries = WorldDataChoicesCache.Get(cat);
-                EditorGUILayout.LabelField($"{cat} ({entries.Count})", EditorStyles.boldLabel);
+                Debug.LogError($"[WorldDataMasterAuthoringEditor] Could not create session for {cat}");
+                return;
+            }
+            string dir = GetDefaultDirectoryForCategory(cat);
+            if (!Directory.Exists(dir))
+            {
+                Debug.LogWarning($"[WorldDataMasterAuthoringEditor] Directory {dir} does not exist for {cat}");
+                return;
+            }
+            var files = Directory.GetFiles(dir, "*.json");
+            if (files.Length == 0)
+            {
+                Debug.LogWarning($"[WorldDataMasterAuthoringEditor] No JSON files found for {cat} in {dir}");
+                return;
+            }
+            string chosen;
+            if (files.Length == 1)
+            {
+                chosen = files[0];
+            }
+            else
+            {
+                int result = EditorUtility.DisplayDialogComplex(
+                    "Multiple Catalog Files Found",
+                    $"More than one {cat} catalog file exists in {dir}. Choose which to load.",
+                    Path.GetFileName(files[0]),
+                    Path.GetFileName(files[1]),
+                    "Cancel");
+                if (result == 0) chosen = files[0];
+                else if (result == 1) chosen = files[1];
+                else return;
+            }
+            string json = File.ReadAllText(chosen);
+            var apply = session.GetType().GetMethod("ApplyJson", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+            if (apply != null)
+            {
+                apply.Invoke(session, new object[] { json });
+                Debug.Log($"[WorldDataMasterAuthoringEditor] Loaded {cat} catalog from {chosen}");
+                SetStringField(session, "loadedFilePath", chosen);
+                SetStringField(session, "timelineFilePath", chosen);
+            }
+            else
+            {
+                Debug.LogWarning($"[WorldDataMasterAuthoringEditor] Session for {cat} has no ApplyJson method");
+            }
+        }
 
-                int show = Mathf.Min(30, entries.Count);
-                for (int i = 0; i < show; i++)
+        private void RefreshLoadList(WorldDataCategory cat)
+        {
+            _loadOptions.Clear();
+            _loadPaths.Clear();
+            string dir = GetDefaultDirectoryForCategory(cat);
+            if (!Directory.Exists(dir)) return;
+            if (cat.ToString().EndsWith("Catalog", StringComparison.OrdinalIgnoreCase))
+            {
+                var files = Directory.GetFiles(dir, "*.json");
+                if (files.Length == 0) return;
+                string json = File.ReadAllText(files[0]);
+                try
                 {
-                    using (new EditorGUILayout.HorizontalScope())
+                    var jObj = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    var arr = jObj["entries"] as Newtonsoft.Json.Linq.JArray;
+                    if (arr != null)
                     {
-                        EditorGUILayout.LabelField(entries[i].ToString(), GUILayout.MaxWidth(260));
-                        if (GUILayout.Button("Ping", GUILayout.Width(50)))
+                        foreach (var e in arr)
                         {
-                            var ap = ToAssetPath(entries[i].filePath);
-                            if (!string.IsNullOrWhiteSpace(ap))
-                            {
-                                var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(ap);
-                                if (obj != null) EditorGUIUtility.PingObject(obj);
-                            }
+                            string id = e.Value<string>("id");
+                            string dn = e.Value<string>("displayName");
+                            string label = !string.IsNullOrWhiteSpace(dn) ? dn : id;
+                            _loadOptions.Add(label);
+                            _loadPaths.Add(files[0] + "|" + id);
                         }
                     }
                 }
-
-                if (entries.Count > show)
-                    EditorGUILayout.LabelField($"... {entries.Count - show} more");
-
-                EditorGUILayout.Space();
-            }
-        }
-
-        private static void TrySeedNew(WorldDataAuthoringSessionBase session, string id, string displayName)
-        {
-            if (session == null) return;
-
-            // Best-effort seeding per type; non-invasive.
-            if (session is CharacterAuthoringSession ch)
-            {
-                if (!string.IsNullOrWhiteSpace(id)) ch.data.characterId = id;
-                if (!string.IsNullOrWhiteSpace(displayName)) ch.data.displayName = displayName;
-                return;
-            }
-
-            if (session is SettlementAuthoringSession st)
-            {
-                if (!string.IsNullOrWhiteSpace(id)) st.data.settlementId = id;
-                if (!string.IsNullOrWhiteSpace(displayName)) st.data.displayName = displayName;
-                return;
-            }
-
-            if (session is RegionAuthoringSession rg)
-            {
-                if (!string.IsNullOrWhiteSpace(id)) rg.data.regionId = id;
-                if (!string.IsNullOrWhiteSpace(displayName)) rg.data.displayName = displayName;
-                return;
-            }
-
-            if (session is UnpopulatedAuthoringSession up)
-            {
-                if (!string.IsNullOrWhiteSpace(id)) up.data.areaId = id;
-                if (!string.IsNullOrWhiteSpace(displayName)) up.data.displayName = displayName;
-                return;
-            }
-
-            if (session is ArmyAuthoringSession ar)
-            {
-                if (!string.IsNullOrWhiteSpace(id)) ar.data.armyId = id;
-                if (!string.IsNullOrWhiteSpace(displayName)) ar.data.primaryCommanderDisplayName = displayName;
-                return;
-            }
-
-
-            // CultureAuthoringSession is no longer used for editing cultures.  Cultures are
-            // defined within the CultureCatalog.  Do not modify individual culture data here.
-            if (session is CultureAuthoringSession)
-            {
-                // Intentionally left blank.  Editing of culture IDs or names is performed via
-                // the CultureCatalogAuthoringSession instead.  See case below.
-                return;
-            }
-
-            // Support editing of the Culture Catalog (catalogId and displayName)
-            if (session is CultureCatalogAuthoringSession cat)
-            {
-                if (!string.IsNullOrWhiteSpace(id)) cat.data.catalogId = id;
-                if (!string.IsNullOrWhiteSpace(displayName)) cat.data.displayName = displayName;
-                return;
-            }
-
-            if (session is MenAtArmsCatalogAuthoringSession ma)
-            {
-                if (!string.IsNullOrWhiteSpace(id)) ma.data.catalogId = id;
-                if (!string.IsNullOrWhiteSpace(displayName)) ma.data.displayName = displayName;
-                return;
-            }
-
-            // Seed new LanguageCatalogAuthoringSession
-            if (session is LanguageCatalogAuthoringSession langCat)
-            {
-                if (!string.IsNullOrWhiteSpace(id)) langCat.data.catalogId = id;
-                if (!string.IsNullOrWhiteSpace(displayName)) langCat.data.displayName = displayName;
-                return;
-            }
-
-            // Seed new TraitCatalogAuthoringSession
-            if (session is TraitCatalogAuthoringSession traitCat)
-            {
-                if (!string.IsNullOrWhiteSpace(id)) traitCat.data.catalogId = id;
-                if (!string.IsNullOrWhiteSpace(displayName)) traitCat.data.displayName = displayName;
-                return;
-            }
-
-            // Seed new ReligionCatalogAuthoringSession
-            if (session is ReligionCatalogAuthoringSession relCat)
-            {
-                if (!string.IsNullOrWhiteSpace(id)) relCat.data.catalogId = id;
-                if (!string.IsNullOrWhiteSpace(displayName)) relCat.data.displayName = displayName;
-                return;
-            }
-
-        // Seed new RaceCatalogAuthoringSession
-        if (session is RaceCatalogAuthoringSession raceCat)
-        {
-            if (!string.IsNullOrWhiteSpace(id)) raceCat.data.catalogId = id;
-            if (!string.IsNullOrWhiteSpace(displayName)) raceCat.data.displayName = displayName;
-            // If there are no races defined yet, populate the catalog with a set of
-            // default fantasy races. Each race has a simple ID and display name. The
-            // description is left blank and traits can be assigned later via the
-            // Race Catalog editor. This provides a useful starting point for new
-            // projects without requiring manual entry of common races.
-            if (raceCat.data.races == null) raceCat.data.races = new System.Collections.Generic.List<RaceEntryModel>();
-            if (raceCat.data.races.Count == 0)
-            {
-                var defaults = new[]
+                catch (Exception ex)
                 {
-                    new RaceEntryModel { id = "human", displayName = "Human", description = string.Empty, traits = new System.Collections.Generic.List<string>() },
-                    new RaceEntryModel { id = "elf", displayName = "Elf", description = string.Empty, traits = new System.Collections.Generic.List<string>() },
-                    new RaceEntryModel { id = "dwarf", displayName = "Dwarf", description = string.Empty, traits = new System.Collections.Generic.List<string>() },
-                    new RaceEntryModel { id = "halfling", displayName = "Halfling", description = string.Empty, traits = new System.Collections.Generic.List<string>() },
-                    new RaceEntryModel { id = "gnome", displayName = "Gnome", description = string.Empty, traits = new System.Collections.Generic.List<string>() },
-                    new RaceEntryModel { id = "tiefling", displayName = "Tiefling", description = string.Empty, traits = new System.Collections.Generic.List<string>() },
-                    new RaceEntryModel { id = "dragonborn", displayName = "Dragonborn", description = string.Empty, traits = new System.Collections.Generic.List<string>() },
-                    new RaceEntryModel { id = "halfelf", displayName = "Half-Elf", description = string.Empty, traits = new System.Collections.Generic.List<string>() },
-                    new RaceEntryModel { id = "halforc", displayName = "Half-Orc", description = string.Empty, traits = new System.Collections.Generic.List<string>() },
-                };
-                raceCat.data.races.AddRange(defaults);
+                    Debug.LogWarning($"[WorldDataMasterAuthoringEditor] Failed parsing catalog {cat}: {ex.Message}");
+                }
             }
-            return;
-        }
+            else
+            {
+                foreach (var file in Directory.GetFiles(dir, "*.json"))
+                {
+                    string json = File.ReadAllText(file);
+                    try
+                    {
+                        var jObj = Newtonsoft.Json.Linq.JObject.Parse(json);
+                        string id = jObj.Value<string>("characterId") ?? jObj.Value<string>("settlementId") ?? jObj.Value<string>("regionId") ?? jObj.Value<string>("pointId");
+                        string dn = jObj.Value<string>("displayName");
+                        string label = !string.IsNullOrWhiteSpace(dn) ? dn : id;
+                        if (string.IsNullOrWhiteSpace(label)) label = Path.GetFileNameWithoutExtension(file);
+                        _loadOptions.Add(label);
+                        _loadPaths.Add(file);
+                    }
+                    catch
+                    {
+                        // ignore invalid JSON
+                    }
+                }
+            }
         }
 
-        private static string ToAssetPath(string fullPath)
+        private void LoadExisting(WorldDataMasterAuthoring master, WorldDataCategory cat, string pathInfo)
         {
-            if (string.IsNullOrWhiteSpace(fullPath)) return null;
-            fullPath = fullPath.Replace('\\', '/');
-            string assets = Application.dataPath.Replace('\\', '/');
-            if (!fullPath.StartsWith(assets, StringComparison.OrdinalIgnoreCase))
-                return null;
-            return "Assets" + fullPath.Substring(assets.Length);
+            var session = master.CreateOrReplaceSession(cat);
+            if (session == null)
+            {
+                Debug.LogError($"[WorldDataMasterAuthoringEditor] Could not create session for {cat}");
+                return;
+            }
+            string filePath;
+            if (cat.ToString().EndsWith("Catalog", StringComparison.OrdinalIgnoreCase))
+            {
+                string[] parts = pathInfo.Split('|');
+                filePath = parts[0];
+            }
+            else
+            {
+                filePath = pathInfo;
+            }
+            if (!File.Exists(filePath))
+            {
+                Debug.LogWarning($"[WorldDataMasterAuthoringEditor] File not found: {filePath}");
+                return;
+            }
+            string json = File.ReadAllText(filePath);
+            var apply = session.GetType().GetMethod("ApplyJson", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+            if (apply != null)
+            {
+                apply.Invoke(session, new object[] { json });
+                Debug.Log($"[WorldDataMasterAuthoringEditor] Loaded {cat} entry from {filePath}");
+                SetStringField(session, "loadedFilePath", filePath);
+                SetStringField(session, "timelineFilePath", filePath);
+            }
+            else
+            {
+                Debug.LogWarning($"[WorldDataMasterAuthoringEditor] Session for {cat} lacks ApplyJson method");
+            }
+        }
+
+        private static void SetStringField(object obj, string fieldName, string value)
+        {
+            if (obj == null || string.IsNullOrWhiteSpace(fieldName)) return;
+            var t = obj.GetType();
+            var field = t.GetField(fieldName);
+            if (field != null && field.FieldType == typeof(string)) field.SetValue(obj, value);
+            var prop = t.GetProperty(fieldName);
+            if (prop != null && prop.PropertyType == typeof(string) && prop.CanWrite) prop.SetValue(obj, value);
+        }
+
+        private static string GetFriendlyCatalogName(WorldDataCategory cat)
+        {
+            string name = cat.ToString();
+            if (name.EndsWith("Catalog", StringComparison.OrdinalIgnoreCase))
+            {
+                name = name.Substring(0, name.Length - "Catalog".Length);
+            }
+            return name;
+        }
+
+        private static string GetDefaultDirectoryForCategory(WorldDataCategory cat)
+        {
+            if (cat == WorldDataCategory.Character)
+                return DataPaths.Editor_CharactersPath;
+            if (cat == WorldDataCategory.Settlement || cat == WorldDataCategory.Region || cat == WorldDataCategory.Unpopulated || cat == WorldDataCategory.Army)
+                return DataPaths.Editor_MapDataPath;
+            string root = DataPaths.Editor_SaveDataRoot;
+            string name = cat.ToString();
+            if (name.EndsWith("Catalog", StringComparison.OrdinalIgnoreCase))
+            {
+                // Strip the Catalog suffix and compute a lowercase folder name.
+                string sub = name.Substring(0, name.Length - "Catalog".Length);
+                string baseLower = sub.ToLowerInvariant();
+                // Try pluralised directory (e.g. cultures, races, religions).  If it
+                // exists, use it; otherwise fall back to the singular form.  This
+                // logic avoids missing folders like culture vs cultures.
+                string plural = baseLower.EndsWith("s") ? baseLower : baseLower + "s";
+                string pluralPath = Path.Combine(root, plural);
+                if (Directory.Exists(pluralPath))
+                    return pluralPath;
+                string singularPath = Path.Combine(root, baseLower);
+                if (Directory.Exists(singularPath))
+                    return singularPath;
+                // If neither exists return plural path by default
+                return pluralPath;
+            }
+            return root;
         }
     }
 }
-#endif
