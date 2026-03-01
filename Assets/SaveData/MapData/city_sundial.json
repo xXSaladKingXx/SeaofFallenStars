@@ -4,7 +4,7 @@
   "settlementId": "city_sundial",
   "displayName": "City of Sundial",
   "rulerCharacterId": null,
-  "liegeSettlementId": "sundial",
+  "liegeSettlementId": null,
   "mapUrlOrPath": null,
   "capitalSettlementId": null,
   "main": {
@@ -17,15 +17,18 @@
     "characterIds": []
   },
   "army": {
-    "armyIds": [
-      "sundialarmy"
-    ],
-    "totalArmy": 2890,
-    "menAtArms": [
-      "light_infantry"
-    ],
-    "primaryCommanderDisplayName": "dukearickongardner",
-    "primaryCommanderCharacterId": "dukearickongardner"
+    "armyIds": [],
+    "totalArmy": 0,
+    "menAtArms": [],
+    "primaryCommanderDisplayName": null,
+    "primaryCommanderCharacterId": null,
+    "knightCharacterIds": [],
+    "totalLevies": 0,
+    "raisedMaintenanceCosts": 0.0,
+    "unraisedMaintenanceCosts": 0.0,
+    "attack": 0,
+    "defense": 0,
+    "speed": 20.0
   },
   "economy": {
     "mainExports": null,
@@ -33,33 +36,29 @@
     "mainIndustries": null,
     "notes": null,
     "totalIncomePerMonth": 0.0,
+    "totalProfitPerMonth": 0.0,
     "totalTreasury": 0.0,
-    "courtExpenses": null,
-    "armyExpenses": null,
-    "currentlyConstructing": []
+    "courtExpenses": 0.0,
+    "armyExpenses": 0.0,
+    "currentlyConstructing": [],
+    "wheat": 0.0,
+    "bread": 0.0,
+    "meat": 0.0,
+    "wood": 0.0,
+    "stone": 0.0,
+    "iron": 0.0,
+    "steel": 0.0
   },
   "cultural": {
     "culture": null,
-    "raceDistribution": [
-      {
-        "key": "human",
-        "percent": 100.0
-      }
-    ],
-    "religion": "cormyr_lathanderism",
+    "raceDistribution": [],
+    "religion": null,
     "traits": [],
-    "languages": [
-      "cormyrean"
-    ],
+    "languages": [],
     "customs": [],
     "populationDistribution": null,
     "primaryTraits": [],
-    "cultureDistribution": [
-      {
-        "key": "cormyrean",
-        "percent": 100.0
-      }
-    ]
+    "cultureDistribution": []
   },
   "history": {
     "notes": null,
@@ -77,14 +76,16 @@
     "settlementId": null,
     "layer": null,
     "isPopulated": false,
-    "feudal": true,
-    "liegeSettlementId": "sundial",
+    "feudal": false,
+    "liegeSettlementId": null,
     "notes": null,
     "laws": null,
     "capitalSettlementId": null,
-    "incomeTaxRate": 1.0,
-    "troopTaxRate": 1.0,
-    "contractTerms": "capital"
+    "incomeTaxRate": 0.0,
+    "levyTaxRate": 0.0,
+    "contractTerms": null,
+    "councillorSalaries": [],
+    "troopTaxRate": 0.0
   },
   "culturalComposition": [],
   "raceDistribution": []

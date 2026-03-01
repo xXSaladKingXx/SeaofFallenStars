@@ -11403,166 +11403,6 @@ RectTransform:
   m_AnchoredPosition: {x: 2.4439697, y: -4.9027033}
   m_SizeDelta: {x: 1630.6, y: 910.2379}
   m_Pivot: {x: 0.5, y: 0.49999997}
---- !u!1 &767011153
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 767011155}
-  - component: {fileID: 767011154}
-  m_Layer: 0
-  m_Name: __AuthoringSession_Settlement
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &767011154
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 767011153}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ea38c57cd2b884cbbf4f1be6577ab2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SettlementAuthoringSession
-  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\MapData\arabel.json
-  data:
-    isPopulated: 0
-    characterIds: []
-    settlementId: arabel
-    displayName: City of Arabel
-    rulerCharacterId: char_azoun_matarys_iv
-    liegeSettlementId: kingdom_cormyr
-    mapUrlOrPath: 
-    capitalSettlementId: 
-    main:
-      description: 
-      notableFacts: []
-      population: 0
-      rulerDisplayName: King Azoun Matarys IV
-      rulerName: 
-      vassals: []
-      characterIds: []
-    army:
-      armyIds:
-      - cormyrarmy
-      totalArmy: 22
-      menAtArms:
-      - heavy_infantry
-      - light_cavalry
-      - light_infantry
-      - purple_dragons
-      primaryCommanderDisplayName: King Azoun Matarys IV
-      primaryCommanderCharacterId: char_azoun_matarys_iv
-      knightCharacterIds:
-      - baronetclanceevermillion
-      - baronetraymondgardner
-      - dukearickongardner
-      - lordaegorbittersteel
-      - lordalaricselgaunt
-      - lordmerricksicklestone
-      - lordperseussungardner
-      - lordtomasmellsen
-      - mastergeraltredstar
-      totalLevies: 0
-      raisedMaintenanceCosts: 0
-      unraisedMaintenanceCosts: 0
-      attack: 32
-      defense: 40
-      speed: 20
-    economy:
-      mainExports: 
-      mainImports: 
-      mainIndustries: 
-      notes: 
-      totalIncomePerMonth: 0
-      totalProfitPerMonth: 0
-      totalTreasury: 0
-      courtExpenses: 0
-      armyExpenses: 0
-      currentlyConstructing: []
-      wheat: 0
-      bread: 0
-      meat: 0
-      wood: 0
-      stone: 0
-      iron: 0
-      steel: 0
-    cultural:
-      culture: 
-      raceDistribution:
-      - key: human
-        percent: 97
-      - key: elf
-        percent: 2
-      - key: halfelf
-        percent: 1
-      religion: cormyr_lathanderism
-      traits: []
-      languages:
-      - cormyrean
-      customs: []
-      populationDistribution: 
-      primaryTraits: []
-      cultureDistribution:
-      - key: cormyrean
-        percent: 92
-      - key: cormyr-sembian
-        percent: 8
-    history:
-      notes: 
-      timelineEntries: []
-      rulingFamilyMembers: []
-    feudal:
-      castellanCharacterId: 
-      marshallCharacterId: char_tomasmellsen
-      stewardCharacterId: 
-      diplomatCharacterId: 
-      spymasterCharacterId: 
-      headPriestCharacterId: 
-      vassalContracts: []
-      settlementId: 
-      layer: 
-      isPopulated: 0
-      isFeudal: 1
-      liegeSettlementId: kingdom_cormyr
-      notes: 
-      laws: 
-      capitalSettlementId: 
-      incomeTaxRate: 0
-      levyTaxRate: 0
-      contractTerms: 
-      councillorSalaries: []
-  culturalComposition: []
-  raceDistribution: []
-  castellanCharacterId: 
-  marshallCharacterId: 
-  stewardCharacterId: 
-  diplomatCharacterId: 
-  spymasterCharacterId: 
-  headPriestCharacterId: 
---- !u!4 &767011155
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 767011153}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &775643760
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22497,7 +22337,7 @@ Transform:
   - {fileID: 1334595414}
   - {fileID: 480487642}
   - {fileID: 434817852}
-  - {fileID: 767011155}
+  - {fileID: 1596770162}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1566514895
@@ -22513,7 +22353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.WorldDataMasterAuthoring
   activeCategory: 2
-  activeSession: {fileID: 767011154}
+  activeSession: {fileID: 1596770161}
 --- !u!1001 &1581299612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23814,6 +23654,142 @@ PolygonCollider2D:
       - {x: 43.982563, y: 8.46814}
       - {x: 65.24657, y: 29.83834}
   m_UseDelaunayMesh: 0
+--- !u!1 &1596770160
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1596770162}
+  - component: {fileID: 1596770161}
+  m_Layer: 0
+  m_Name: __AuthoringSession_Settlement
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1596770161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596770160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ea38c57cd2b884cbbf4f1be6577ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettlementAuthoringSession
+  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\MapData\city_sundial.json
+  data:
+    isPopulated: 0
+    characterIds: []
+    settlementId: city_sundial
+    displayName: City of Sundial
+    rulerCharacterId: 
+    liegeSettlementId: sundial
+    mapUrlOrPath: 
+    capitalSettlementId: 
+    main:
+      description: 
+      notableFacts: []
+      population: 0
+      rulerDisplayName: 
+      rulerName: 
+      vassals: []
+      characterIds: []
+    army:
+      armyIds: []
+      totalArmy: 0
+      menAtArms: []
+      primaryCommanderDisplayName: 
+      primaryCommanderCharacterId: 
+      knightCharacterIds: []
+      totalLevies: 0
+      raisedMaintenanceCosts: 0
+      unraisedMaintenanceCosts: 0
+      attack: 0
+      defense: 0
+      speed: 0
+    economy:
+      mainExports: 
+      mainImports: 
+      mainIndustries: 
+      notes: 
+      totalIncomePerMonth: 0
+      totalProfitPerMonth: 0
+      totalTreasury: 0
+      courtExpenses: 0
+      armyExpenses: 0
+      currentlyConstructing: []
+      wheat: 0
+      bread: 0
+      meat: 0
+      wood: 0
+      stone: 0
+      iron: 0
+      steel: 0
+    cultural:
+      culture: 
+      raceDistribution: []
+      religion: cormyr_lathanderism
+      traits: []
+      languages:
+      - cormyrean
+      customs: []
+      populationDistribution: 
+      primaryTraits: []
+      cultureDistribution: []
+    history:
+      notes: 
+      timelineEntries: []
+      rulingFamilyMembers: []
+    feudal:
+      castellanCharacterId: 
+      marshallCharacterId: 
+      stewardCharacterId: 
+      diplomatCharacterId: 
+      spymasterCharacterId: 
+      headPriestCharacterId: 
+      vassalContracts: []
+      settlementId: 
+      layer: 
+      isPopulated: 0
+      isFeudal: 1
+      liegeSettlementId: sundial
+      notes: 
+      laws: 
+      capitalSettlementId: 
+      incomeTaxRate: 0
+      levyTaxRate: 0
+      contractTerms: 
+      councillorSalaries: []
+  culturalComposition: []
+  raceDistribution: []
+  castellanCharacterId: 
+  marshallCharacterId: 
+  stewardCharacterId: 
+  diplomatCharacterId: 
+  spymasterCharacterId: 
+  headPriestCharacterId: 
+--- !u!4 &1596770162
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596770160}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1566514894}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1610248045
 GameObject:
   m_ObjectHideFlags: 0
