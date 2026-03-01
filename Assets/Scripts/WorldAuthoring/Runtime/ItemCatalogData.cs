@@ -17,6 +17,53 @@ namespace Zana.WorldAuthoring
         TradeGood,
     }
 
+    public enum WeaponSubtype
+    {
+        Martial_Melee,
+        Martial_Ranged,
+        Simple_Melee,
+        Simple_Ranged,
+        Special,
+        Thrown,
+        Firearm,
+    }
+    public enum ArmorSubtype
+    {
+        Clothes,
+        Light,
+        Medium,
+        Heavy,
+        Shields,
+        Special,
+    }
+
+    public enum ToolSubtype
+    {
+        AlchemistsTools,
+        BrewersTools,
+        TailorsTools,
+        TinkerersTools,
+        HerbalistsTools,
+        SmithsTools,
+        PaintersTools,
+        ThievesTools,
+        CarpenersTools,
+        FletchersTools,
+        CobblersTools,
+        MagicSmithsTools,
+        JewellersTools,
+        CalligraphyTools,
+        CartographyTools,
+        DisguiseTools,
+        ForgeryTools,
+        MasonsTools,
+        CooksTools,
+        LeatherworkersTools,
+        MinersTools,
+
+    }
+    
+
     [Serializable]
     public sealed class ItemCatalogData
     {

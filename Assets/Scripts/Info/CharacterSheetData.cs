@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+using Zana.WorldAuthoring;
 
 // This file defines the data model for a character sheet.  It mirrors the
 // original CharacterSheetData from the upstream repository but adds support
@@ -22,6 +25,8 @@ public class CharacterSheetData
     public string background;
     public string race;
     public string subrace;
+    public string culture;
+    public string religion;
     public int level;
     public string alignment;
     public int experiencePoints;
@@ -48,7 +53,16 @@ public class CharacterSheetData
 
     // Personality / Backstory
     public PersonalityInfo personality = new PersonalityInfo();
-    public string backstory;
+    public AudioClip sampleVoice;
+
+    public enum CharacterType
+    {
+        Default = 0,
+        NPC = 1,
+        CombatNPC = 2,
+        PC = 3,
+    }
+
 
     // Relationships + Feudal
     public Relationships relationships = new Relationships();
@@ -57,16 +71,9 @@ public class CharacterSheetData
     // Spells (page 3)
     public SpellcastingInfo spellcasting = new SpellcastingInfo();
 
-    public string notes;
-
-    /// <summary>
-    /// List of timeline event identifiers associated with this character.  Each entry
-    /// references an event defined in the global TimelineCatalog.  Characters
-    /// should not embed full timeline entries in their JSON; instead they track
-    /// participation by storing the event id here.  This array is initialised
-    /// to an empty array to avoid null reference errors when saving or editing.
-    /// </summary>
     public string[] timelineEntries = Array.Empty<string>();
+
+    public string backstory;
 
     public string GetBestDisplayName()
     {
@@ -79,9 +86,11 @@ public class CharacterSheetData
 [Serializable]
 public class LifeInfo
 {
-    public string birthDate;
-    public bool isAlive = true;
-    public string deathDate;
+    public Zana.WorldAuthoring.TimelineEventDate birthDay;
+    public Zana.WorldAuthoring.TimelineEventDate deathDay;
+    public bool isAlive;
+    public string homeSettlementID;
+
 }
 
 [Serializable]
@@ -99,8 +108,11 @@ public class AppearanceInfo
 }
 
 [Serializable]
+
+
 public class AbilityScores
 {
+
     public int str = 10;
     public int dex = 10;
     public int con = 10;
@@ -211,7 +223,7 @@ public class RelationshipOther
 [Serializable]
 public class FeudalInfo
 {
-    public bool isFeudal = false;
+    public bool isFeudal;
     public string rank;
     public string rulesSettlementId;
     public string[] vassalSettlementIds;
