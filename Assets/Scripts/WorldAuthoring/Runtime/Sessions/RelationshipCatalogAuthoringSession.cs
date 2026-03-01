@@ -21,6 +21,18 @@ namespace Zana.WorldAuthoring
         /// <inheritdoc />
         public override WorldDataCategory Category => WorldDataCategory.RelationshipCatalog;
 
+        /// <summary>
+        /// Returns a default file base name for new relationship catalog JSON files.  The
+        /// relationship catalog is intended to be a singleton, so the default
+        /// name is fixed.
+        /// </summary>
+        public override string GetDefaultFileBaseName()
+        {
+            return data != null && !string.IsNullOrWhiteSpace(data.catalogId)
+                ? data.catalogId
+                : "relationship_catalog";
+        }
+
 #if UNITY_EDITOR
         /// <inheritdoc />
         public override string BuildJson()

@@ -22,6 +22,15 @@ public class CharacterSheetData
     public string background;
     public string race;
     public string subrace;
+    /// <summary>
+    /// The primary culture of this character.  References a global culture
+    /// definition.
+    /// </summary>
+    public string culture;
+    /// <summary>
+    /// The religion of this character.  References a global religion entry.
+    /// </summary>
+    public string religion;
     public int level;
     public string alignment;
     public int experiencePoints;
@@ -168,9 +177,25 @@ public class SkillEntry
 [Serializable]
 public class ProficiencyInfo
 {
+    /// <summary>
+    /// Armor proficiencies as strings.  Each entry should correspond to the
+    /// name of an <see cref="Zana.WorldAuthoring.ArmorSubtype"/> value.
+    /// </summary>
     public string[] armor;
+    /// <summary>
+    /// Weapon proficiencies as strings.  Each entry should correspond to the
+    /// name of a <see cref="Zana.WorldAuthoring.WeaponSubtype"/> value.
+    /// </summary>
     public string[] weapons;
+    /// <summary>
+    /// Tool proficiencies as strings.  Each entry should correspond to the
+    /// name of a <see cref="Zana.WorldAuthoring.ToolSubtype"/> value.
+    /// </summary>
     public string[] tools;
+    /// <summary>
+    /// Known languages.  Each entry is the identifier of a language in the
+    /// global language catalog.
+    /// </summary>
     public string[] languages;
 }
 
@@ -299,9 +324,36 @@ public class FeudalInfo
     public string[] titles;
 
     /// <summary>
+    /// The identifier of the settlement designated as this character's
+    /// capital.  If the character rules multiple settlements, this field
+    /// distinguishes which one is their primary seat of power.
+    /// </summary>
+    public string capitalSettlementId;
+
+    /// <summary>
+    /// The identifier of the character's main title.  When the character
+    /// holds multiple titles, this field stores the title that is not the
+    /// capital settlement (if any).  This allows UIs to highlight the
+    /// character's most prestigious or dominant holding.
+    /// </summary>
+    public string mainTitleId;
+
+    /// <summary>
     /// Identifiers of settlements for which this character is the liege.
     /// </summary>
     public string[] vassalSettlementIds;
+
+    /// <summary>
+    /// Legacy rank field preserved for compatibility with existing UI scripts.
+    /// Not used by the new feudal system.
+    /// </summary>
+    public string rank;
+
+    /// <summary>
+    /// Legacy rules settlement field preserved for compatibility.  Superseded
+    /// by <see cref="titles"/> and <see cref="capitalSettlementId"/>.
+    /// </summary>
+    public string rulesSettlementId;
 }
 
 [Serializable]
