@@ -11,7 +11,9 @@ namespace Zana.WorldAuthoring
     /// provides dropdown lists for selecting native flora and fauna based
     /// on existing catalog definitions.  Water entries are given a
     /// subtype and maximum boat size when the user marks a terrain as
-    /// water.
+    /// water.  This version avoids passing list indexers by <c>ref</c>
+    /// which is illegal in C#, by copying the index to a local variable
+    /// before passing it and writing back the result after the call.
     /// </summary>
     [CustomEditor(typeof(TerrainCatalogAuthoringSession))]
     internal sealed class TerrainCatalogAuthoringSessionEditor : Editor
@@ -102,11 +104,15 @@ namespace Zana.WorldAuthoring
 
                 // Native flora list
                 entry.nativeFlora ??= new System.Collections.Generic.List<string>();
-                DrawIdList("Native Flora", entry.nativeFlora, floraIds, floraNames, ref _addFloraSelection[i]);
+                int floraSel = _addFloraSelection[i];
+                DrawIdList("Native Flora", entry.nativeFlora, floraIds, floraNames, ref floraSel);
+                _addFloraSelection[i] = floraSel;
 
                 // Native fauna list
                 entry.nativeFauna ??= new System.Collections.Generic.List<string>();
-                DrawIdList("Native Fauna", entry.nativeFauna, faunaIds, faunaNames, ref _addFaunaSelection[i]);
+                int faunaSel = _addFaunaSelection[i];
+                DrawIdList("Native Fauna", entry.nativeFauna, faunaIds, faunaNames, ref faunaSel);
+                _addFaunaSelection[i] = faunaSel;
 
                 EditorGUI.indentLevel--;
 

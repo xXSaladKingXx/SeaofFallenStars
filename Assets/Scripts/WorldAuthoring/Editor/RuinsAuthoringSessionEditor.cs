@@ -10,7 +10,11 @@ namespace Zana.WorldAuthoring
     /// of ruin identifiers, display names, descriptions and related
     /// timeline events.  Timeline events are selected by identifier from
     /// the existing TimelineCatalog via dropdown; when no timeline catalog
-    /// is available free text editing is used instead.
+    /// is available free text editing is used instead.  This implementation
+    /// relies on the <see cref="TimelineCatalogDataModel"/> and
+    /// <see cref="TimelineEventModel"/> types introduced in the custom timeline
+    /// system.  It queries loaded timeline sessions for available event ids
+    /// and labels via the <see cref="TimelineCatalogAuthoringSession"/>.
     /// </summary>
     [CustomEditor(typeof(RuinsAuthoringSession))]
     internal sealed class RuinsAuthoringSessionEditor : Editor
@@ -35,17 +39,12 @@ namespace Zana.WorldAuthoring
             session.data.description = EditorGUILayout.TextArea(session.data.description ?? string.Empty, GUILayout.MinHeight(50));
             EditorGUI.indentLevel--;
 
-            // Fetch timeline event definitions.  The WorldDataChoicesCache does not
-            // currently expose timeline definitions directly; however, timeline
-            // events are stored inside the TimelineCatalog.  We attempt to
-            // flatten them by scanning loaded timeline sessions via the
-            // TimelineCatalogAuthoringSession.  If nothing is loaded the
-            // dropdown will fall back to free text.
+            // Fetch timeline event definitions.  We scan loaded timeline
+            // authoring sessions and flatten out their event identifiers.
             string[] eventIds = System.Array.Empty<string>();
             string[] eventLabels = System.Array.Empty<string>();
             try
             {
-                // Attempt to locate an existing timeline catalog authoring session
                 var timelineSessions = Object.FindObjectsOfType<TimelineCatalogAuthoringSession>();
                 if (timelineSessions != null && timelineSessions.Length > 0)
                 {
@@ -60,7 +59,7 @@ namespace Zana.WorldAuthoring
             }
             catch { /* ignore errors */ }
 
-            // Timeline events list
+            // Timeline events list for this ruin
             session.data.timelineEventIds ??= new System.Collections.Generic.List<string>();
             EditorGUILayout.LabelField("Timeline Events", EditorStyles.miniBoldLabel);
             if (eventIds.Length > 0)

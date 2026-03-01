@@ -46,6 +46,21 @@ namespace Zana.WorldAuthoring
         public List<TimelineEventModel> events = new List<TimelineEventModel>();
 
         /// <summary>
+        /// Backwards‑compatible alias for the event list.  Some editor scripts in the
+        /// upstream project expect the timeline catalog to expose an <c>entries</c>
+        /// collection rather than <c>events</c>.  This property simply forwards
+        /// to <see cref="events"/> so both names refer to the same list.  It is
+        /// marked with <see cref="JsonIgnoreAttribute"/> to avoid duplicating
+        /// the data when serialising to JSON.
+        /// </summary>
+        [JsonIgnore]
+        public List<TimelineEventModel> entries
+        {
+            get => events;
+            set => events = value;
+        }
+
+        /// <summary>
         /// Collection of user‑defined event type templates.  Each custom type
         /// captures the participant categories and directionality used when
         /// saving an "Other" event as a new type.  Authors can select these
@@ -155,6 +170,21 @@ namespace Zana.WorldAuthoring
         /// </summary>
         [JsonProperty("icon")]
         public string icon;
+
+        /// <summary>
+        /// Backwards‑compatible alias for the event identifier.  In older
+        /// editor scripts the timeline event id is exposed via an <c>eventId</c>
+        /// property.  This getter/setter forwards to <see cref="id"/> so that
+        /// existing code can continue to compile without modification.  The
+        /// property is ignored during JSON serialization to avoid
+        /// duplicating the identifier.
+        /// </summary>
+        [JsonIgnore]
+        public string eventId
+        {
+            get => id;
+            set => id = value;
+        }
     }
 
     /// <summary>
