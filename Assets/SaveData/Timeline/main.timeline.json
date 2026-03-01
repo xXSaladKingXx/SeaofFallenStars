@@ -1,5 +1,24 @@
 {
-  "catalogId": "main",
-  "customEventTypes": [],
-  "entries": []
+  "catalogId": "timeline_catalog",
+  "displayName": "Timeline Catalog",
+  "notes": null,
+  "events": [
+    {
+      "id": "timeline_d9ece9ec8cbb4246872ef1991dc5fedf",
+      "eventName": "",
+      "eventSignificance": 2,
+      "description": "",
+      "year": 0,
+      "month": 1,
+      "day": 1,
+      "settingId": null,
+      "participantIds": [],
+      "customTypeName": null,
+      "eventType": 20,
+      "icon": null,
+      "participantCategories": [],
+      "eventDirection": 0
+    }
+  ],
+  "customEventTypes": []
 }

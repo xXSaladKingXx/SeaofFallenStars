@@ -31,9 +31,16 @@ namespace Zana.WorldAuthoring
         /// in the Unity inspector, this should point at the permanent main
         /// timeline file.  Defaults to a sensible location under
         /// Assets/SaveData/Timeline.
+        ///
+        /// The name of this field intentionally differs from the base class
+        /// (which may also define a similar property) to avoid Unity's
+        /// duplicate serialization error that occurs when two fields with
+        /// identical names exist in a class hierarchy.  See
+        /// https://forum.unity.com/threads/the-same-field-name-is-serialized-multiple-times.327334/
+        /// for more details.
         /// </summary>
         [Tooltip("Keep this pointed at the one permanent timeline catalog file, for example Assets/SaveData/Timeline/main.timeline.json.")]
-        public string loadedFilePath = "Assets/SaveData/Timeline/main.timeline.json";
+        public string timelineFilePath = "Assets/SaveData/Timeline/main.timeline.json";
 
         /// <summary>
         /// Identifier for this session category.
@@ -120,9 +127,14 @@ namespace Zana.WorldAuthoring
                 }
                 if (!exists)
                 {
-                    // Infer participant categories from participant IDs.
+                    // Use the explicit participant categories if available; otherwise
+                    // fall back to inferring from the participant identifiers.
                     var categories = new List<ParticipantCategory>();
-                    if (evt.participantIds != null && evt.participantIds.Count > 0)
+                    if (evt.participantCategories != null && evt.participantCategories.Count > 0)
+                    {
+                        categories.AddRange(evt.participantCategories);
+                    }
+                    else if (evt.participantIds != null && evt.participantIds.Count > 0)
                     {
                         foreach (var pid in evt.participantIds)
                         {
@@ -133,7 +145,8 @@ namespace Zana.WorldAuthoring
                     {
                         name = evt.customTypeName,
                         participantCategories = categories,
-                        directionality = EventDirection.TwoWay,
+                        // Use the current event's direction to capture the semantics
+                        directionality = evt.eventDirection,
                         icon = evt.icon
                     };
                     if (data.customEventTypes == null)
@@ -382,10 +395,43 @@ namespace Zana.WorldAuthoring
                 {
                     evt.day = 1;
                 }
-                // Ensure participant list is not null
+                // Ensure participant list is not null and synchronise categories list
                 if (evt.participantIds == null)
                 {
                     evt.participantIds = new List<string>();
+                }
+                if (evt.participantCategories == null)
+                {
+                    evt.participantCategories = new List<ParticipantCategory>();
+                }
+                // Ensure the categories list matches the number of participant ids
+                while (evt.participantCategories.Count < evt.participantIds.Count)
+                {
+                    evt.participantCategories.Add(ParticipantCategory.Character);
+                }
+                while (evt.participantCategories.Count > evt.participantIds.Count)
+                {
+                    evt.participantCategories.RemoveAt(evt.participantCategories.Count - 1);
+                }
+
+                // Clamp the participant split index to the valid range.  For non‑directional
+                // events, ensure the split is zero.  For directional events, ensure the
+                // split is at least one and not greater than the number of participants.
+                if (evt.eventDirection == EventDirection.None)
+                {
+                    evt.participantSplitIndex = 0;
+                }
+                else
+                {
+                    if (evt.participantSplitIndex < 1)
+                    {
+                        // Default to putting the first participant on side A if there is at least one
+                        evt.participantSplitIndex = Math.Min(1, evt.participantIds.Count);
+                    }
+                    if (evt.participantSplitIndex > evt.participantIds.Count)
+                    {
+                        evt.participantSplitIndex = evt.participantIds.Count;
+                    }
                 }
             }
         }
@@ -471,6 +517,9 @@ namespace Zana.WorldAuthoring
                 day = 1,
                 settingId = null,
                 participantIds = new List<string>(),
+                participantCategories = new List<ParticipantCategory>(),
+                eventDirection = EventDirection.None,
+                participantSplitIndex = 0,
                 customTypeName = null,
                 icon = null
             };
@@ -563,23 +612,23 @@ namespace Zana.WorldAuthoring
 #if UNITY_EDITOR
         /// <summary>
         /// Load the timeline catalogue from the file specified by
-        /// <see cref="loadedFilePath"/>.  If the file does not exist or the
+        /// <see cref="timelineFilePath"/>.  If the file does not exist or the
         /// path is empty, a new default catalog is created instead.  After
         /// loading, the data is initialised and the editor object is marked
         /// dirty so that changes are reflected in the inspector.
         /// </summary>
         public void LoadFromFile()
         {
-            if (string.IsNullOrWhiteSpace(loadedFilePath))
+            if (string.IsNullOrWhiteSpace(timelineFilePath))
             {
                 Debug.LogWarning("[Timeline] Loaded file path is blank. Nothing was loaded.");
                 data = new TimelineCatalogDataModel();
                 EnsureInitialized();
                 return;
             }
-            if (!System.IO.File.Exists(loadedFilePath))
+            if (!System.IO.File.Exists(timelineFilePath))
             {
-                Debug.Log($"[Timeline] No timeline file exists at '{loadedFilePath}'. Starting with a blank timeline.");
+                Debug.Log($"[Timeline] No timeline file exists at '{timelineFilePath}'. Starting with a blank timeline.");
                 data = new TimelineCatalogDataModel();
                 EnsureInitialized();
                 UnityEditor.EditorUtility.SetDirty(this);
@@ -587,17 +636,17 @@ namespace Zana.WorldAuthoring
             }
             try
             {
-                var json = System.IO.File.ReadAllText(loadedFilePath);
+                var json = System.IO.File.ReadAllText(timelineFilePath);
                 // Use Newtonsoft.Json to deserialize the data model
                 var loaded = Newtonsoft.Json.JsonConvert.DeserializeObject<TimelineCatalogDataModel>(json);
                 data = loaded ?? new TimelineCatalogDataModel();
                 EnsureInitialized();
                 UnityEditor.EditorUtility.SetDirty(this);
-                Debug.Log($"[Timeline] Loaded timeline catalog from '{loadedFilePath}'.");
+                Debug.Log($"[Timeline] Loaded timeline catalog from '{timelineFilePath}'.");
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[Timeline] Failed to load timeline catalog from '{loadedFilePath}'. Exception: {ex}");
+                Debug.LogError($"[Timeline] Failed to load timeline catalog from '{timelineFilePath}'. Exception: {ex}");
                 data = new TimelineCatalogDataModel();
                 EnsureInitialized();
             }
@@ -605,7 +654,7 @@ namespace Zana.WorldAuthoring
 
         /// <summary>
         /// Save the timeline catalogue to the file specified by
-        /// <see cref="loadedFilePath"/>.  If <paramref name="syncParticipantEventIds"/>
+        /// <see cref="timelineFilePath"/>.  If <paramref name="syncParticipantEventIds"/>
         /// is true, participant event identifiers will be synchronised via
         /// <see cref="SynchronizeParticipantTimelineIds"/> after writing the file.
         /// When the directory does not exist it will be created.  The editor
@@ -619,14 +668,14 @@ namespace Zana.WorldAuthoring
             EnsureInitialized();
             // Always sort before saving
             SortEntries();
-            if (string.IsNullOrWhiteSpace(loadedFilePath))
+            if (string.IsNullOrWhiteSpace(timelineFilePath))
             {
                 Debug.LogWarning("[Timeline] Loaded file path is blank. Nothing was saved.");
                 return;
             }
             try
             {
-                var directory = System.IO.Path.GetDirectoryName(loadedFilePath);
+                var directory = System.IO.Path.GetDirectoryName(timelineFilePath);
                 if (!string.IsNullOrWhiteSpace(directory) && !System.IO.Directory.Exists(directory))
                 {
                     System.IO.Directory.CreateDirectory(directory);
@@ -645,17 +694,17 @@ namespace Zana.WorldAuthoring
                 }
                 // Serialize the data model to pretty JSON using Newtonsoft.Json
                 var json = Newtonsoft.Json.JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented);
-                System.IO.File.WriteAllText(loadedFilePath, json);
+                System.IO.File.WriteAllText(timelineFilePath, json);
                 // Refresh asset database and mark dirty
                 UnityEditor.AssetDatabase.Refresh();
                 UnityEditor.EditorUtility.SetDirty(this);
                 Debug.Log(syncParticipantEventIds
-                    ? $"[Timeline] Saved timeline catalog to '{loadedFilePath}' and synchronised participant event references."
-                    : $"[Timeline] Saved timeline catalog to '{loadedFilePath}'.");
+                    ? $"[Timeline] Saved timeline catalog to '{timelineFilePath}' and synchronised participant event references."
+                    : $"[Timeline] Saved timeline catalog to '{timelineFilePath}'.");
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[Timeline] Failed to save timeline catalog to '{loadedFilePath}'. Exception: {ex}");
+                Debug.LogError($"[Timeline] Failed to save timeline catalog to '{timelineFilePath}'. Exception: {ex}");
             }
         }
 #endif

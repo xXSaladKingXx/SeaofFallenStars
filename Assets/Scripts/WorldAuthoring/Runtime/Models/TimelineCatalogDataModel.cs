@@ -185,6 +185,45 @@ namespace Zana.WorldAuthoring
             get => id;
             set => id = value;
         }
+
+        /// <summary>
+        /// When editing participants in the inspector, it is useful to track
+        /// the category (character, settlement, army, travel group) selected for
+        /// each entry.  This list runs in parallel with <see cref="participantIds"/>
+        /// and should have the same length.  When serialised to JSON the
+        /// categories are written as strings (see <see cref="ParticipantCategory"/>) to
+        /// preserve user choices across sessions.  If this list is null it is
+        /// initialised to an empty list when the event is created or loaded.
+        /// </summary>
+        [JsonProperty("participantCategories")]
+        public List<ParticipantCategory> participantCategories = new List<ParticipantCategory>();
+
+        /// <summary>
+        /// Indicates how many participants belong to the first side in a directional
+        /// event.  When <see cref="eventDirection"/> is <see cref="EventDirection.OneWay"/>
+        /// or <see cref="EventDirection.TwoWay"/>, participants are logically divided
+        /// into two sides: indices 0 through <c>participantSplitIndex - 1</c> form the
+        /// first side, and indices <c>participantSplitIndex</c> onward form the second
+        /// side.  For non‑directional events (<see cref="EventDirection.None"/>), this
+        /// value should be zero to indicate that all participants are in a single
+        /// group.  When serialising to JSON this value is stored so the editor
+        /// can reconstruct side assignments on load.  Values outside the range
+        /// 0 to <c>participantIds.Count</c> will be clamped at runtime.
+        /// </summary>
+        [JsonProperty("participantSplitIndex")] public int participantSplitIndex = 0;
+
+        /// <summary>
+        /// Specifies whether participants interact in a directional or
+        /// bidirectional manner.  For one‑way events (e.g. killer → victim)
+        /// the first participants in <see cref="participantIds"/> are
+        /// considered the sources and the remainder are targets.  For
+        /// two‑way events (e.g. marriage) all participants are peers.  For
+        /// events where directionality is not meaningful or involves more
+        /// complex relationships (e.g. multi‑party battle) this value should
+        /// be <see cref="EventDirection.None"/>.
+        /// </summary>
+        [JsonProperty("eventDirection")]
+        public EventDirection eventDirection = EventDirection.None;
     }
 
     /// <summary>

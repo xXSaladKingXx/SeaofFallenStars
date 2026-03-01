@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
+using System.Reflection;
 
 namespace Zana.WorldAuthoring
 {
@@ -40,20 +41,116 @@ namespace Zana.WorldAuthoring
             EditorGUI.indentLevel--;
 
             // Fetch timeline event definitions.  We scan loaded timeline
-            // authoring sessions and flatten out their event identifiers.
+            // authoring sessions and flatten out their event identifiers using reflection.
             string[] eventIds = System.Array.Empty<string>();
             string[] eventLabels = System.Array.Empty<string>();
             try
             {
-                var timelineSessions = Object.FindObjectsOfType<TimelineCatalogAuthoringSession>();
-                if (timelineSessions != null && timelineSessions.Length > 0)
+                // Use non‑generic FindObjectsOfType to avoid generic type constraints on TimelineCatalogAuthoringSession
+                var timelineObjects = UnityEngine.Object.FindObjectsOfType(typeof(TimelineCatalogAuthoringSession));
+                if (timelineObjects != null && timelineObjects.Length > 0)
                 {
-                    var tl = timelineSessions[0].data;
-                    if (tl != null && tl.events != null)
+                    // Use the first loaded timeline session found in the scene
+                    UnityEngine.Object sessionObj = timelineObjects[0];
+                    if (sessionObj != null)
                     {
-                        var list = tl.events;
-                        eventIds = list.Select(e => e.eventId).Where(id => !string.IsNullOrWhiteSpace(id)).ToArray();
-                        eventLabels = list.Select(e => !string.IsNullOrWhiteSpace(e.eventName) ? e.eventName : e.eventId).ToArray();
+                        var sessionType = sessionObj.GetType();
+                        // Attempt to get the 'data' field or property via reflection
+                        object dataObj = null;
+                        var dataField = sessionType.GetField("data", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                        if (dataField != null)
+                        {
+                            dataObj = dataField.GetValue(sessionObj);
+                        }
+                        else
+                        {
+                            var dataProp = sessionType.GetProperty("data", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            if (dataProp != null)
+                            {
+                                dataObj = dataProp.GetValue(sessionObj);
+                            }
+                        }
+                        if (dataObj != null)
+                        {
+                            // Try to get 'events' or 'entries' list via reflection
+                            System.Collections.IList eventsList = null;
+                            var eventsField = dataObj.GetType().GetField("events", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            if (eventsField != null)
+                            {
+                                var listObj = eventsField.GetValue(dataObj);
+                                eventsList = listObj as System.Collections.IList;
+                            }
+                            if (eventsList == null)
+                            {
+                                var eventsProp = dataObj.GetType().GetProperty("events", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                if (eventsProp != null)
+                                {
+                                    var listObj = eventsProp.GetValue(dataObj);
+                                    eventsList = listObj as System.Collections.IList;
+                                }
+                            }
+                            if (eventsList == null)
+                            {
+                                var entriesField = dataObj.GetType().GetField("entries", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                if (entriesField != null)
+                                {
+                                    var listObj = entriesField.GetValue(dataObj);
+                                    eventsList = listObj as System.Collections.IList;
+                                }
+                                else
+                                {
+                                    var entriesProp = dataObj.GetType().GetProperty("entries", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                    if (entriesProp != null)
+                                    {
+                                        var listObj = entriesProp.GetValue(dataObj);
+                                        eventsList = listObj as System.Collections.IList;
+                                    }
+                                }
+                            }
+                            if (eventsList != null)
+                            {
+                                // Build arrays of event ids and labels
+                                var ids = new System.Collections.Generic.List<string>();
+                                var labels = new System.Collections.Generic.List<string>();
+                                foreach (var ev in eventsList)
+                                {
+                                    if (ev == null) continue;
+                                    string id = null;
+                                    // Try to get eventId alias or id
+                                    var idProp = ev.GetType().GetProperty("eventId", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                    if (idProp != null)
+                                    {
+                                        id = idProp.GetValue(ev) as string;
+                                    }
+                                    if (string.IsNullOrWhiteSpace(id))
+                                    {
+                                        var idField = ev.GetType().GetField("id", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                        if (idField != null)
+                                        {
+                                            id = idField.GetValue(ev) as string;
+                                        }
+                                    }
+                                    if (!string.IsNullOrWhiteSpace(id))
+                                    {
+                                        ids.Add(id);
+                                        // Try to get event name
+                                        string name = null;
+                                        var nameProp = ev.GetType().GetProperty("eventName", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                                        if (nameProp != null)
+                                        {
+                                            name = nameProp.GetValue(ev) as string;
+                                        }
+                                        if (string.IsNullOrWhiteSpace(name))
+                                        {
+                                            name = id;
+                                        }
+                                        labels.Add(name);
+                                    }
+                                }
+                                eventIds = ids.ToArray();
+                                eventLabels = labels.ToArray();
+                            }
+                        }
                     }
                 }
             }

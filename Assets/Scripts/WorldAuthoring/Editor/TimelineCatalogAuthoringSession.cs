@@ -1,20 +1,21 @@
-#if UNITY_EDITOR
+// Disable the editor stub for TimelineCatalogAuthoringSession.  The runtime
+// implementation is compiled into the default Assembly-CSharp and is usable
+// in the editor.  Defining a stub here leads to duplicate type definitions
+// and Unity serialization errors.  By wrapping the stub in a false
+// preprocessor directive, it is excluded from compilation, letting the
+// runtime class take precedence.
+#if false
+// Editor stub disabled
 using UnityEngine;
-
+using Zana.WorldAuthoring;
 namespace Zana.WorldAuthoring
 {
-    /// <summary>
-    /// A partial stub of <see cref="TimelineCatalogAuthoringSession"/> that exists only in
-    /// the editor assembly.  The runtime implementation resides in the
-    /// Runtime/Sessions folder and provides the full functionality.  Declaring
-    /// this partial class in the editor folder avoids duplicate type
-    /// definition errors that can occur when a copy of the timeline authoring
-    /// session exists under Editor.  No additional members are defined here.
-    /// </summary>
-    public sealed partial class TimelineCatalogAuthoringSession
+    public sealed partial class TimelineCatalogAuthoringSession : WorldDataAuthoringSessionBase
     {
-        // Intentionally left blank.  All logic is defined in the runtime
-        // partial class.
+        public override WorldDataCategory Category => WorldDataCategory.TimelineCatalog;
+        public override string GetDefaultFileBaseName() => "timeline_catalog";
+        public override string BuildJson() => "{}";
+        public override void ApplyJson(string json) { }
     }
 }
 #endif
