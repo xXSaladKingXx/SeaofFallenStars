@@ -95,6 +95,10 @@ namespace Zana.WorldAuthoring
                         var component = go.AddComponent(typeof(TimelineCatalogAuthoringSession)) as WorldDataAuthoringSessionBase;
                         return component;
                     }
+
+                case WorldDataCategory.RelationshipCatalog:
+                    // Relationship catalog has its own authoring session.  Add it directly.
+                    return go.AddComponent<RelationshipCatalogAuthoringSession>();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(category), category, null);
             }

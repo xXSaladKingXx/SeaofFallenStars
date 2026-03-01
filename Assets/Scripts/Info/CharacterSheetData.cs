@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
-using Zana.WorldAuthoring;
 
 // This file defines the data model for a character sheet.  It mirrors the
 // original CharacterSheetData from the upstream repository but adds support
@@ -25,8 +22,6 @@ public class CharacterSheetData
     public string background;
     public string race;
     public string subrace;
-    public string culture;
-    public string religion;
     public int level;
     public string alignment;
     public int experiencePoints;
@@ -53,16 +48,23 @@ public class CharacterSheetData
 
     // Personality / Backstory
     public PersonalityInfo personality = new PersonalityInfo();
-    public AudioClip sampleVoice;
+    public string backstory;
 
-    public enum CharacterType
-    {
-        Default = 0,
-        NPC = 1,
-        CombatNPC = 2,
-        PC = 3,
-    }
+    /// <summary>
+    /// The character type determines which sections of data are visible in the
+    /// authoring UI.  Defaults to <see cref="CharacterType.Default"/>.  See
+    /// <see cref="CharacterType"/> for definitions.
+    /// </summary>
+    public CharacterType characterType = CharacterType.Default;
 
+    /// <summary>
+    /// Relationships defined on this character.  Each entry references a
+    /// relationship type from the global <see cref="RelationshipCatalogDataModel"/>
+    /// and the target entities involved in the relationship.  This new
+    /// collection supersedes the legacy <see cref="relationships"/> object,
+    /// although the legacy fields are retained for backward compatibility.
+    /// </summary>
+    public List<RelationshipEntry> relationshipEntries = new List<RelationshipEntry>();
 
     // Relationships + Feudal
     public Relationships relationships = new Relationships();
@@ -71,9 +73,16 @@ public class CharacterSheetData
     // Spells (page 3)
     public SpellcastingInfo spellcasting = new SpellcastingInfo();
 
-    public string[] timelineEntries = Array.Empty<string>();
+    public string notes;
 
-    public string backstory;
+    /// <summary>
+    /// List of timeline event identifiers associated with this character.  Each entry
+    /// references an event defined in the global TimelineCatalog.  Characters
+    /// should not embed full timeline entries in their JSON; instead they track
+    /// participation by storing the event id here.  This array is initialised
+    /// to an empty array to avoid null reference errors when saving or editing.
+    /// </summary>
+    public string[] timelineEntries = Array.Empty<string>();
 
     public string GetBestDisplayName()
     {
@@ -86,11 +95,9 @@ public class CharacterSheetData
 [Serializable]
 public class LifeInfo
 {
-    public Zana.WorldAuthoring.TimelineEventDate birthDay;
-    public Zana.WorldAuthoring.TimelineEventDate deathDay;
-    public bool isAlive;
-    public string homeSettlementID;
-
+    public string birthDate;
+    public bool isAlive = true;
+    public string deathDate;
 }
 
 [Serializable]
@@ -108,11 +115,8 @@ public class AppearanceInfo
 }
 
 [Serializable]
-
-
 public class AbilityScores
 {
-
     public int str = 10;
     public int dex = 10;
     public int con = 10;
@@ -220,12 +224,83 @@ public class RelationshipOther
     public string characterId;
 }
 
+/// <summary>
+/// Represents a reference to a relationship defined in the global
+/// RelationshipCatalog.  Each entry stores the identifier of the
+/// relationship type along with a list of participant entity IDs.
+/// The order of participants corresponds to their role in the
+/// relationship; for two‑way relationships the order is arbitrary, for
+/// one‑way relationships the first segment (up to <see cref="participantSplitIndex"/>)
+/// represents side A and the remainder represents side B.
+/// </summary>
+[Serializable]
+public class RelationshipEntry
+{
+    /// <summary>
+    /// The identifier of the relationship type, referencing
+    /// <see cref="RelationshipCatalogDataModel"/>.
+    /// </summary>
+    public string relationshipTypeId;
+
+    /// <summary>
+    /// The identifiers of the participants involved in this relationship.
+    /// These may be character IDs, settlement IDs or other entity IDs.
+    /// </summary>
+    public List<string> participantIds = new List<string>();
+
+    /// <summary>
+    /// For one‑way or directional relationships, specifies how many
+    /// participants belong to the first side (side A).  Participants
+    /// with index less than <c>participantSplitIndex</c> are considered
+    /// side A, and the rest are side B.  For two‑way relationships this
+    /// value is ignored.
+    /// </summary>
+    public int participantSplitIndex = 1;
+}
+
+/// <summary>
+/// Enumeration of character types used to determine which sections of the
+/// character sheet are shown in the authoring UI.  Increasing values
+/// correspond to characters with more detailed data.
+/// </summary>
+public enum CharacterType
+{
+    /// <summary>
+    /// Minimal character information: ID, name, race, birth/death, relationships
+    /// and optional timeline entries.
+    /// </summary>
+    Default = 0,
+    /// <summary>
+    /// Non‑player character.  Includes appearance, voice sample, proficiencies,
+    /// skills, personality, relationships and feudal information.
+    /// </summary>
+    NPC = 1,
+    /// <summary>
+    /// Combat‑oriented NPC.  Includes the minimal sections plus appearance,
+    /// proficiencies, skills and optionally personality.  Provides a toggle
+    /// to enable spellcasting.
+    /// </summary>
+    CombatNPC = 2,
+    /// <summary>
+    /// Player character.  Includes all available sections (full detail).
+    /// </summary>
+    PC = 3
+}
+
 [Serializable]
 public class FeudalInfo
 {
-    public bool isFeudal;
-    public string rank;
-    public string rulesSettlementId;
+    public bool isFeudal = false;
+    /// <summary>
+    /// Titles held by this character.  Each entry should be the identifier
+    /// of a settlement or holding where the character rules.  This replaces
+    /// the previous rank/rulesSettlementId fields.
+    /// </summary>
+    public string[] titles;
+
+    /// <summary>
+    /// Identifiers of settlements for which this character is the liege.
+    /// </summary>
     public string[] vassalSettlementIds;
 }
 

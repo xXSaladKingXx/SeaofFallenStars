@@ -2600,78 +2600,6 @@ MonoBehaviour:
   pathFillColor: {r: 0.2, g: 0.9, b: 1, a: 0.16}
   startFillColor: {r: 1, g: 0.92, b: 0.16, a: 0.18}
   cameraPaddingRings: 2
---- !u!1 &206424991
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 206424993}
-  - component: {fileID: 206424992}
-  m_Layer: 0
-  m_Name: __AuthoringSession_TimelineCatalog
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &206424992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 206424991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fd7fa4288ed976439f7391a18d3dc77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.TimelineCatalogAuthoringSession
-  loadedFilePath: C:/Users/goose/SeaofFallenStars/Assets\SaveData\MapData\timeline_catalog.json
-  data:
-    catalogId: timeline_catalog
-    displayName: Timeline Catalog
-    notes: 
-    events:
-    - id: timeline_80b61c718f5b42e8b880f46021ba165c
-      eventName: Cormyr Civil War
-      eventSignificance: 0
-      description: The Start of the Cormyr Civil War, when Duke Octavian Searunner
-        and Duke Qorin Storm rebelled against the Boy-King Azoun Matarys IV
-      year: 1350
-      settingId: kingdom_cormyr
-      participantIds:
-      - arabel
-      - char_azoun_matarys_iv
-      - sundial
-      - char_azoun_matarys_iv
-      - sembia
-      - char_azoun_matarys_iv
-      customTypeName: 
-      eventType: 3
-      icon: 
-      participantCategories: 000000000200000000000000020000000000000002000000
-      participantSplitIndex: 4
-      eventDirection: 2
-    customEventTypes: []
-  timelineFilePath: Assets/SaveData/Timeline/main.timeline.json
---- !u!4 &206424993
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 206424991}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1566514894}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &215134889
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22413,7 +22341,6 @@ Transform:
   - {fileID: 1334595414}
   - {fileID: 480487642}
   - {fileID: 434817852}
-  - {fileID: 206424993}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1566514895
@@ -22429,7 +22356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.WorldDataMasterAuthoring
   activeCategory: 17
-  activeSession: {fileID: 206424992}
+  activeSession: {fileID: 0}
 --- !u!1001 &1581299612
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,7 +1,7 @@
 {
   "catalogId": "timeline_catalog",
   "displayName": "Timeline Catalog",
-  "notes": null,
+  "notes": "",
   "events": [
     {
       "id": "timeline_80b61c718f5b42e8b880f46021ba165c",
@@ -9,8 +9,8 @@
       "eventSignificance": 0,
       "description": "The Start of the Cormyr Civil War, when Duke Octavian Searunner and Duke Qorin Storm rebelled against the Boy-King Azoun Matarys IV",
       "year": 1350,
-      "month": 3,
-      "day": 2,
+      "month": 1,
+      "day": 1,
       "settingId": "kingdom_cormyr",
       "participantIds": [
         "arabel",
@@ -20,9 +20,9 @@
         "sembia",
         "char_azoun_matarys_iv"
       ],
-      "customTypeName": null,
+      "customTypeName": "",
       "eventType": 3,
-      "icon": null,
+      "icon": "",
       "participantCategories": [
         0,
         2,

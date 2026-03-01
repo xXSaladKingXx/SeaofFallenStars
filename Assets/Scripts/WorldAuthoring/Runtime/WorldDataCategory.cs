@@ -47,4 +47,8 @@ public enum WorldDataCategory
 
     // Catalog of timeline events.  Contains all historical events for the world.
     TimelineCatalog = 17,
+
+    // Catalog of relationship types.  Contains all defined relationship
+    // semantics used by characters, settlements and other entities.
+    RelationshipCatalog = 18,
 }
