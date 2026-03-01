@@ -21,15 +21,13 @@
       "id": "tai",
       "displayName": "Tai",
       "description": "Xenophobic and mysterious, with advanced knowledge of the arcane.",
-      "traits": [
-        "defendersofthepass"
-      ],
+      "traits": [],
       "languages": [
         "tai",
         "cormyrean"
       ],
       "religions": [
-        "cormyr_lathanderism"
+        "tai"
       ],
       "notes": ""
     },

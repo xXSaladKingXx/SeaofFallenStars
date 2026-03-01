@@ -168,6 +168,55 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             changed = true;
         }
 
+        // --- Main Tab Editing ---
+        // Allow editing of the main description and population.  When a settlement has no vassals, the
+        // population is an editable integer field.  When vassals exist, the population is derived from
+        // the aggregated stats and cannot be edited directly.  The description is always editable.
+        // Compute whether this settlement has any vassals (non-blank entries).  We do not rely on the
+        // hasVassalsLocal flag defined later because this code executes before vassal management.
+        bool hasVassalsForMain = s.data.main != null && s.data.main.vassals != null && s.data.main.vassals.Any(id => !string.IsNullOrWhiteSpace(id));
+
+        // Description
+        string currentDesc = s.data.main?.description ?? string.Empty;
+        string newDesc = EditorGUILayout.TextField("Description", currentDesc);
+        if (newDesc != currentDesc)
+        {
+            Undo.RecordObject(s, "Set Settlement Description");
+            if (s.data.main == null) s.data.main = new SettlementInfoData.MainTab();
+            s.data.main.description = newDesc;
+            changed = true;
+        }
+        // Population
+        int currentPop = s.data.main?.population ?? 0;
+        if (!hasVassalsForMain)
+        {
+            // Settlement without vassals: allow editing population
+            int newPop = EditorGUILayout.IntField("Population", currentPop);
+            if (newPop != currentPop)
+            {
+                Undo.RecordObject(s, "Set Settlement Population");
+                if (s.data.main == null) s.data.main = new SettlementInfoData.MainTab();
+                s.data.main.population = newPop;
+                changed = true;
+            }
+        }
+        else
+        {
+            // Settlement has vassals: show derived total population (read-only).  Use SettlementStatsCache.
+            int totalPop = 0;
+            try
+            {
+                SettlementStatsCache.Invalidate();
+                var statsPop = SettlementStatsCache.GetStatsOrNull(s.data.settlementId);
+                if (statsPop != null) totalPop = statsPop.totalPopulation;
+            }
+            catch { }
+            using (new EditorGUI.DisabledScope(true))
+            {
+                EditorGUILayout.IntField("Total Population (Derived)", totalPop);
+            }
+        }
+
         var characters = WorldDataChoicesCache.GetCharacters();
         var settlements = WorldDataChoicesCache.GetSettlements();
         var armies = WorldDataChoicesCache.GetArmies();
@@ -929,6 +978,9 @@ public sealed class SettlementAuthoringSessionEditor : Editor
             "data.feudal.contractTerms",
             "data.feudal.councillorSalaries"
             ,
+            // Skip the main description and population because they are drawn manually above.
+            "data.main.description",
+            "data.main.population",
             // Skip economy fields here.  They will be rendered manually by DrawEconomySection.
             "data.economy.totalIncomePerMonth",
             "data.economy.totalProfitPerMonth",
