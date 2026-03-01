@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
+// NOTE: This file overrides the upstream UnpopulatedInfoData definition in order to
+// introduce a maxBoatSize property on the Water tab.  It mirrors the original
+// source from the SeaofFallenStars repository and preserves all existing
+// fields.  The new property is annotated with JsonProperty and Range so it
+// appears in the inspector and serializes correctly.  See the README in
+// SeaofFallenStars_TerrainRuinsPatch for details.
+
 [Serializable]
 public class UnpopulatedInfoData
 {
@@ -236,4 +243,10 @@ public class UnpopulatedWaterTab
     [JsonProperty("notes")]
     [TextArea(2, 12)]
     public string notes;
+
+    // NEW: maximum vessel size that can safely navigate this water.  1 =
+    // smallest craft, 6 = largest ships.  Serialized under "maxBoatSize".
+    [JsonProperty("maxBoatSize")]
+    [Range(1, 6)]
+    public int maxBoatSize = 1;
 }
