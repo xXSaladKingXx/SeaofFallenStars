@@ -22196,7 +22196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddfd1b9cb89bab4185465c213e9a039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.WorldDataMasterAuthoring
-  activeCategory: 2
+  activeCategory: 19
   activeSession: {fileID: 1566514896}
 --- !u!114 &1566514896
 MonoBehaviour:
@@ -22207,129 +22207,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1566514893}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8ea38c57cd2b884cbbf4f1be6577ab2, type: 3}
+  m_Script: {fileID: 11500000, guid: 97a49e6e0d17d4c40b7d8588bf00c521, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SettlementAuthoringSession
+  m_EditorClassIdentifier: Assembly-CSharp::Zana.WorldAuthoring.BuildingCatalogAuthoringSession
   loadedFilePath: 
   data:
-    isPopulated: 0
-    characterIds: []
-    settlementId: arabel
-    displayName: City of Arabel
-    rulerCharacterId: char_azoun_matarys_iv
-    liegeSettlementId: kingdom_cormyr
-    mapUrlOrPath: 
-    capitalSettlementId: 
-    main:
-      description: 
-      notableFacts: []
-      population: 27600
-      rulerDisplayName: King Azoun Matarys IV
-      rulerName: 
-      vassals: []
-      characterIds: []
-    army:
-      armyIds:
-      - cormyrarmy
-      totalArmy: 22
-      menAtArms:
-      - heavy_infantry
-      - light_cavalry
-      - light_infantry
-      - purple_dragons
-      primaryCommanderDisplayName: King Azoun Matarys IV
-      primaryCommanderCharacterId: char_azoun_matarys_iv
-      knightCharacterIds:
-      - baronetclanceevermillion
-      - baronetraymondgardner
-      - dukearickongardner
-      - lordaegorbittersteel
-      - lordalaricselgaunt
-      - lordmerricksicklestone
-      - lordperseussungardner
-      - lordtomasmellsen
-      - mastergeraltredstar
-      totalLevies: 0
-      raisedMaintenanceCosts: 0
-      unraisedMaintenanceCosts: 0
-      attack: 32
-      defense: 40
-      speed: 20
-    economy:
-      mainExports: 
-      mainImports: 
-      mainIndustries: 
-      notes: 
-      totalIncomePerMonth: 12860
-      totalProfitPerMonth: 8200
-      totalTreasury: 879000
-      courtExpenses: 800
-      armyExpenses: 1680
-      currentlyConstructing: []
-      buildings: []
-      modifiedIncomePerMonth: 0
-      modifiedTotalLevies: 0
-      wheat: 0
-      bread: 0
-      meat: 0
-      wood: 0
-      stone: 0
-      iron: 0
-      steel: 0
-    cultural:
-      culture: 
-      raceDistribution:
-      - key: human
-        percent: 97
-      - key: elf
-        percent: 2
-      - key: halfelf
-        percent: 1
-      religion: cormyr_lathanderism
-      traits: []
-      languages:
-      - cormyrean
-      customs: []
-      populationDistribution: 
-      primaryTraits: []
-      cultureDistribution:
-      - key: cormyrean
-        percent: 92
-      - key: cormyr-sembian
-        percent: 8
-    history:
-      notes: 
-      timelineEntries:
-      - timeline_80b61c718f5b42e8b880f46021ba165c
-      rulingFamilyMembers: []
-    feudal:
-      castellanCharacterId: 
-      marshallCharacterId: char_tomasmellsen
-      stewardCharacterId: 
-      diplomatCharacterId: 
-      spymasterCharacterId: 
-      headPriestCharacterId: 
-      vassalContracts: []
-      settlementId: 
-      layer: 
-      isPopulated: 0
-      isFeudal: 1
-      liegeSettlementId: kingdom_cormyr
-      notes: 
-      laws: 
-      capitalSettlementId: 
-      incomeTaxRate: 0
-      levyTaxRate: 0
-      contractTerms: 
-      councillorSalaries: []
-  culturalComposition: []
-  raceDistribution: []
-  castellanCharacterId: 
-  marshallCharacterId: 
-  stewardCharacterId: 
-  diplomatCharacterId: 
-  spymasterCharacterId: 
-  headPriestCharacterId: 
+    catalogId: building_catalog
+    displayName: Building Catalog
+    entries: []
 --- !u!1001 &1581299612
 PrefabInstance:
   m_ObjectHideFlags: 0

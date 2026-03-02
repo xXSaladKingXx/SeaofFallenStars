@@ -27,6 +27,10 @@ namespace Zana.WorldAuthoring
         private readonly List<string> _loadOptions = new List<string>();
         private readonly List<string> _loadPaths = new List<string>();
 
+        // Character subtype selection for new characters
+        private int _newCharTypeIndex;
+        private readonly string[] _charTypeNames = Enum.GetNames(typeof(CharacterType));
+
         public override void OnInspectorGUI()
         {
             var master = (WorldDataMasterAuthoring)target;
@@ -52,6 +56,14 @@ namespace Zana.WorldAuthoring
             int typeIndex = Array.IndexOf(nonCatalogs, _newType);
             int newTypeIndex = EditorGUILayout.Popup("Type", typeIndex >= 0 ? typeIndex : 0, nonCatNames);
             _newType = nonCatalogs[Mathf.Clamp(newTypeIndex, 0, nonCatalogs.Length - 1)];
+
+            // If creating a character, allow selection of a character subtype
+            if (_newType == WorldDataCategory.Character)
+            {
+                int subtypeIndex = Mathf.Clamp(_newCharTypeIndex, 0, _charTypeNames.Length - 1);
+                subtypeIndex = EditorGUILayout.Popup("Character Subtype", subtypeIndex, _charTypeNames);
+                _newCharTypeIndex = subtypeIndex;
+            }
             // ID and display name
             _newId = EditorGUILayout.TextField("ID", _newId);
             _newDisplay = EditorGUILayout.TextField("Display Name", _newDisplay);
@@ -63,7 +75,7 @@ namespace Zana.WorldAuthoring
             }
             if (GUILayout.Button("Create & Save"))
             {
-                CreateAndSave(master, _newType, _newId, _newDisplay);
+                CreateAndSave(master, _newType, _newId, _newDisplay, _newCharTypeIndex);
             }
             EditorGUILayout.EndHorizontal();
 
@@ -109,7 +121,7 @@ namespace Zana.WorldAuthoring
             base.OnInspectorGUI();
         }
 
-        private void CreateAndSave(WorldDataMasterAuthoring master, WorldDataCategory category, string id, string displayName)
+        private void CreateAndSave(WorldDataMasterAuthoring master, WorldDataCategory category, string id, string displayName, int charTypeIndex)
         {
             if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(displayName))
             {
@@ -131,6 +143,24 @@ namespace Zana.WorldAuthoring
                 SetStringField(data, "regionId", id);
                 SetStringField(data, "pointId", id);
                 SetStringField(data, "displayName", displayName);
+
+                // If creating a character, set its characterType from the selected subtype index
+                if (category == WorldDataCategory.Character)
+                {
+                    var ctField = data.GetType().GetField("characterType");
+                    if (ctField != null)
+                    {
+                        try
+                        {
+                            var enumValues = Enum.GetValues(typeof(CharacterType));
+                            if (charTypeIndex >= 0 && charTypeIndex < enumValues.Length)
+                            {
+                                ctField.SetValue(data, enumValues.GetValue(charTypeIndex));
+                            }
+                        }
+                        catch { }
+                    }
+                }
             }
             string json;
             try
