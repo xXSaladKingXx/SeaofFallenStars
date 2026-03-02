@@ -3,7 +3,7 @@
   "displayName": "Building Catalog",
   "entries": [
     {
-      "id": "m_bakery_level_1_1_settlement_tier_subtracts_from_wheat_resource_output_from_farmland_2_settlement_tier_income_stability_and_happiness_subtract_from_wheat_resource_income_output_from_farmland",
+      "id": "bakery1",
       "displayName": "(M) Bakery Level 1",
       "category": "CommerceTrade",
       "cost": 2000.0,
@@ -18,10 +18,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 180
     },
     {
-      "id": "m_barracks_level_1_1_settlement_tier",
+      "id": "barracks1",
       "displayName": "(M) Barracks Level 1",
       "category": "Military",
       "cost": 5000.0,
@@ -36,10 +37,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+1 Levies"
+      "notes": "+1 Levies",
+      "buildTimeDays": 180
     },
     {
-      "id": "m_butchery_fishery_level_1_up_to_your_resource_limit_in_income_produced_if_you_use_more_than_50_of_your_resource_limit_the_resource_limit_drops_1_per_year_for_each_butchery_fishery_you_own",
+      "id": "butcheryfishery1",
       "displayName": "(M) Butchery / Fishery Level 1",
       "category": "AgricultureIndustry",
       "cost": 6000.0,
@@ -54,10 +56,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 180
     },
     {
-      "id": "m_farmland_level_1_can_build_1_per_500_population",
+      "id": "farmland1",
       "displayName": "(M) Farmland Level 1",
       "category": "AgricultureIndustry",
       "cost": 3000.0,
@@ -72,10 +75,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 180
     },
     {
-      "id": "m_general_store_level_1_amount_that_can_be_built_is_based_on_population_population_0_1_000_1_population_1_000_2_000_2_population_2_000_5_000_3_population_5_000_10_000_4_population_10_000_5",
+      "id": "generalstore1",
       "displayName": "(M) General Store Level 1",
       "category": "CommerceTrade",
       "cost": 6000.0,
@@ -90,10 +94,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "m_granary_level_1_one_can_be_built_for_each_5_income_points_from_farmland_which_are_not_lost",
+      "id": "granary1",
       "displayName": "(M) Granary Level 1",
       "category": "AgricultureIndustry",
       "cost": 4000.0,
@@ -108,10 +113,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-10% disease fatality"
+      "notes": "-10% disease fatality",
+      "buildTimeDays": 180
     },
     {
-      "id": "m_guard_station_level_1",
+      "id": "guardstation1",
       "displayName": "(M) Guard Station Level 1",
       "category": "Military",
       "cost": 10000.0,
@@ -126,10 +132,11 @@
       "population": 50,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+1 Levies"
+      "notes": "+1 Levies",
+      "buildTimeDays": 180
     },
     {
-      "id": "m_guildhall_level_1_can_have_1_settlement_tier",
+      "id": "guildhall1",
       "displayName": "(M) Guildhall Level 1",
       "category": "CommerceTrade",
       "cost": 12000.0,
@@ -144,10 +151,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 240
     },
     {
-      "id": "m_inn_includes_tavern_restaurant_roadhouse_etc_level_1",
+      "id": "inn1",
       "displayName": "(M) Inn (Includes tavern, restaurant, roadhouse, etc) Level 1",
       "category": "CommerceTrade",
       "cost": 5000.0,
@@ -162,10 +170,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 180
     },
     {
-      "id": "m_marketplace_level_1_can_build_1_and_extra_ones_subtract_from_trade_capacity",
+      "id": "marketplace1",
       "displayName": "(M) Marketplace Level 1",
       "category": "CommerceTrade",
       "cost": 6000.0,
@@ -180,10 +189,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 180
     },
     {
-      "id": "m_mine_level_1_village_1_large_village_2_small_town_4_large_town_6_city_8_metropolis_10",
+      "id": "mine1",
       "displayName": "(M) Mine Level 1",
       "category": "AgricultureIndustry",
       "cost": 7000.0,
@@ -198,10 +208,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 180
     },
     {
-      "id": "m_naval_yard_level_2",
+      "id": "navalyard2",
       "displayName": "(M) Naval Yard Level 2",
       "category": "Military",
       "cost": 40000.0,
@@ -216,10 +227,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1095
     },
     {
-      "id": "m_quarry_level_1_can_build_1_settlement_tier",
+      "id": "quarry1",
       "displayName": "(M) Quarry Level 1",
       "category": "AgricultureIndustry",
       "cost": 5000.0,
@@ -234,10 +246,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "m_residential_districts_level_1",
+      "id": "residentialdistricts1",
       "displayName": "(M) Residential Districts Level 1",
       "category": "CivicCultural",
       "cost": 8000.0,
@@ -252,10 +265,11 @@
       "population": 250,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "amphitheater_level_1_small_stage",
+      "id": "amphitheater1",
       "displayName": "Amphitheater Level 1",
       "category": "CivicCultural",
       "cost": 10000.0,
@@ -270,10 +284,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-10% Training time for Charisma and all CHA Skills"
+      "notes": "-10% Training time for Charisma and all CHA Skills",
+      "buildTimeDays": 365
     },
     {
-      "id": "amphitheater_level_2_large_stage",
+      "id": "amphitheater2",
       "displayName": "Amphitheater Level 2",
       "category": "CivicCultural",
       "cost": 25000.0,
@@ -288,10 +303,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+5% monthly chance to attract skilled playwright each month; -10% Training time for Charisma and all CHA Skills"
+      "notes": "+5% monthly chance to attract skilled playwright each month; -10% Training time for Charisma and all CHA Skills",
+      "buildTimeDays": 730
     },
     {
-      "id": "amphitheater_level_3_theatre_music_hall",
+      "id": "amphitheater3",
       "displayName": "Amphitheater Level 3",
       "category": "CivicCultural",
       "cost": 30000.0,
@@ -306,10 +322,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+5% monthly chance to attract skilled playwright each month; -10% Training time for Charisma and all CHA Skills"
+      "notes": "+5% monthly chance to attract skilled playwright each month; -10% Training time for Charisma and all CHA Skills",
+      "buildTimeDays": 1095
     },
     {
-      "id": "arena_level_1_small_stage",
+      "id": "arena1",
       "displayName": "Arena Level 1 (Small Stage)",
       "category": "CivicCultural",
       "cost": 15000.0,
@@ -324,10 +341,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "arena_level_2_large_stage",
+      "id": "arena2",
       "displayName": "Arena Level 2 (Large Stage)",
       "category": "CivicCultural",
       "cost": 25000.0,
@@ -342,10 +360,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-10% Time to Train Strength"
+      "notes": "-10% Time to Train Strength",
+      "buildTimeDays": 730
     },
     {
-      "id": "arena_level_3_open_arena",
+      "id": "arena3",
       "displayName": "Arena Level 3 (Open Arena)",
       "category": "CivicCultural",
       "cost": 25000.0,
@@ -360,10 +379,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-5% Monthly Rebellion Chance; -10% Time to Train Strength"
+      "notes": "-5% Monthly Rebellion Chance; -10% Time to Train Strength",
+      "buildTimeDays": 730
     },
     {
-      "id": "arena_level_4_grand_arena",
+      "id": "arena4",
       "displayName": "Arena Level 4 (Grand Arena)",
       "category": "CivicCultural",
       "cost": 50000.0,
@@ -378,10 +398,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+10% Monthly Chance to attract Great Warrior that can be hired; 10% Time to Train Strength"
+      "notes": "+10% Monthly Chance to attract Great Warrior that can be hired; 10% Time to Train Strength",
+      "buildTimeDays": 1095
     },
     {
-      "id": "bakery_level_2",
+      "id": "bakery2",
       "displayName": "Bakery Level 2",
       "category": "CommerceTrade",
       "cost": 4000.0,
@@ -396,10 +417,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-10% fatalities from disease"
+      "notes": "-10% fatalities from disease",
+      "buildTimeDays": 240
     },
     {
-      "id": "bakery_level_3",
+      "id": "bakery3",
       "displayName": "Bakery Level 3",
       "category": "CommerceTrade",
       "cost": 7000.0,
@@ -414,10 +436,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "barracks_level_2",
+      "id": "barracks2",
       "displayName": "Barracks Level 2",
       "category": "Military",
       "cost": 7500.0,
@@ -432,10 +455,11 @@
       "population": 50,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+2 Levies"
+      "notes": "+2 Levies",
+      "buildTimeDays": 365
     },
     {
-      "id": "barracks_level_3_training_ctr",
+      "id": "barracks3",
       "displayName": "Barracks Level 3 (Training Ctr)",
       "category": "Military",
       "cost": 10000.0,
@@ -450,10 +474,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+2 Levies"
+      "notes": "+2 Levies",
+      "buildTimeDays": 730
     },
     {
-      "id": "barracks_level_4_military_acad",
+      "id": "barracks4",
       "displayName": "Barracks Level 4 (Military Acad.)",
       "category": "Military",
       "cost": 35000.0,
@@ -468,10 +493,11 @@
       "population": 250,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+2 Levies"
+      "notes": "+2 Levies",
+      "buildTimeDays": 1460
     },
     {
-      "id": "baths_level_1",
+      "id": "baths1",
       "displayName": "Baths Level 1",
       "category": "CivicCultural",
       "cost": 7500.0,
@@ -486,10 +512,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "baths_level_2",
+      "id": "baths2",
       "displayName": "Baths Level 2",
       "category": "CivicCultural",
       "cost": 12000.0,
@@ -504,10 +531,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-10% fatalities from Disease"
+      "notes": "-10% fatalities from Disease",
+      "buildTimeDays": 730
     },
     {
-      "id": "baths_level_3",
+      "id": "baths3",
       "displayName": "Baths Level 3",
       "category": "CivicCultural",
       "cost": 18000.0,
@@ -522,10 +550,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1095
     },
     {
-      "id": "blacksmithy_level_1_m_can_build_as_many_as_you_wish_but_its_income_consumes_an_equivalent_amount_of_income_from_a_mine_or_alternatively_you_can_barter_for_iron_to_keep_the_building_active_at_cost_for_each_level_of_blacksmith_built_past_1_per_settlement_tier_double_income_consumption_of_the_extra_blacksmiths_from_the_mines_for_each_level_of_blacksmith_built_past_2_per_settlement_tier_double_income_consumption_and_defense_counts_towards_the_income_consumption_of_extra_blackmiths",
+      "id": "blacksmithy1",
       "displayName": "Blacksmithy Level 1 (M)",
       "category": "AgricultureIndustry",
       "cost": 8000.0,
@@ -540,10 +569,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-5% Men-at-Arms cost"
+      "notes": "-5% Men-at-Arms cost",
+      "buildTimeDays": 365
     },
     {
-      "id": "blacksmithy_level_2",
+      "id": "blacksmithy2",
       "displayName": "Blacksmithy Level 2",
       "category": "AgricultureIndustry",
       "cost": 12000.0,
@@ -558,10 +588,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "blacksmithy_level_3",
+      "id": "blacksmithy3",
       "displayName": "Blacksmithy Level 3",
       "category": "AgricultureIndustry",
       "cost": 18000.0,
@@ -576,10 +607,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-5% Men-at-Arms cost"
+      "notes": "-5% Men-at-Arms cost",
+      "buildTimeDays": 1095
     },
     {
-      "id": "brewery_level_1",
+      "id": "brewery1",
       "displayName": "Brewery Level 1",
       "category": "AgricultureIndustry",
       "cost": 6000.0,
@@ -594,10 +626,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-5% Rebellion Chance"
+      "notes": "-5% Rebellion Chance",
+      "buildTimeDays": 365
     },
     {
-      "id": "brewery_level_2",
+      "id": "brewery2",
       "displayName": "Brewery Level 2",
       "category": "AgricultureIndustry",
       "cost": 10000.0,
@@ -612,10 +645,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "brewery_level_3",
+      "id": "brewery3",
       "displayName": "Brewery Level 3",
       "category": "AgricultureIndustry",
       "cost": 15000.0,
@@ -630,10 +664,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-10% Rebellion Chance"
+      "notes": "-10% Rebellion Chance",
+      "buildTimeDays": 1095
     },
     {
-      "id": "butchery_fishery_level_2",
+      "id": "butcheryfishery2",
       "displayName": "Butchery / Fishery Level 2",
       "category": "AgricultureIndustry",
       "cost": 10000.0,
@@ -648,10 +683,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "butchery_fishery_level_3",
+      "id": "butcheryfishery3",
       "displayName": "Butchery / Fishery Level 3",
       "category": "AgricultureIndustry",
       "cost": 15000.0,
@@ -666,7 +702,8 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
       "id": "citadel",
@@ -684,7 +721,8 @@
       "population": 400,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+20% Siege Time; +20% fatal attacker casualties"
+      "notes": "+20% Siege Time; +20% fatal attacker casualties",
+      "buildTimeDays": 4380
     },
     {
       "id": "city",
@@ -702,10 +740,11 @@
       "population": 0,
       "buildingSlots": 4,
       "tradeCapacity": 4,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1825
     },
     {
-      "id": "docks_level_1",
+      "id": "docks1",
       "displayName": "Docks Level 1",
       "category": "CommerceTrade",
       "cost": 8000.0,
@@ -720,10 +759,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 1,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 30
     },
     {
-      "id": "docks_level_2",
+      "id": "docks2",
       "displayName": "Docks Level 2",
       "category": "CommerceTrade",
       "cost": 15000.0,
@@ -738,10 +778,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 540
     },
     {
-      "id": "docks_level_3",
+      "id": "docks3",
       "displayName": "Docks Level 3",
       "category": "CommerceTrade",
       "cost": 25000.0,
@@ -756,10 +797,11 @@
       "population": 0,
       "buildingSlots": 3,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "farmland_level_2",
+      "id": "farmland2",
       "displayName": "Farmland Level 2",
       "category": "AgricultureIndustry",
       "cost": 6000.0,
@@ -774,10 +816,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "farmland_level_3",
+      "id": "farmland3",
       "displayName": "Farmland Level 3",
       "category": "AgricultureIndustry",
       "cost": 10000.0,
@@ -792,10 +835,11 @@
       "population": 2,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "general_store_level_2",
+      "id": "generalstore2",
       "displayName": "General Store Level 2",
       "category": "CommerceTrade",
       "cost": 9000.0,
@@ -810,10 +854,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "general_store_level_3",
+      "id": "generalstore3",
       "displayName": "General Store Level 3",
       "category": "CommerceTrade",
       "cost": 12000.0,
@@ -828,10 +873,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "general_store_level_4",
+      "id": "generalstore4",
       "displayName": "General Store Level 4",
       "category": "CommerceTrade",
       "cost": 15000.0,
@@ -846,10 +892,11 @@
       "population": 200,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "general_store_level_5",
+      "id": "generalstore5",
       "displayName": "General Store Level 5",
       "category": "CommerceTrade",
       "cost": 25000.0,
@@ -864,10 +911,11 @@
       "population": 200,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "granary_level_2",
+      "id": "granary2",
       "displayName": "Granary Level 2",
       "category": "AgricultureIndustry",
       "cost": 6000.0,
@@ -882,10 +930,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "granary_level_3",
+      "id": "granary3",
       "displayName": "Granary Level 3",
       "category": "AgricultureIndustry",
       "cost": 9000.0,
@@ -900,10 +949,11 @@
       "population": 2,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-10% disease fatality"
+      "notes": "-10% disease fatality",
+      "buildTimeDays": 730
     },
     {
-      "id": "guard_station_level_2_base",
+      "id": "guardstation2",
       "displayName": "Guard Station Level 2 (Base)",
       "category": "Military",
       "cost": 25000.0,
@@ -918,10 +968,11 @@
       "population": 50,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+2 Levies"
+      "notes": "+2 Levies",
+      "buildTimeDays": 365
     },
     {
-      "id": "guildhall_level_2",
+      "id": "guildhall2",
       "displayName": "Guildhall Level 2",
       "category": "CommerceTrade",
       "cost": 20000.0,
@@ -936,10 +987,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "guildhall_level_3",
+      "id": "guildhall3",
       "displayName": "Guildhall Level 3",
       "category": "CommerceTrade",
       "cost": 35000.0,
@@ -954,10 +1006,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "hospital_level_1",
+      "id": "hospital1",
       "displayName": "Hospital Level 1",
       "category": "CivicCultural",
       "cost": 10000.0,
@@ -972,10 +1025,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-10% Fatal Casualties"
+      "notes": "-10% Fatal Casualties",
+      "buildTimeDays": 365
     },
     {
-      "id": "hospital_level_2",
+      "id": "hospital2",
       "displayName": "Hospital Level 2",
       "category": "CivicCultural",
       "cost": 16000.0,
@@ -990,10 +1044,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1095
     },
     {
-      "id": "hospital_level_3",
+      "id": "hospital3",
       "displayName": "Hospital Level 3",
       "category": "CivicCultural",
       "cost": 25000.0,
@@ -1008,10 +1063,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-10% Fatal Casualties"
+      "notes": "-10% Fatal Casualties",
+      "buildTimeDays": 1825
     },
     {
-      "id": "inn_level_2",
+      "id": "inn2",
       "displayName": "Inn Level 2",
       "category": "CommerceTrade",
       "cost": 9000.0,
@@ -1026,10 +1082,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "inn_level_3",
+      "id": "inn3",
       "displayName": "Inn Level 3",
       "category": "CommerceTrade",
       "cost": 14000.0,
@@ -1044,10 +1101,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+1 Max Inns Allowed (Can only benefit from the highest level Inn\u2019s \u2018Max Inn\u2019 Bonus); +5% chance of adventurers passing through each month; +1% chance of adventurers passing through per extra room; -10% fatality to disease and famine; -5% rebellion chance; +5% chance to attract minor nobles each month"
+      "notes": "+1 Max Inns Allowed (Can only benefit from the highest level Inn\u2019s \u2018Max Inn\u2019 Bonus); +5% chance of adventurers passing through each month; +1% chance of adventurers passing through per extra room; -10% fatality to disease and famine; -5% rebellion chance; +5% chance to attract minor nobles each month",
+      "buildTimeDays": 365
     },
     {
-      "id": "inn_level_4",
+      "id": "inn4",
       "displayName": "Inn Level 4",
       "category": "CommerceTrade",
       "cost": 25000.0,
@@ -1062,10 +1120,11 @@
       "population": 2,
       "buildingSlots": 0,
       "tradeCapacity": 2,
-      "notes": "+5% chance of adventurers passing through each month; +1% chance of adventurers passing through per extra room; -10% Rebellion Chance; +5% chance to learn secret on a random nobleman monthly; +5% chance to attract minor nobles each month; +1% chance of attracting a major noble each month"
+      "notes": "+5% chance of adventurers passing through each month; +1% chance of adventurers passing through per extra room; -10% Rebellion Chance; +5% chance to learn secret on a random nobleman monthly; +5% chance to attract minor nobles each month; +1% chance of attracting a major noble each month",
+      "buildTimeDays": 730
     },
     {
-      "id": "large_castle",
+      "id": "largecastle",
       "displayName": "Large Castle",
       "category": "KeepCastle",
       "cost": 65000.0,
@@ -1080,10 +1139,11 @@
       "population": 300,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 2555
     },
     {
-      "id": "large_keep",
+      "id": "largekeep",
       "displayName": "Large Keep",
       "category": "KeepCastle",
       "cost": 40000.0,
@@ -1098,10 +1158,11 @@
       "population": 150,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1095
     },
     {
-      "id": "large_town",
+      "id": "largetown",
       "displayName": "Large Town",
       "category": "SettlementTier",
       "cost": 25000.0,
@@ -1116,10 +1177,11 @@
       "population": 750,
       "buildingSlots": 3,
       "tradeCapacity": 3,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "large_village",
+      "id": "largevillage",
       "displayName": "Large Village",
       "category": "SettlementTier",
       "cost": 5000.0,
@@ -1134,10 +1196,11 @@
       "population": 100,
       "buildingSlots": 2,
       "tradeCapacity": 1,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 240
     },
     {
-      "id": "library_level_1",
+      "id": "library1",
       "displayName": "Library Level 1",
       "category": "CivicCultural",
       "cost": 8000.0,
@@ -1152,10 +1215,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-10% time to Train INT and INT Skills"
+      "notes": "-10% time to Train INT and INT Skills",
+      "buildTimeDays": 365
     },
     {
-      "id": "library_level_2",
+      "id": "library2",
       "displayName": "Library Level 2",
       "category": "CivicCultural",
       "cost": 14000.0,
@@ -1170,10 +1234,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "lumber_yard_level_1_m_for_each_past_3_1sq_mi_of_forrest_a_year_or_0_5_sq_mi_of_deep_forest_a_year_for_each_past_5_2sq_mi_of_forrest_a_year_or_1_sq_mi_of_deep_forest_a_year_for_each_past_7_3sq_mi_of_forrest_a_year_or_1_5_sq_mi_of_deep_forest_a_year_at_the_end_of_each_year_take_total_consumption_of_forest_and_subtract_it_from_land_mark_that_it_regrows_in_20yrs_village_1_large_village_2_small_town_4_large_town_6_city_8_metropolis_10",
+      "id": "lumberyard1",
       "displayName": "Lumber Yard Level 1 (M)",
       "category": "AgricultureIndustry",
       "cost": 4000.0,
@@ -1188,10 +1253,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 180
     },
     {
-      "id": "lumber_yard_level_2",
+      "id": "lumberyard2",
       "displayName": "Lumber Yard Level 2",
       "category": "AgricultureIndustry",
       "cost": 7000.0,
@@ -1206,10 +1272,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-2.5% Build Time"
+      "notes": "-2.5% Build Time",
+      "buildTimeDays": 365
     },
     {
-      "id": "lumber_yard_level_3",
+      "id": "lumberyard3",
       "displayName": "Lumber Yard Level 3",
       "category": "AgricultureIndustry",
       "cost": 10000.0,
@@ -1224,10 +1291,11 @@
       "population": 0,
       "buildingSlots": 1,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "magic_shop_level_1",
+      "id": "magicshop1",
       "displayName": "Magic Shop Level 1",
       "category": "CommerceTrade",
       "cost": 20000.0,
@@ -1242,10 +1310,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "magic_shop_level_2",
+      "id": "magicshop2",
       "displayName": "Magic Shop Level 2",
       "category": "CommerceTrade",
       "cost": 35000.0,
@@ -1260,10 +1329,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1095
     },
     {
-      "id": "magic_shop_level_3",
+      "id": "magicshop3",
       "displayName": "Magic Shop Level 3",
       "category": "CommerceTrade",
       "cost": 50000.0,
@@ -1278,10 +1348,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1460
     },
     {
-      "id": "marketplace_level_2",
+      "id": "marketplace2",
       "displayName": "Marketplace Level 2",
       "category": "CommerceTrade",
       "cost": 12000.0,
@@ -1296,10 +1367,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "marketplace_level_3",
+      "id": "marketplace3",
       "displayName": "Marketplace Level 3",
       "category": "CommerceTrade",
       "cost": 20000.0,
@@ -1314,10 +1386,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+5% chance of wandering traders event each month"
+      "notes": "+5% chance of wandering traders event each month",
+      "buildTimeDays": 730
     },
     {
-      "id": "marketplace_level_4",
+      "id": "marketplace4",
       "displayName": "Marketplace Level 4",
       "category": "CommerceTrade",
       "cost": 35000.0,
@@ -1332,7 +1405,8 @@
       "population": 500,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+10% chance of wandering traders event each month"
+      "notes": "+10% chance of wandering traders event each month",
+      "buildTimeDays": 1095
     },
     {
       "id": "metropolis",
@@ -1350,10 +1424,11 @@
       "population": 0,
       "buildingSlots": 5,
       "tradeCapacity": 10,
-      "notes": "+10"
+      "notes": "+10",
+      "buildTimeDays": 5475
     },
     {
-      "id": "mill_level_1",
+      "id": "mill1",
       "displayName": "Mill Level 1",
       "category": "AgricultureIndustry",
       "cost": 5000.0,
@@ -1368,10 +1443,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 180
     },
     {
-      "id": "mill_level_2",
+      "id": "mill2",
       "displayName": "Mill Level 2",
       "category": "AgricultureIndustry",
       "cost": 8000.0,
@@ -1386,10 +1462,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "mill_level_3",
+      "id": "mill3",
       "displayName": "Mill Level 3",
       "category": "AgricultureIndustry",
       "cost": 12000.0,
@@ -1404,10 +1481,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "mine_level_2",
+      "id": "mine2",
       "displayName": "Mine Level 2",
       "category": "AgricultureIndustry",
       "cost": 11000.0,
@@ -1422,10 +1500,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "mine_level_3",
+      "id": "mine3",
       "displayName": "Mine Level 3",
       "category": "AgricultureIndustry",
       "cost": 15000.0,
@@ -1440,10 +1519,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+5% chance of rebellion each month"
+      "notes": "+5% chance of rebellion each month",
+      "buildTimeDays": 730
     },
     {
-      "id": "mint_level_1",
+      "id": "mint1",
       "displayName": "Mint Level 1",
       "category": "CommerceTrade",
       "cost": 30000.0,
@@ -1458,10 +1538,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1095
     },
     {
-      "id": "mint_level_2",
+      "id": "mint2",
       "displayName": "Mint Level 2",
       "category": "CommerceTrade",
       "cost": 50000.0,
@@ -1476,10 +1557,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1460
     },
     {
-      "id": "naval_yard_level_1",
+      "id": "navalyard1",
       "displayName": "Naval Yard Level 1",
       "category": "Military",
       "cost": 25000.0,
@@ -1494,10 +1576,11 @@
       "population": 100,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "naval_yard_level_3",
+      "id": "navalyard3",
       "displayName": "Naval Yard Level 3",
       "category": "Military",
       "cost": 60000.0,
@@ -1512,10 +1595,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1825
     },
     {
-      "id": "naval_yard_level_4",
+      "id": "navalyard4",
       "displayName": "Naval Yard Level 4",
       "category": "Military",
       "cost": 80000.0,
@@ -1533,7 +1617,7 @@
       "notes": ""
     },
     {
-      "id": "port_level_1",
+      "id": "port1",
       "displayName": "Port Level 1",
       "category": "CommerceTrade",
       "cost": 40000.0,
@@ -1548,10 +1632,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 2,
-      "notes": "-5% Build time"
+      "notes": "-5% Build time",
+      "buildTimeDays": 730
     },
     {
-      "id": "port_level_2",
+      "id": "port2",
       "displayName": "Port Level 2",
       "category": "CommerceTrade",
       "cost": 60000.0,
@@ -1566,10 +1651,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1095
     },
     {
-      "id": "quarry_level_2",
+      "id": "quarry2",
       "displayName": "Quarry Level 2",
       "category": "AgricultureIndustry",
       "cost": 8000.0,
@@ -1584,10 +1670,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-5% Build Time"
+      "notes": "-5% Build Time",
+      "buildTimeDays": 730
     },
     {
-      "id": "quarry_level_3",
+      "id": "quarry3",
       "displayName": "Quarry Level 3",
       "category": "AgricultureIndustry",
       "cost": 12000.0,
@@ -1602,10 +1689,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-5% build time"
+      "notes": "-5% build time",
+      "buildTimeDays": 1095
     },
     {
-      "id": "reinforced_stone_brick_walls",
+      "id": "reinforcedstonebrickwalls",
       "displayName": "Reinforced Stone Brick Walls",
       "category": "Walls",
       "cost": 15000.0,
@@ -1620,10 +1708,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "residential_districts_level_2",
+      "id": "residentialdistricts2",
       "displayName": "Residential Districts Level 2",
       "category": "CivicCultural",
       "cost": 12000.0,
@@ -1638,10 +1727,11 @@
       "population": 250,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "residential_districts_level_3",
+      "id": "residentialdistricts3",
       "displayName": "Residential Districts Level 3",
       "category": "CivicCultural",
       "cost": 18000.0,
@@ -1656,10 +1746,11 @@
       "population": 250,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1095
     },
     {
-      "id": "residential_districts_level_4",
+      "id": "residentialdistricts4",
       "displayName": "Residential Districts Level 4",
       "category": "CivicCultural",
       "cost": 28000.0,
@@ -1674,10 +1765,11 @@
       "population": 500,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 1460
     },
     {
-      "id": "siege_workshop",
+      "id": "siegeworkshop",
       "displayName": "Siege Workshop",
       "category": "Military",
       "cost": 20000.0,
@@ -1692,10 +1784,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "small_castle",
+      "id": "smallcastle",
       "displayName": "Small Castle",
       "category": "KeepCastle",
       "cost": 45000.0,
@@ -1710,10 +1803,11 @@
       "population": 250,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+5% fatal attacker casualties"
+      "notes": "+5% fatal attacker casualties",
+      "buildTimeDays": 1825
     },
     {
-      "id": "small_keep",
+      "id": "smallkeep",
       "displayName": "Small Keep",
       "category": "KeepCastle",
       "cost": 25000.0,
@@ -1728,10 +1822,11 @@
       "population": 150,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 730
     },
     {
-      "id": "small_town",
+      "id": "smalltown",
       "displayName": "Small Town",
       "category": "SettlementTier",
       "cost": 10000.0,
@@ -1746,10 +1841,11 @@
       "population": 350,
       "buildingSlots": 2,
       "tradeCapacity": 2,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 540
     },
     {
-      "id": "stone_walls",
+      "id": "stonewalls",
       "displayName": "Stone Walls",
       "category": "Walls",
       "cost": 5000.0,
@@ -1764,10 +1860,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "temple_level_1_modest_chapel",
+      "id": "temple1",
       "displayName": "Temple Level 1 (Modest Chapel)",
       "category": "CivicCultural",
       "cost": 4000.0,
@@ -1782,10 +1879,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 180
     },
     {
-      "id": "temple_level_2_cathedral",
+      "id": "temple2",
       "displayName": "Temple Level 2 (Cathedral)",
       "category": "CivicCultural",
       "cost": 8000.0,
@@ -1800,10 +1898,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 365
     },
     {
-      "id": "temple_level_3_grand_temple",
+      "id": "temple3",
       "displayName": "Temple Level 3 (Grand Temple)",
       "category": "CivicCultural",
       "cost": 38000.0,
@@ -1818,10 +1917,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+10% Growth"
+      "notes": "+10% Growth",
+      "buildTimeDays": 1095
     },
     {
-      "id": "temple_level_3_large_cathedral",
+      "id": "temple3",
       "displayName": "Temple Level 3 (Large Cathedral)",
       "category": "CivicCultural",
       "cost": 15000.0,
@@ -1836,10 +1936,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+1 to all CHA checks with members of that religion"
+      "notes": "+1 to all CHA checks with members of that religion",
+      "buildTimeDays": 730
     },
     {
-      "id": "university_level_1",
+      "id": "university1",
       "displayName": "University Level 1",
       "category": "CivicCultural",
       "cost": 20000.0,
@@ -1854,10 +1955,11 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "-20% passive learning time; 000GP to make this into an Academy of the Arcane Arts"
+      "notes": "-20% passive learning time; 000GP to make this into an Academy of the Arcane Arts",
+      "buildTimeDays": 1460
     },
     {
-      "id": "university_level_2",
+      "id": "university2",
       "displayName": "University Level 2",
       "category": "CivicCultural",
       "cost": 35000.0,
@@ -1872,7 +1974,8 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": "+1 Decision Slot"
+      "notes": "+1 Decision Slot",
+      "buildTimeDays": 2190
     },
     {
       "id": "village",
@@ -1890,10 +1993,11 @@
       "population": 50,
       "buildingSlots": 1,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 180
     },
     {
-      "id": "wooden_palisade",
+      "id": "woodenpalisade",
       "displayName": "Wooden Palisade",
       "category": "Walls",
       "cost": 1000.0,
@@ -1908,7 +2012,8 @@
       "population": 0,
       "buildingSlots": 0,
       "tradeCapacity": 0,
-      "notes": ""
+      "notes": "",
+      "buildTimeDays": 90
     }
   ]
 }

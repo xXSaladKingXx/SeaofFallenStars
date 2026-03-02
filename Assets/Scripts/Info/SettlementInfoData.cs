@@ -214,6 +214,48 @@ public class SettlementInfoData
             /// </summary>
             [JsonProperty("modifiedTotalLevies")] public int modifiedTotalLevies;
 
+        /// <summary>
+        /// Base monthly rebellion chance for this settlement, expressed as a
+        /// percentage (0–100).  This value represents the unrest risk before
+        /// accounting for buildings or vassal averaging.  Authoring tools may
+        /// expose this field on settlements without vassals.  For settlements
+        /// with vassals this value is ignored and the aggregated rebellion
+        /// chance is stored on the feudal data.
+        /// </summary>
+        [JsonProperty("baseRebellionChance")] public float baseRebellionChance;
+
+        /// <summary>
+        /// Total rebellion chance after applying building modifiers or vassal
+        /// aggregation.  For settlements without vassals this is computed
+        /// from <see cref="baseRebellionChance"/> plus the sum of
+        /// rebellionChance modifiers of each building present in
+        /// <see cref="buildings"/>.  For settlements with vassals this
+        /// represents the aggregated average of the capital and its direct
+        /// vassals.
+        /// </summary>
+        [JsonProperty("modifiedRebellionChance")] public float modifiedRebellionChance;
+
+            /// <summary>
+            /// Base monthly rebellion chance for this settlement, expressed as a
+            /// percentage (0–100).  This value represents the unrest risk before
+            /// accounting for buildings or vassal averaging.  Authoring tools may
+            /// expose this field on settlements without vassals.  For settlements
+            /// with vassals this value is ignored and the aggregated rebellion
+            /// chance is stored on the feudal data.
+            /// </summary>
+            [JsonProperty("baseRebellionChance")] public float baseRebellionChance;
+
+            /// <summary>
+            /// Total rebellion chance after applying building modifiers or vassal
+            /// aggregation.  For settlements without vassals this is computed
+            /// from <see cref="baseRebellionChance"/> plus the sum of
+            /// rebellionChance modifiers of each building present in
+            /// <see cref="buildings"/>.  For settlements with vassals this
+            /// represents the aggregated average of the capital and its direct
+            /// vassals.
+            /// </summary>
+            [JsonProperty("modifiedRebellionChance")] public float modifiedRebellionChance;
+
             // Resources tracked by this settlement.  These values represent monthly
             // production or stockpiles, depending on the context in which they are used.
             [JsonProperty("wheat")] public float wheat;
@@ -366,12 +408,31 @@ public class SettlementInfoData
 
             [JsonProperty("contractTerms")] public string contractTerms;
 
+        /// <summary>
+        /// Aggregated monthly rebellion chance for feudal domains.  When this settlement
+        /// has direct vassals, this value is computed as the average of its own
+        /// modified rebellion chance and the modified rebellion chances of all
+        /// its direct vassals.  When there are no vassals this value is unused
+        /// and may be left at zero.  Authoring tools should display this field
+        /// on settlements with vassals.
+        /// </summary>
+        [JsonProperty("rebellionChance")] public float rebellionChance;
+
             /// <summary>
             /// List of councillor salary entries.  Each entry associates a councillor
             /// character ID with the salary paid to them.  When the settlement has vassals,
             /// councillors from the capital settlement should be used instead of this list.
             /// </summary>
             [JsonProperty("councillorSalaries")] public List<CouncillorSalaryEntry> councillorSalaries = new List<CouncillorSalaryEntry>();
+
+            /// <summary>
+            /// Aggregated monthly rebellion chance for this domain.  When this settlement
+            /// has vassals, this value is computed as the average of the modified
+            /// rebellion chance of the capital settlement and each direct vassal.
+            /// When there are no vassals, this value is unused and may be left at zero.
+            /// Authoring tools should display this field on settlements with vassals.
+            /// </summary>
+            [JsonProperty("rebellionChance")] public float rebellionChance;
         }
 
         [Serializable]

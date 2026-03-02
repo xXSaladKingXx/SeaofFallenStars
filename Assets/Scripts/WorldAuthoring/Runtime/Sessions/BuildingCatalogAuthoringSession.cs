@@ -70,7 +70,8 @@ namespace Zana.WorldAuthoring
                         buildingSlots = 1,
                         tradeCapacity = 0,
                         prerequisites = "None",
-                        buildTime = "6 months"
+                        buildTime = "6 months",
+                        rebellionChance = 0
                     },
                     new BuildingEntryModel
                     {
@@ -88,7 +89,8 @@ namespace Zana.WorldAuthoring
                         buildingSlots = 2,
                         tradeCapacity = 1,
                         prerequisites = "Residential Area Level 1",
-                        buildTime = "8 months"
+                        buildTime = "8 months",
+                        rebellionChance = 0
                     },
                     new BuildingEntryModel
                     {
@@ -106,7 +108,8 @@ namespace Zana.WorldAuthoring
                         buildingSlots = 2,
                         tradeCapacity = 2,
                         prerequisites = "Large Village",
-                        buildTime = "18 months"
+                        buildTime = "18 months",
+                        rebellionChance = 0
                     },
                     new BuildingEntryModel
                     {
@@ -124,7 +127,8 @@ namespace Zana.WorldAuthoring
                         buildingSlots = 3,
                         tradeCapacity = 3,
                         prerequisites = "Small Town",
-                        buildTime = "2 years"
+                        buildTime = "2 years",
+                        rebellionChance = 0
                     },
                     new BuildingEntryModel
                     {
@@ -142,7 +146,8 @@ namespace Zana.WorldAuthoring
                         buildingSlots = 4,
                         tradeCapacity = 4,
                         prerequisites = "Large Town",
-                        buildTime = "5 years"
+                        buildTime = "5 years",
+                        rebellionChance = 0
                     },
                     new BuildingEntryModel
                     {
@@ -160,7 +165,8 @@ namespace Zana.WorldAuthoring
                         buildingSlots = 5,
                         tradeCapacity = 10,
                         prerequisites = "City",
-                        buildTime = "15 years"
+                        buildTime = "15 years",
+                        rebellionChance = 0
                     }
                 });
             }
